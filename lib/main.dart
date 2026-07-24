@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'ads/ads_service.dart';
+import 'history/history_controller.dart';
 import 'l10n/app_localizations.dart';
 import 'state/calculator_controller.dart';
 import 'state/settings_controller.dart';
@@ -30,6 +31,7 @@ class TileMathApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => SettingsController(prefs)),
+        ChangeNotifierProvider(create: (_) => HistoryController(prefs)),
         // 初始单位制给英制占位，HomePage 首帧按地区/设置同步
         ChangeNotifierProvider(
           create: (_) => CalculatorController(UnitSystem.imperial),

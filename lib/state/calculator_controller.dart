@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 
 import '../domain/length.dart';
 import '../domain/tile_calculation.dart';
+import '../history/history_entry.dart';
 import '../keyboard/imperial_editor.dart';
 import '../keyboard/metric_editor.dart';
 import 'settings_controller.dart';
@@ -155,6 +156,66 @@ class CalculatorController extends ChangeNotifier {
   void setBoxInfo({int? tilesPerBox, double? pricePerBox}) {
     this.tilesPerBox = tilesPerBox;
     this.pricePerBox = pricePerBox;
+    notifyListeners();
+  }
+
+  // ---- History 快照与恢复 ----
+
+  /// 当前状态的历史快照；无有效结果时返回 null（不记没算完的东西）。
+  HistoryEntry? snapshot({DateTime? now}) {
+    final r = result;
+    if (r == null) return null;
+    final time = now ?? DateTime.now();
+    return HistoryEntry(
+      id: time.microsecondsSinceEpoch,
+      timestamp: time,
+      unitSystem: _unitSystem,
+      rows: [
+        for (final row in rows)
+          HistoryRow(
+            lengthMm: row.length?.mm,
+            widthMm: row.width?.mm,
+            isCutout: row.isCutout,
+          ),
+      ],
+      tileWidthMm: tileWidth!.mm,
+      tileHeightMm: tileHeight!.mm,
+      groutMm: grout.mm,
+      patternName: pattern.name,
+      customWastePct: customWastePct,
+      tilesPerBox: tilesPerBox,
+      pricePerBox: pricePerBox,
+      netAreaSqM: r.netAreaSqM,
+      tilesNeeded: r.tilesNeeded,
+      boxes: r.boxes,
+    );
+  }
+
+  /// 从历史条目回填表单。只回填数值（mm 基准跨单位制通用），
+  /// 不切换当前单位制——英制记录在公制模式下显示换算值。
+  void restoreFrom(HistoryEntry entry) {
+    rows
+      ..clear()
+      ..addAll([
+        for (final r in entry.rows)
+          AreaRowData(isCutout: r.isCutout)
+            ..length = r.lengthMm == null ? null : Length.ofMm(r.lengthMm!)
+            ..width = r.widthMm == null ? null : Length.ofMm(r.widthMm!),
+      ]);
+    if (rows.isEmpty) rows.add(AreaRowData());
+    tileWidth = Length.ofMm(entry.tileWidthMm);
+    tileHeight = Length.ofMm(entry.tileHeightMm);
+    grout = Length.ofMm(entry.groutMm);
+    _groutTouched = true;
+    // 未知 pattern 名（老版本读新数据）回退 straight
+    pattern = LayoutPattern.values
+        .where((p) => p.name == entry.patternName)
+        .firstOrNull ??
+        LayoutPattern.straight;
+    customWastePct = entry.customWastePct;
+    tilesPerBox = entry.tilesPerBox;
+    pricePerBox = entry.pricePerBox;
+    _stopEditing();
     notifyListeners();
   }
 
