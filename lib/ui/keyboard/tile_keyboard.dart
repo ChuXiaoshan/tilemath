@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../ads/interstitial_manager.dart';
+import '../../history/history_controller.dart';
 import '../../keyboard/imperial_editor.dart';
 import '../../keyboard/metric_editor.dart';
 import '../../l10n/app_localizations.dart';
@@ -15,7 +17,10 @@ import '../format.dart';
 class TileKeyboard extends StatelessWidget {
   final CalculatorController controller;
 
-  const TileKeyboard({super.key, required this.controller});
+  /// 平板双栏形态：键高 56dp（token §6），键盘常驻左栏底部。
+  final bool tablet;
+
+  const TileKeyboard({super.key, required this.controller, this.tablet = false});
 
   @override
   Widget build(BuildContext context) {
@@ -31,12 +36,16 @@ class TileKeyboard extends StatelessWidget {
     );
   }
 
-  /// Done：提交并收起；产生了有效结果就记一次插屏频控计数
-  /// （自然断点低频策略，不改 CalculatorController）。
-  void _handleDone() {
+  /// Done：提交并收起；产生了有效结果就记历史 + 记一次插屏频控计数
+  /// （自然断点低频策略，副作用留在 UI 层，不改 CalculatorController）。
+  void _handleDone(BuildContext context) {
     controller.commitAndClose();
     if (controller.result != null) {
       InterstitialManager.instance.recordCalculation();
+      final snapshot = controller.snapshot();
+      if (snapshot != null) {
+        context.read<HistoryController>().record(snapshot);
+      }
     }
   }
 
@@ -93,7 +102,7 @@ class TileKeyboard extends StatelessWidget {
           _digit(0),
           _Key.fn(label: l10n.keyClear, onTap: controller.keyClear),
           _Key.fn(label: l10n.keyNext, onTap: controller.commitAndNext),
-          _Key.done(label: l10n.keyDone, onTap: _handleDone),
+          _Key.done(label: l10n.keyDone, onTap: () => _handleDone(context)),
         ]),
       ],
     );
@@ -151,7 +160,7 @@ class TileKeyboard extends StatelessWidget {
           // 键帽按 locale 显示 . 或 ,（brief §3.2b）
           _Key.digit(label: separator, onTap: controller.keyDecimal),
           _Key.fn(label: l10n.keyNext, onTap: controller.commitAndNext),
-          _Key.done(label: l10n.keyDone, onTap: _handleDone),
+          _Key.done(label: l10n.keyDone, onTap: () => _handleDone(context)),
         ]),
       ],
     );
@@ -166,7 +175,16 @@ class TileKeyboard extends StatelessWidget {
           children: [
             for (var i = 0; i < keys.length; i++) ...[
               if (i > 0) const SizedBox(width: AppDimens.space8),
-              Expanded(child: keys[i]),
+              Expanded(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    minHeight: tablet
+                        ? AppDimens.tabletKeySize
+                        : AppDimens.minTouchTarget,
+                  ),
+                  child: keys[i],
+                ),
+              ),
             ],
           ],
         ),

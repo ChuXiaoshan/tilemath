@@ -19,8 +19,8 @@
   "totalArea": "المساحة الإجمالية",
   "settings": "الإعدادات",
   "units": "الوحدات",
-  "unitImperial": "إمبراطوري (ft-in)",
-  "unitMetric": "متري (m-cm)",
+  "unitImperial": "إمبراطوري",
+  "unitMetric": "متري",
   "language": "اللغة",
   "themeMode": "المظهر",
   "themeSystem": "حسب النظام",
@@ -50,5 +50,15 @@
   "rateApp": "قيّم التطبيق",
   "historyTitle": "السجل",
   "historyEmpty": "ستظهر حساباتك هنا.",
-  "delete": "حذف"
+  "delete": "حذف",
+  "justNow": "الآن",
+  "minutesAgo": "{count, plural, one{قبل دقيقة} two{قبل دقيقتين} few{قبل {count} دقائق} many{قبل {count} دقيقة} other{قبل {count} دقيقة}}",
+  "hoursAgo": "{count, plural, one{قبل ساعة} two{قبل ساعتين} few{قبل {count} ساعات} many{قبل {count} ساعة} other{قبل {count} ساعة}}",
+  "daysAgo": "{count, plural, one{قبل يوم} two{قبل يومين} few{قبل {count} أيام} many{قبل {count} يومًا} other{قبل {count} يوم}}",
+  "clearAll": "مسح الكل",
+  "clearAllConfirm": "هل تريد حذف كل السجل؟",
+  "cancel": "إلغاء",
+  "historyFooterNote": "يُحفظ كل حساب — مجانًا وبلا حدود.",
+  "languagePageNote": "يغيّر لغة هذا التطبيق فقط — للأجهزة القديمة التي لا تدعم لغة لكل تطبيق.",
+  "wasteShort": "هدر {pct}%"
 }

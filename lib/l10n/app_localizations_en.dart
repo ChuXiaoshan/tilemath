@@ -84,10 +84,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get units => 'Units';
 
   @override
-  String get unitImperial => 'Imperial (ft-in)';
+  String get unitImperial => 'Imperial';
 
   @override
-  String get unitMetric => 'Metric (m-cm)';
+  String get unitMetric => 'Metric';
 
   @override
   String get language => 'Language';
@@ -162,7 +162,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get resultEmptyPrompt => 'Enter dimensions to see results';
 
   @override
-  String get languageSystem => 'System';
+  String get languageSystem => 'System default';
 
   @override
   String get currencySymbol => 'Currency symbol';
@@ -181,4 +181,62 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get delete => 'Delete';
+
+  @override
+  String get justNow => 'Just now';
+
+  @override
+  String minutesAgo(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count minutes ago',
+      one: '$count minute ago',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String hoursAgo(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count hours ago',
+      one: '$count hour ago',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String daysAgo(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count days ago',
+      one: '$count day ago',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get clearAll => 'Clear all';
+
+  @override
+  String get clearAllConfirm => 'Delete all history?';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
+  String get historyFooterNote =>
+      'Every calculation is saved — free, no limit.';
+
+  @override
+  String get languagePageNote =>
+      'Overrides the OS language for this app only — for older devices without per-app language settings.';
+
+  @override
+  String wasteShort(int pct) {
+    return '$pct% waste';
+  }
 }

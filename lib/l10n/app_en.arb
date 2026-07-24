@@ -62,8 +62,8 @@
   "totalArea": "Total area",
   "settings": "Settings",
   "units": "Units",
-  "unitImperial": "Imperial (ft-in)",
-  "unitMetric": "Metric (m-cm)",
+  "unitImperial": "Imperial",
+  "unitMetric": "Metric",
   "language": "Language",
   "themeMode": "Theme",
   "themeSystem": "System",
@@ -101,7 +101,7 @@
   },
   "smallAreaHint": "Small areas produce more cut waste — consider +5%.",
   "resultEmptyPrompt": "Enter dimensions to see results",
-  "languageSystem": "System",
+  "languageSystem": "System default",
   "@languageSystem": {
     "description": "Default entry in the language list: follow device language"
   },
@@ -110,5 +110,43 @@
   "rateApp": "Rate this app",
   "historyTitle": "History",
   "historyEmpty": "Your calculations will appear here.",
-  "delete": "Delete"
+  "delete": "Delete",
+  "justNow": "Just now",
+  "minutesAgo": "{count, plural, one{{count} minute ago} other{{count} minutes ago}}",
+  "@minutesAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "hoursAgo": "{count, plural, one{{count} hour ago} other{{count} hours ago}}",
+  "@hoursAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "daysAgo": "{count, plural, one{{count} day ago} other{{count} days ago}}",
+  "@daysAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "clearAll": "Clear all",
+  "clearAllConfirm": "Delete all history?",
+  "cancel": "Cancel",
+  "historyFooterNote": "Every calculation is saved — free, no limit.",
+  "languagePageNote": "Overrides the OS language for this app only — for older devices without per-app language settings.",
+  "wasteShort": "{pct}% waste",
+  "@wasteShort": {
+    "placeholders": {
+      "pct": {
+        "type": "int"
+      }
+    }
+  }
 }

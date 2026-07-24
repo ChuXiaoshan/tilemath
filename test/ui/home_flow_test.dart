@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tilemath/history/history_controller.dart';
 import 'package:tilemath/main.dart';
 import 'package:tilemath/ui/keyboard/tile_keyboard.dart';
 
@@ -22,6 +24,10 @@ void main() {
 
     // 空态提示在
     expect(find.text('Enter dimensions to see results'), findsOneWidget);
+
+    // 先选瓷砖预设 12×12（这样最后 Done 时已有完整输入，验证历史落档）
+    await tester.tap(find.text('12×12'));
+    await tester.pump();
 
     // Length：12 → ft 键 → Done
     await tester.tap(find.byKey(const ValueKey('field-areaLength-0')));
@@ -55,14 +61,17 @@ void main() {
     // 行尾实时面积
     expect(find.text('120.00 ft²'), findsWidgets);
 
-    // 瓷砖预设 12×12
-    await tester.tap(find.text('12×12'));
-    await tester.pump();
-
     // 结果卡：131 片（119 base + 10%）
     expect(find.text('131'), findsOneWidget);
     expect(find.text('119 tiles + 10% waste'), findsOneWidget);
     // 未填箱规：无箱数/成本行
     expect(find.text('Boxes to buy'), findsNothing);
+
+    // Done 产生有效结果 → 历史落一条
+    final historyController = tester
+        .element(find.byType(Scaffold).first)
+        .read<HistoryController>();
+    expect(historyController.entries.length, 1);
+    expect(historyController.entries.single.tilesNeeded, 131);
   });
 }

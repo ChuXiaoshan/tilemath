@@ -82,10 +82,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get units => '单位';
 
   @override
-  String get unitImperial => '英制（英尺-英寸）';
+  String get unitImperial => '英制';
 
   @override
-  String get unitMetric => '公制（米-厘米）';
+  String get unitMetric => '公制';
 
   @override
   String get language => '语言';
@@ -178,4 +178,57 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get delete => '删除';
+
+  @override
+  String get justNow => '刚刚';
+
+  @override
+  String minutesAgo(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count 分钟前',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String hoursAgo(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count 小时前',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String daysAgo(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count 天前',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get clearAll => '清空全部';
+
+  @override
+  String get clearAllConfirm => '确定清空全部历史记录？';
+
+  @override
+  String get cancel => '取消';
+
+  @override
+  String get historyFooterNote => '每次计算都会保存——免费，无上限。';
+
+  @override
+  String get languagePageNote => '仅覆盖本应用的语言——为没有分应用语言设置的旧设备提供。';
+
+  @override
+  String wasteShort(int pct) {
+    return '$pct% 损耗';
+  }
 }

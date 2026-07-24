@@ -217,13 +217,13 @@ abstract class AppLocalizations {
   /// No description provided for @unitImperial.
   ///
   /// In en, this message translates to:
-  /// **'Imperial (ft-in)'**
+  /// **'Imperial'**
   String get unitImperial;
 
   /// No description provided for @unitMetric.
   ///
   /// In en, this message translates to:
-  /// **'Metric (m-cm)'**
+  /// **'Metric'**
   String get unitMetric;
 
   /// No description provided for @language.
@@ -367,7 +367,7 @@ abstract class AppLocalizations {
   /// Default entry in the language list: follow device language
   ///
   /// In en, this message translates to:
-  /// **'System'**
+  /// **'System default'**
   String get languageSystem;
 
   /// No description provided for @currencySymbol.
@@ -405,6 +405,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Delete'**
   String get delete;
+
+  /// No description provided for @justNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Just now'**
+  String get justNow;
+
+  /// No description provided for @minutesAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, one{{count} minute ago} other{{count} minutes ago}}'**
+  String minutesAgo(int count);
+
+  /// No description provided for @hoursAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, one{{count} hour ago} other{{count} hours ago}}'**
+  String hoursAgo(int count);
+
+  /// No description provided for @daysAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, one{{count} day ago} other{{count} days ago}}'**
+  String daysAgo(int count);
+
+  /// No description provided for @clearAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear all'**
+  String get clearAll;
+
+  /// No description provided for @clearAllConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete all history?'**
+  String get clearAllConfirm;
+
+  /// No description provided for @cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
+
+  /// No description provided for @historyFooterNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Every calculation is saved — free, no limit.'**
+  String get historyFooterNote;
+
+  /// No description provided for @languagePageNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Overrides the OS language for this app only — for older devices without per-app language settings.'**
+  String get languagePageNote;
+
+  /// No description provided for @wasteShort.
+  ///
+  /// In en, this message translates to:
+  /// **'{pct}% waste'**
+  String wasteShort(int pct);
 }
 
 class _AppLocalizationsDelegate

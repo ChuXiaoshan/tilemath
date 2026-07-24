@@ -2,15 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart' show RenderAbstractViewport;
 import 'package:provider/provider.dart';
 
-import '../ads/anchored_banner.dart';
 import '../ads/interstitial_manager.dart';
 import '../domain/length.dart';
 import '../domain/tile_calculation.dart';
+import '../history/history_controller.dart';
 import '../keyboard/metric_editor.dart';
 import '../l10n/app_localizations.dart';
 import '../state/calculator_controller.dart';
 import '../state/settings_controller.dart';
 import '../theme/app_dimens.dart';
+import 'banner_footer.dart';
 import 'format.dart';
 import 'history_page.dart';
 import 'keyboard/tile_keyboard.dart';
@@ -26,7 +27,34 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  /// 历史存档点之一：app 退后台时快照当前计算。
+  /// 预设 chip 完成的计算没有后续 Done 事件，靠这里和"打开 History 前"兜底；
+  /// HistoryController 对相同输入去重，多处存档不会刷屏。
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused) _recordCurrentCalculation();
+  }
+
+  void _recordCurrentCalculation() {
+    final snapshot = context.read<CalculatorController>().snapshot();
+    if (snapshot != null) {
+      context.read<HistoryController>().record(snapshot);
+    }
+  }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -49,8 +77,6 @@ class _HomePageState extends State<HomePage> {
     final l10n = AppLocalizations.of(context);
     final calc = context.watch<CalculatorController>();
     final settings = context.watch<SettingsController>();
-    // 系统 IME 是否弹出（箱规成本走系统键盘）
-    final imeOpen = MediaQuery.viewInsetsOf(context).bottom > 0;
 
     return Scaffold(
       appBar: AppBar(
@@ -60,6 +86,8 @@ class _HomePageState extends State<HomePage> {
             icon: const Icon(Icons.history),
             tooltip: l10n.historyTitle,
             onPressed: () async {
+              // 存档点：让当前算完的结果出现在即将打开的列表里
+              _recordCurrentCalculation();
               // 自然断点低频插屏：进历史页前尝试展示（频控不满足时静默跳过）
               await InterstitialManager.instance.maybeShow();
               if (!context.mounted) return;
@@ -89,19 +117,40 @@ class _HomePageState extends State<HomePage> {
                   settings: settings,
                 );
                 if (!twoPane) {
-                  return ListView(
-                    padding: const EdgeInsets.all(AppDimens.space16),
-                    children: [form, const SizedBox(height: 24), results],
+                  return Column(
+                    children: [
+                      Expanded(
+                        child: ListView(
+                          padding: const EdgeInsets.all(AppDimens.space16),
+                          children: [
+                            form,
+                            const SizedBox(height: 24),
+                            results,
+                          ],
+                        ),
+                      ),
+                      if (calc.editing != null)
+                        TileKeyboard(controller: calc),
+                    ],
                   );
                 }
-                // 双栏：输入左 / 结果右（2026-07-24 拍板维持不镜像）
+                // 双栏：输入左 / 结果右（2026-07-24 拍板维持不镜像）；
+                // 设计稿 4b：键盘在左栏底部常驻（56dp 键），无焦点时按键无效果
                 return Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Expanded(
-                      child: ListView(
-                        padding: const EdgeInsets.all(AppDimens.space16),
-                        children: [form],
+                      child: Column(
+                        children: [
+                          Expanded(
+                            child: ListView(
+                              padding:
+                                  const EdgeInsets.all(AppDimens.space16),
+                              children: [form],
+                            ),
+                          ),
+                          TileKeyboard(controller: calc, tablet: true),
+                        ],
                       ),
                     ),
                     const SizedBox(width: AppDimens.space32),
@@ -116,16 +165,7 @@ class _HomePageState extends State<HomePage> {
               },
             ),
           ),
-          if (calc.editing != null) TileKeyboard(controller: calc),
-          // 系统 IME 弹出时隐藏隔离带与 banner——banner 不得紧贴系统键盘
-          // （AdMob 误触政策）；IME 收起后恢复。
-          if (imeOpen)
-            const SizedBox.shrink()
-          else ...[
-            // 键盘/内容 ↔ banner 的非交互隔离带（16dp + 表面色差）
-            const _BannerGapBand(),
-            const AnchoredBanner(),
-          ],
+          const BannerFooter(),
         ],
       ),
     );
@@ -725,19 +765,6 @@ class _Kicker extends StatelessWidget {
         label.toUpperCase(),
         style: text.labelMedium!.copyWith(color: scheme.onSurfaceVariant),
       ),
-    );
-  }
-}
-
-/// 键盘/内容 ↔ banner 的隔离带：非交互、有表面色差（AdMob 政策）。
-class _BannerGapBand extends StatelessWidget {
-  const _BannerGapBand();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: AppDimens.keyboardBannerGapMin,
-      color: Theme.of(context).colorScheme.surfaceContainerHigh,
     );
   }
 }

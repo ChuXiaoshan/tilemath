@@ -92,10 +92,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get units => 'الوحدات';
 
   @override
-  String get unitImperial => 'إمبراطوري (ft-in)';
+  String get unitImperial => 'إمبراطوري';
 
   @override
-  String get unitMetric => 'متري (m-cm)';
+  String get unitMetric => 'متري';
 
   @override
   String get language => 'اللغة';
@@ -189,4 +189,70 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get delete => 'حذف';
+
+  @override
+  String get justNow => 'الآن';
+
+  @override
+  String minutesAgo(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'قبل $count دقيقة',
+      many: 'قبل $count دقيقة',
+      few: 'قبل $count دقائق',
+      two: 'قبل دقيقتين',
+      one: 'قبل دقيقة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String hoursAgo(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'قبل $count ساعة',
+      many: 'قبل $count ساعة',
+      few: 'قبل $count ساعات',
+      two: 'قبل ساعتين',
+      one: 'قبل ساعة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String daysAgo(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'قبل $count يوم',
+      many: 'قبل $count يومًا',
+      few: 'قبل $count أيام',
+      two: 'قبل يومين',
+      one: 'قبل يوم',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get clearAll => 'مسح الكل';
+
+  @override
+  String get clearAllConfirm => 'هل تريد حذف كل السجل؟';
+
+  @override
+  String get cancel => 'إلغاء';
+
+  @override
+  String get historyFooterNote => 'يُحفظ كل حساب — مجانًا وبلا حدود.';
+
+  @override
+  String get languagePageNote =>
+      'يغيّر لغة هذا التطبيق فقط — للأجهزة القديمة التي لا تدعم لغة لكل تطبيق.';
+
+  @override
+  String wasteShort(int pct) {
+    return 'هدر $pct%';
+  }
 }

@@ -19,8 +19,8 @@
   "totalArea": "总面积",
   "settings": "设置",
   "units": "单位",
-  "unitImperial": "英制（英尺-英寸）",
-  "unitMetric": "公制（米-厘米）",
+  "unitImperial": "英制",
+  "unitMetric": "公制",
   "language": "语言",
   "themeMode": "外观",
   "themeSystem": "跟随系统",
@@ -50,5 +50,15 @@
   "rateApp": "给个好评",
   "historyTitle": "历史记录",
   "historyEmpty": "算过的记录会出现在这里",
-  "delete": "删除"
+  "delete": "删除",
+  "justNow": "刚刚",
+  "minutesAgo": "{count, plural, other{{count} 分钟前}}",
+  "hoursAgo": "{count, plural, other{{count} 小时前}}",
+  "daysAgo": "{count, plural, other{{count} 天前}}",
+  "clearAll": "清空全部",
+  "clearAllConfirm": "确定清空全部历史记录？",
+  "cancel": "取消",
+  "historyFooterNote": "每次计算都会保存——免费，无上限。",
+  "languagePageNote": "仅覆盖本应用的语言——为没有分应用语言设置的旧设备提供。",
+  "wasteShort": "{pct}% 损耗"
 }
