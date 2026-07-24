@@ -601,14 +601,18 @@ class _PatternSelector extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // 撑满整行：紧约束下段宽均分，长文案（德语等）段内换行而不溢出
+        // 撑满整行：紧约束下段宽均分。降级规则（brief §2 v2.1）：长文案
+        // 缩小字号而非换行——名称行定高 + FittedBox，四段高度恒定不跳动。
+        // showSelectedIcon 关闭：选中 ✓ 图标会挤压最长文案（人字铺/Herringbone）
+        // 触发换行，选中态由填色表达。
         SizedBox(
           width: double.infinity,
           child: SegmentedButton<LayoutPattern>(
+            showSelectedIcon: false,
             style: const ButtonStyle(
               padding: WidgetStatePropertyAll(
                 EdgeInsets.symmetric(
-                  horizontal: AppDimens.space8,
+                  horizontal: AppDimens.space4,
                   vertical: AppDimens.space8,
                 ),
               ),
@@ -617,15 +621,19 @@ class _PatternSelector extends StatelessWidget {
               for (final p in LayoutPattern.values)
                 ButtonSegment(
                   value: p,
-                  // 两行 label：名称（可换行）+ 损耗百分比（恒 LTR）
                   label: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text(
-                        nameOf(p),
-                        textAlign: TextAlign.center,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
+                      SizedBox(
+                        height: 20,
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            nameOf(p),
+                            maxLines: 1,
+                            softWrap: false,
+                          ),
+                        ),
                       ),
                       Text(
                         '${pctOf(p)}%',

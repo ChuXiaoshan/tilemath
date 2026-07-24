@@ -43,6 +43,8 @@ class SettingsPage extends StatelessWidget {
         contentPadding: EdgeInsets.zero,
         title: Text(l10n.units),
         trailing: SegmentedButton<UnitSystem>(
+          // 选中 ✓ 图标会在长本地化标签下挤压换行，选中态由填色表达
+          showSelectedIcon: false,
           style: const ButtonStyle(visualDensity: VisualDensity.compact),
           segments: [
             ButtonSegment(

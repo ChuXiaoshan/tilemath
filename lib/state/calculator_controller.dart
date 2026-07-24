@@ -81,8 +81,10 @@ class CalculatorController extends ChangeNotifier {
           : Length.ofMm(2);
 
   /// 单位制切换：已录入的 Length 值保留（mm 基准），未动过的缝宽换成新默认。
+  /// 正在编辑的值先提交，不丢输入。
   set unitSystem(UnitSystem system) {
     if (system == _unitSystem) return;
+    _commit();
     _unitSystem = system;
     if (!_groutTouched) grout = _defaultGrout(system);
     _stopEditing();
@@ -128,6 +130,8 @@ class CalculatorController extends ChangeNotifier {
   void removeRow(int index) {
     // 越界防护：多点触控可能对同一行触发两次删除
     if (index < 0 || index >= rows.length) return;
+    // 删行前先提交在编辑的值（删的行本身被提交也无害，随行一起移除）
+    _commit();
     rows.removeAt(index);
     if (rows.isEmpty) rows.add(AreaRowData());
     _stopEditing();
@@ -147,6 +151,7 @@ class CalculatorController extends ChangeNotifier {
   }
 
   void setTilePreset(Length w, Length h) {
+    _commit(); // 正在编辑的字段（如缝宽）先提交再收键盘
     tileWidth = w;
     tileHeight = h;
     _stopEditing();
@@ -222,7 +227,9 @@ class CalculatorController extends ChangeNotifier {
   // ---- 编辑焦点与键盘事件 ----
 
   /// 点击字段开始编辑：新开空编辑器（替换式录入），Done/Next 提交。
+  /// 从别的字段直接点过来 = 隐式确认当前输入（修：切字段丢值）。
   void startEditing(FieldId field) {
+    _commit();
     editing = field;
     if (_unitSystem == UnitSystem.imperial) {
       imperialEditor = ImperialEditor(

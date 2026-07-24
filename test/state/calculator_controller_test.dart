@@ -94,6 +94,63 @@ void main() {
     });
   });
 
+  group('切换焦点隐式提交（用户实测缺陷回归：切字段丢值）', () {
+    test('长度输 20 → 直接点宽度：长度已提交不丢失', () {
+      final c = CalculatorController(UnitSystem.metric);
+      c.startEditing(const FieldId(FieldKind.areaLength, 0));
+      c.keyDigit(2);
+      c.keyDigit(0);
+      c.startEditing(const FieldId(FieldKind.areaWidth, 0)); // 不按 Done/Next
+      expect(c.rows[0].length, isNotNull);
+      expect(c.rows[0].length!.meters, closeTo(20, 1e-9));
+      expect(c.editing, const FieldId(FieldKind.areaWidth, 0));
+    });
+
+    test('英制同样成立：20 → 点宽度 → 20′ 已落', () {
+      final c = CalculatorController(UnitSystem.imperial);
+      c.startEditing(const FieldId(FieldKind.areaLength, 0));
+      c.keyDigit(2);
+      c.keyDigit(0);
+      c.startEditing(const FieldId(FieldKind.areaWidth, 0));
+      expect(c.rows[0].length!.feet, closeTo(20, 1e-9));
+    });
+
+    test('空编辑器切走不覆盖已有值', () {
+      final c = CalculatorController(UnitSystem.metric);
+      c.rows[0].length = Length.ofMeters(5);
+      c.startEditing(const FieldId(FieldKind.areaLength, 0)); // 打开但不输入
+      c.startEditing(const FieldId(FieldKind.areaWidth, 0));
+      expect(c.rows[0].length!.meters, closeTo(5, 1e-9));
+    });
+
+    test('编辑缝宽时点预设 chip：缝宽先提交再收键盘', () {
+      final c = CalculatorController(UnitSystem.metric);
+      c.startEditing(const FieldId(FieldKind.grout));
+      c.keyDigit(5);
+      c.setTilePreset(Length.ofCm(30), Length.ofCm(30));
+      expect(c.grout.mm, closeTo(5, 1e-9));
+      expect(c.editing, isNull);
+    });
+
+    test('编辑中切单位制：先提交再切', () {
+      final c = CalculatorController(UnitSystem.metric);
+      c.startEditing(const FieldId(FieldKind.areaLength, 0));
+      c.keyDigit(3);
+      c.unitSystem = UnitSystem.imperial;
+      expect(c.rows[0].length!.meters, closeTo(3, 1e-9)); // mm 基准跨制保值
+      expect(c.editing, isNull);
+    });
+
+    test('编辑 0 行时删除 1 行：编辑值先提交', () {
+      final c = CalculatorController(UnitSystem.metric);
+      c.addRow(); // 自动聚焦新行，先切回 0 行
+      c.startEditing(const FieldId(FieldKind.areaLength, 0));
+      c.keyDigit(7);
+      c.removeRow(1);
+      expect(c.rows[0].length!.meters, closeTo(7, 1e-9));
+    });
+  });
+
   group('removeRow 越界防护', () {
     test('越界 index 静默忽略（多点触控连删场景）', () {
       final c = CalculatorController(UnitSystem.metric);
