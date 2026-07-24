@@ -1,0 +1,8 @@
+include: package:flutter_lints/flutter.yaml
+
+analyzer:
+  exclude:
+    # SPM 会把 iOS 插件源码（含其测试）拷进 build/，不属于本工程代码
+    - build/**
+    # gen-l10n 生成文件
+    - lib/l10n/app_localizations*.dart

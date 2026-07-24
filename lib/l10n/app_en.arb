@@ -1,0 +1,114 @@
+{
+  "@@locale": "en",
+  "appTitle": "TileMath",
+  "@appTitle": {
+    "description": "Brand name, not localized (2026-07-24 user decision)"
+  },
+  "sectionAreas": "Areas",
+  "@sectionAreas": {
+    "description": "Section kicker above the room/area inputs"
+  },
+  "sectionTile": "Tile",
+  "@sectionTile": {
+    "description": "Section kicker above tile size and grout inputs"
+  },
+  "sectionResults": "Results",
+  "@sectionResults": {
+    "description": "Section kicker above the result card"
+  },
+  "areaLabel": "Area {number}",
+  "@areaLabel": {
+    "description": "Row label for one measured area",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "length": "Length",
+  "width": "Width",
+  "tileWidth": "Tile width",
+  "tileHeight": "Tile height",
+  "groutWidth": "Grout gap",
+  "wastePercent": "Waste",
+  "addArea": "Add area",
+  "@addArea": {
+    "description": "Text button that appends a new area row"
+  },
+  "cutout": "Cutout",
+  "@cutout": {
+    "description": "Tag for a negative (excluded) area, e.g. bathtub footprint"
+  },
+  "tilesNeededLabel": "tiles needed",
+  "@tilesNeededLabel": {
+    "description": "Caption under the big result figure"
+  },
+  "tilesCount": "{count, plural, one{{count} tile} other{{count} tiles}}",
+  "@tilesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "boxesCount": "{count, plural, one{{count} box} other{{count} boxes}}",
+  "@boxesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "totalArea": "Total area",
+  "settings": "Settings",
+  "units": "Units",
+  "unitImperial": "Imperial (ft-in)",
+  "unitMetric": "Metric (m-cm)",
+  "language": "Language",
+  "themeMode": "Theme",
+  "themeSystem": "System",
+  "themeLight": "Light",
+  "themeDark": "Dark",
+  "keyNext": "Next",
+  "keyDone": "Done",
+  "keyClear": "Clear",
+  "privacyPolicy": "Privacy policy",
+  "addCutout": "Add cutout",
+  "@addCutout": {
+    "description": "Text button that appends a negative (excluded) area row"
+  },
+  "layoutPattern": "Layout pattern",
+  "patternStraight": "Straight",
+  "patternDiagonal": "Diagonal",
+  "patternHerringbone": "Herringbone",
+  "patternCustom": "Custom",
+  "boxesAndCost": "Boxes & cost",
+  "tilesPerBox": "Tiles per box",
+  "pricePerBox": "Price per box",
+  "boxesToBuy": "Boxes to buy",
+  "estimatedCost": "Estimated cost",
+  "wasteLine": "{base} tiles + {waste}% waste",
+  "@wasteLine": {
+    "description": "Secondary line under the big tiles-needed figure",
+    "placeholders": {
+      "base": {
+        "type": "int"
+      },
+      "waste": {
+        "type": "int"
+      }
+    }
+  },
+  "smallAreaHint": "Small areas produce more cut waste — consider +5%.",
+  "resultEmptyPrompt": "Enter dimensions to see results",
+  "languageSystem": "System",
+  "@languageSystem": {
+    "description": "Default entry in the language list: follow device language"
+  },
+  "currencySymbol": "Currency symbol",
+  "versionLabel": "Version",
+  "rateApp": "Rate this app",
+  "historyTitle": "History",
+  "historyEmpty": "Your calculations will appear here.",
+  "delete": "Delete"
+}

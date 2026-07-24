@@ -1,0 +1,52 @@
+name: tilemath
+description: "Tile calculator with fraction-inch keyboard. Offline, ad-supported."
+publish_to: 'none'
+version: 0.1.0+1
+
+environment:
+  sdk: ^3.12.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  google_mobile_ads: ^9.0.0
+  intl: any
+  provider: ^6.1.5+1
+  shared_preferences: ^2.5.5
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
+  generate: true
+
+  # 字体来源：google/fonts 仓库（OFL）。Plex Latin 由 VF 实例化出静态权重；
+  # Noto Sans SC 为子集（改 app_zh.arb 后重跑 tool/fonts/subset_noto_sc.sh）。
+  fonts:
+    - family: IBM Plex Sans
+      fonts:
+        - asset: assets/fonts/IBMPlexSans-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/IBMPlexSans-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/IBMPlexSans-Bold.ttf
+          weight: 700
+    - family: IBM Plex Sans Arabic
+      fonts:
+        - asset: assets/fonts/IBMPlexSansArabic-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/IBMPlexSansArabic-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/IBMPlexSansArabic-Bold.ttf
+          weight: 700
+    - family: Noto Sans SC
+      fonts:
+        - asset: assets/fonts/NotoSansSC-Regular-subset.ttf
+          weight: 400
+        - asset: assets/fonts/NotoSansSC-SemiBold-subset.ttf
+          weight: 600
