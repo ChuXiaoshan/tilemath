@@ -474,10 +474,19 @@ class _ValueFieldState extends State<_ValueField> {
               ),
             ),
             alignment: AlignmentDirectional.centerStart,
-            child: Text(
-              display,
-              textDirection: TextDirection.ltr, // 尺寸表达式恒 LTR
-              style: text.bodyLarge,
+            // 降级只缩不换行：12′ 11-7/8″ 的固有宽度约 181dp，而字段可用宽
+            // 只有 95–123dp，不加约束会折成 2–3 行、字段高度随输入跳动。
+            // 与 _PatternSelector 同一策略。
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              alignment: AlignmentDirectional.centerStart,
+              child: Text(
+                display,
+                textDirection: TextDirection.ltr, // 尺寸表达式恒 LTR
+                maxLines: 1,
+                softWrap: false,
+                style: text.bodyLarge,
+              ),
             ),
           ),
         ),
@@ -747,6 +756,22 @@ class _BoxesAndCostState extends State<_BoxesAndCost> {
     _priceCtrl = TextEditingController(text: _priceText(calc.pricePerBox));
     _tilesFocus = FocusNode()..addListener(_onFocusChanged);
     _priceFocus = FocusNode()..addListener(_onFocusChanged);
+    widget.calc.addListener(_syncFromModel);
+  }
+
+  /// 从历史恢复等外部改值时把输入框拉回一致。只在两点成立时才写：
+  /// 该框没有焦点（不能打断用户正在输入），且文本与模型值确实不同
+  /// （否则每次 notifyListeners 都重置光标位置）。
+  void _syncFromModel() {
+    if (!mounted) return;
+    final tiles = widget.calc.tilesPerBox?.toString() ?? '';
+    if (!_tilesFocus.hasFocus && _tilesCtrl.text != tiles) {
+      _tilesCtrl.text = tiles;
+    }
+    final price = _priceText(widget.calc.pricePerBox);
+    if (!_priceFocus.hasFocus && _priceCtrl.text != price) {
+      _priceCtrl.text = price;
+    }
   }
 
   /// 「同时只有一个键盘」必须是不变量，不能只靠 onTap 兜。焦点也可能由
@@ -765,6 +790,7 @@ class _BoxesAndCostState extends State<_BoxesAndCost> {
 
   @override
   void dispose() {
+    widget.calc.removeListener(_syncFromModel);
     _tilesCtrl.dispose();
     _priceCtrl.dispose();
     _tilesFocus.dispose();
@@ -816,7 +842,9 @@ class _BoxesAndCostState extends State<_BoxesAndCost> {
                 onTapOutside: (_) => FocusScope.of(context).unfocus(),
                 onChanged: (v) => calc.setBoxInfo(
                   tilesPerBox: calc.tilesPerBox,
-                  pricePerBox: double.tryParse(v),
+                  // 逗号分隔符地区（fr/de/pt-BR 等）的系统键盘给出的是
+                  // "30,5"，直接 tryParse 得 null，成本行会静默消失。
+                  pricePerBox: double.tryParse(v.replaceAll(',', '.')),
                 ),
               ),
             ),

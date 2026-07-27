@@ -22,8 +22,13 @@ class MetricEditor {
   String get text => _text;
   bool get isEmpty => _text.isEmpty;
 
+  /// 用户是否显式清空过。区分"没动过这个字段"与"想把它清掉"：
+  /// 前者提交时保留旧值，后者应把字段真的清空。
+  bool clearedByUser = false;
+
   void digit(int d) {
     assert(d >= 0 && d <= 9);
+    clearedByUser = false;
     if (_text == '0') {
       _text = '$d'; // 前导零替换
       return;
@@ -48,11 +53,13 @@ class MetricEditor {
   void backspace() {
     if (_text.isEmpty) return;
     _text = _text.substring(0, _text.length - 1);
+    if (_text.isEmpty) clearedByUser = true;
   }
 
   void clear() {
     _text = '';
     _unit = defaultUnit;
+    clearedByUser = true;
   }
 
   /// 空态返回 null；结尾悬空的 '.' 按整数取值。

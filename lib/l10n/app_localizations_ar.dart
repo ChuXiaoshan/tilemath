@@ -50,7 +50,14 @@ class AppLocalizationsAr extends AppLocalizations {
   String get cutout => 'اقتطاع';
 
   @override
-  String get tilesNeededLabel => 'البلاط المطلوب';
+  String tilesNeededLabel(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'البلاط المطلوب',
+    );
+    return '$_temp0';
+  }
 
   @override
   String tilesCount(int count) {

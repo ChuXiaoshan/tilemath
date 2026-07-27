@@ -50,7 +50,14 @@ class AppLocalizationsZh extends AppLocalizations {
   String get cutout => '扣除区域';
 
   @override
-  String get tilesNeededLabel => '所需瓷砖';
+  String tilesNeededLabel(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '所需瓷砖',
+    );
+    return '$_temp0';
+  }
 
   @override
   String tilesCount(int count) {

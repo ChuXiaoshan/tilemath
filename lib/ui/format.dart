@@ -8,8 +8,14 @@ const _sqMPerSqFt = 0.3048 * 0.3048;
 
 /// 公制长度显示：按字段惯用单位输出，locale 决定小数分隔符。
 /// 数字恒用西文数字（token 硬规则），intl 的 ar 数字格式需显式压回拉丁。
+///
+/// 不足 1 m 时降级用 cm 显示：按 m 保两位小数只有 1 cm 分辨率，用 cm 键
+/// 输入的 12.5 会回显成 0.13 m——值错了 4%，用户会以为输入没被接收。
 String formatMetric(Length l, MetricUnit unit, String locale) {
-  final value = switch (unit) {
+  final effective = (unit == MetricUnit.m && l.mm.abs() < 1000)
+      ? MetricUnit.cm
+      : unit;
+  final value = switch (effective) {
     MetricUnit.m => l.meters,
     MetricUnit.cm => l.cm,
     MetricUnit.mm => l.mm,
@@ -18,7 +24,7 @@ String formatMetric(Length l, MetricUnit unit, String locale) {
     locale: _latinDigitsLocale(locale),
     decimalDigits: _trailingDigits(value),
   );
-  return '${f.format(value)} ${unit.name}';
+  return '${f.format(value)} ${effective.name}';
 }
 
 /// 长度显示统一入口：英制走 formatImperial，公制按字段惯用单位。
@@ -61,4 +67,10 @@ String decimalSeparatorOf(String locale) =>
 String _latinDigitsLocale(String locale) =>
     locale.startsWith('ar') ? 'en_US' : locale;
 
-int _trailingDigits(double value) => value == value.roundToDouble() ? 0 : 2;
+/// 按需给小数位：整数不带尾巴，一位够用就不补第二位（12.5 不写成 12.50）。
+int _trailingDigits(double value) {
+  const eps = 1e-9;
+  if ((value - value.roundToDouble()).abs() < eps) return 0;
+  if ((value - (value * 10).roundToDouble() / 10).abs() < eps) return 1;
+  return 2;
+}

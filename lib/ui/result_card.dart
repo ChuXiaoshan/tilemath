@@ -63,7 +63,7 @@ class ResultCard extends StatelessWidget {
                         style: text.displayLarge,
                       ),
                       Text(
-                        l10n.tilesNeededLabel,
+                        l10n.tilesNeededLabel(r.tilesNeeded),
                         style: text.bodySmall!
                             .copyWith(color: scheme.onSurfaceVariant),
                       ),

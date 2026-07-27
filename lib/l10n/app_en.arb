@@ -39,9 +39,13 @@
   "@cutout": {
     "description": "Tag for a negative (excluded) area, e.g. bathtub footprint"
   },
-  "tilesNeededLabel": "tiles needed",
+  "tilesNeededLabel": "{count, plural, one{tile needed} other{tiles needed}}",
   "@tilesNeededLabel": {
-    "description": "Caption under the big result figure"
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "tilesCount": "{count, plural, one{{count} tile} other{{count} tiles}}",
   "@tilesCount": {

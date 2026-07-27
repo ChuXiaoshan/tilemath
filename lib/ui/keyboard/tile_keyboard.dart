@@ -30,17 +30,23 @@ class TileKeyboard extends StatelessWidget {
     final imperial = controller.unitSystem == UnitSystem.imperial;
     return Directionality(
       textDirection: TextDirection.ltr,
-      child: Container(
-        color: scheme.surfaceContainerLow,
-        // 底部安全区加在着色容器的 padding 上（而非用 SafeArea 包 child），
-        // 让键盘底色延伸到 Home Indicator 之后，否则指示条后会露出 Scaffold 底色。
-        padding: EdgeInsets.fromLTRB(
-          AppDimens.space16,
-          AppDimens.space16,
-          AppDimens.space16,
-          AppDimens.space16 + MediaQuery.paddingOf(context).bottom,
+      // 键帽是固定尺寸的触摸目标，标签跟着辅助功能字号无限放大只会把键盘
+      // 撑到吃满全屏、把正在编辑的字段顶出视口。夹到 1.3 倍：既保留放大
+      // 收益，又保证键盘高度可控。页面其余文字不受影响。
+      child: MediaQuery.withClampedTextScaling(
+        maxScaleFactor: 1.3,
+        child: Container(
+          color: scheme.surfaceContainerLow,
+          // 底部安全区加在着色容器的 padding 上（而非用 SafeArea 包 child），
+          // 让键盘底色延伸到 Home Indicator 之后，否则指示条后会露出 Scaffold 底色。
+          padding: EdgeInsets.fromLTRB(
+            AppDimens.space16,
+            AppDimens.space16,
+            AppDimens.space16,
+            AppDimens.space16 + MediaQuery.paddingOf(context).bottom,
+          ),
+          child: imperial ? _imperialGrid(context) : _metricGrid(context),
         ),
-        child: imperial ? _imperialGrid(context) : _metricGrid(context),
       ),
     );
   }
@@ -308,17 +314,32 @@ class _Key extends StatelessWidget {
           ),
           decoration: BoxDecoration(
             borderRadius: radius,
+            // 禁用态此前只把底色 alpha 降到 0.4，文字与描边不变，跟可用态
+            // 几乎没差别，加上 InkWell 也没了水波纹，按上去像卡死。
+            // 按 M3 规范把前景与描边一并降到 0.38。
             border: style == _KeyStyle.done
                 ? null
-                : Border.all(color: scheme.outline, width: 1),
+                : Border.all(
+                    color: enabled
+                        ? scheme.outline
+                        : scheme.outline.withValues(alpha: 0.38),
+                    width: 1,
+                  ),
           ),
           alignment: Alignment.center,
           child: child != null
               ? IconTheme(
-                  data: IconThemeData(color: fg),
+                  data: IconThemeData(
+                    color: enabled ? fg : fg.withValues(alpha: 0.38),
+                  ),
                   child: child!,
                 )
-              : Text(label!, style: labelStyle?.copyWith(color: fg)),
+              : Text(
+                  label!,
+                  style: labelStyle?.copyWith(
+                    color: enabled ? fg : fg.withValues(alpha: 0.38),
+                  ),
+                ),
         ),
       ),
     );

@@ -178,11 +178,11 @@ abstract class AppLocalizations {
   /// **'Cutout'**
   String get cutout;
 
-  /// Caption under the big result figure
+  /// No description provided for @tilesNeededLabel.
   ///
   /// In en, this message translates to:
-  /// **'tiles needed'**
-  String get tilesNeededLabel;
+  /// **'{count, plural, one{tile needed} other{tiles needed}}'**
+  String tilesNeededLabel(int count);
 
   /// No description provided for @tilesCount.
   ///

@@ -13,7 +13,7 @@
   "wastePercent": "الهدر",
   "addArea": "إضافة مساحة",
   "cutout": "اقتطاع",
-  "tilesNeededLabel": "البلاط المطلوب",
+  "tilesNeededLabel": "{count, plural, other{البلاط المطلوب}}",
   "tilesCount": "{count, plural, zero{بدون بلاط} one{بلاطة واحدة} two{بلاطتان} few{{count} بلاطات} many{{count} بلاطة} other{{count} بلاطة}}",
   "boxesCount": "{count, plural, zero{بدون صناديق} one{صندوق واحد} two{صندوقان} few{{count} صناديق} many{{count} صندوقًا} other{{count} صندوق}}",
   "totalArea": "المساحة الإجمالية",

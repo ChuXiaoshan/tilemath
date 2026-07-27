@@ -268,12 +268,34 @@ class CalculatorController extends ChangeNotifier {
     metricEditor = null;
   }
 
-  /// 把当前编辑器的值提交回字段；空编辑器不覆盖已有值。
+  /// 把当前编辑器的值提交回字段。
+  ///
+  /// 空编辑器有两种语义，必须分开：没动过这个字段（保留旧值），
+  /// 与用户按 C / 退格把它清空了（真的清掉）。此前一律按前者处理，
+  /// 导致已录入的字段清不掉——按 C 看着空了，按 Done 旧值又回来。
+  /// 缝宽是非空字段（模型上无空态，有单位制默认值），不参与清空。
   void _commit() {
     final field = editing;
     if (field == null) return;
     final value = imperialEditor?.value ?? metricEditor?.value;
-    if (value == null) return;
+    if (value == null) {
+      final cleared =
+          imperialEditor?.clearedByUser ?? metricEditor?.clearedByUser ?? false;
+      if (!cleared) return;
+      switch (field.kind) {
+        case FieldKind.areaLength:
+          rows[field.row].length = null;
+        case FieldKind.areaWidth:
+          rows[field.row].width = null;
+        case FieldKind.tileWidth:
+          tileWidth = null;
+        case FieldKind.tileHeight:
+          tileHeight = null;
+        case FieldKind.grout:
+          break; // 非空字段，无空态
+      }
+      return;
+    }
     switch (field.kind) {
       case FieldKind.areaLength:
         rows[field.row].length = value;

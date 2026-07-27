@@ -13,7 +13,7 @@
   "wastePercent": "损耗",
   "addArea": "添加区域",
   "cutout": "扣除区域",
-  "tilesNeededLabel": "所需瓷砖",
+  "tilesNeededLabel": "{count, plural, other{所需瓷砖}}",
   "tilesCount": "{count, plural, other{{count} 块}}",
   "boxesCount": "{count, plural, other{{count} 箱}}",
   "totalArea": "总面积",

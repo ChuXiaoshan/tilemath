@@ -63,6 +63,7 @@ class ImperialEditor {
 
   void digit(int d) {
     assert(d >= 0 && d <= 9);
+    clearedByUser = false;
     if (_active == ImperialSegment.feet) {
       _feet = _append(_feet, d, _feetMaxDigits);
     } else {
@@ -144,7 +145,10 @@ class ImperialEditor {
     // 退到空必须与 clear() 同态。否则经 in 键或分数键改判后退空，激活段仍停在
     // inch，而字段外观与全新字段毫无区别——用户重新输 12 得到的是 12″ 而非
     // 12′，每个维度差 12 倍，屏上只有一撇之差，几乎不可能发现。
-    if (isEmpty) _resetSegment();
+    if (isEmpty) {
+      _resetSegment();
+      clearedByUser = true;
+    }
   }
 
   void _resetSegment() {
@@ -156,11 +160,16 @@ class ImperialEditor {
 
   static String _dropLast(String s) => s.substring(0, s.length - 1);
 
+  /// 用户是否显式清空过（按 C 或退格到空）。用来区分"没动过这个字段"
+  /// 与"想把它清掉"——前者提交时应保留旧值，后者应把字段真的清空。
+  bool clearedByUser = false;
+
   void clear() {
     _feet = '';
     _inches = '';
     _fraction = null;
     _resetSegment();
+    clearedByUser = true;
   }
 
   /// 空态返回 null（字段显示占位符）。
