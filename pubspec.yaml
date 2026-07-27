@@ -56,11 +56,17 @@ flutter:
         - asset: assets/fonts/NotoSansSC-SemiBold-subset.ttf
           weight: 600
 
-# app 图标（设计稿 5d 方向 A·Seam plus）：fvm dart run flutter_launcher_icons
+# app 图标（设计稿 8a·Cut tile 出血版，2026-07-27 定稿）：
+# 源图由 tool/icon/make_app_icons.py 生成，改图标先改脚本再重跑。
+# 运行：fvm dart run flutter_launcher_icons（跑完 git diff 检查 pbxproj！）
 flutter_launcher_icons:
   android: true
   ios: true
   image_path: "assets/icon/icon.png"
+  # iOS 18+ 三外观：深色版带真透明（remove_alpha_ios 只作用于主图，不冲突）
+  image_path_ios_dark_transparent: "assets/icon/icon_dark.png"
+  image_path_ios_tinted_grayscale: "assets/icon/icon_tinted.png"
+  desaturate_tinted_to_grayscale_ios: true
   adaptive_icon_background: "#201E1D"
   adaptive_icon_foreground: "assets/icon/icon_foreground.png"
   remove_alpha_ios: true
