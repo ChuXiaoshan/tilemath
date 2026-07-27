@@ -29,7 +29,7 @@ abstract final class AppDimens {
   /// 输入框、键帽、chip、标签、分段选项
   static const double radius2 = 2;
 
-  /// 结果面板、对话框、banner 占位
+  /// 结果面板、对话框
   static const double radius4 = 4;
 
   // ---- 触控 ----
@@ -38,8 +38,4 @@ abstract final class AppDimens {
 
   /// 平板键盘键位尺寸
   static const double tabletKeySize = 56;
-
-  // ---- 键盘↔banner 非交互间隔带（16–18dp）----
-  static const double keyboardBannerGapMin = 16;
-  static const double keyboardBannerGapMax = 18;
 }

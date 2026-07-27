@@ -9,7 +9,6 @@ import '../l10n/app_localizations.dart';
 import '../state/calculator_controller.dart';
 import '../state/settings_controller.dart';
 import '../theme/app_dimens.dart';
-import 'banner_footer.dart';
 import 'format.dart';
 
 /// 历史记录页（brief §3.5 / 设计稿 5a）：倒序两行摘要列表、左滑删除、
@@ -51,10 +50,9 @@ class HistoryPage extends StatelessWidget {
                   const SizedBox(height: AppDimens.space16),
                   Text(
                     l10n.historyEmpty,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyMedium!
-                        .copyWith(color: scheme.onSurfaceVariant),
+                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                      color: scheme.onSurfaceVariant,
+                    ),
                   ),
                 ],
               ),
@@ -77,9 +75,7 @@ class HistoryPage extends StatelessWidget {
                         Expanded(
                           child: Text(
                             l10n.historyFooterNote,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodySmall!
+                            style: Theme.of(context).textTheme.bodySmall!
                                 .copyWith(color: scheme.onSurfaceVariant),
                           ),
                         ),
@@ -90,7 +86,6 @@ class HistoryPage extends StatelessWidget {
                 return _HistoryTile(entry: entries[index]);
               },
             ),
-      bottomNavigationBar: const BannerFooter(),
     );
   }
 
@@ -190,8 +185,7 @@ class _HistoryTile extends StatelessWidget {
           children: [
             Text(
               formatRelativeTime(entry.timestamp, l10n, locale),
-              style:
-                  text.bodySmall!.copyWith(color: scheme.onSurfaceVariant),
+              style: text.bodySmall!.copyWith(color: scheme.onSurfaceVariant),
             ),
             const SizedBox(width: AppDimens.space4),
             Icon(Icons.chevron_right, size: 18, color: scheme.onSurfaceVariant),
@@ -218,11 +212,11 @@ class _HistoryTile extends StatelessWidget {
   }
 
   String _patternLabel(AppLocalizations l10n, String name) => switch (name) {
-        'diagonal' => l10n.patternDiagonal,
-        'herringbone' => l10n.patternHerringbone,
-        'custom' => l10n.patternCustom,
-        _ => l10n.patternStraight,
-      };
+    'diagonal' => l10n.patternDiagonal,
+    'herringbone' => l10n.patternHerringbone,
+    'custom' => l10n.patternCustom,
+    _ => l10n.patternStraight,
+  };
 
   /// 记录当时生效的损耗率：预设按铺法反查，custom 用存档值。
   int _wastePct(HistoryEntry e) {

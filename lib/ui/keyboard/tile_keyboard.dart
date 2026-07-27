@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../ads/interstitial_manager.dart';
 import '../../history/history_controller.dart';
 import '../../keyboard/imperial_editor.dart';
 import '../../keyboard/metric_editor.dart';
@@ -13,14 +12,17 @@ import '../format.dart';
 
 /// 自定义键盘托盘（brief §3.2 / §3.2b）。
 /// RTL 硬规则：键位顺序与数字永不镜像，整个网格包在 LTR Directionality 里。
-/// 与 banner 的 16-18dp 隔离带由页面布局负责，不在本 widget 内。
 class TileKeyboard extends StatelessWidget {
   final CalculatorController controller;
 
   /// 平板双栏形态：键高 56dp（token §6），键盘常驻左栏底部。
   final bool tablet;
 
-  const TileKeyboard({super.key, required this.controller, this.tablet = false});
+  const TileKeyboard({
+    super.key,
+    required this.controller,
+    this.tablet = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -30,18 +32,24 @@ class TileKeyboard extends StatelessWidget {
       textDirection: TextDirection.ltr,
       child: Container(
         color: scheme.surfaceContainerLow,
-        padding: const EdgeInsets.all(AppDimens.space16),
+        // 底部安全区加在着色容器的 padding 上（而非用 SafeArea 包 child），
+        // 让键盘底色延伸到 Home Indicator 之后，否则指示条后会露出 Scaffold 底色。
+        padding: EdgeInsets.fromLTRB(
+          AppDimens.space16,
+          AppDimens.space16,
+          AppDimens.space16,
+          AppDimens.space16 + MediaQuery.paddingOf(context).bottom,
+        ),
         child: imperial ? _imperialGrid(context) : _metricGrid(context),
       ),
     );
   }
 
-  /// Done：提交并收起；产生了有效结果就记历史 + 记一次插屏频控计数
-  /// （自然断点低频策略，副作用留在 UI 层，不改 CalculatorController）。
+  /// Done：提交并收起；产生了有效结果就记历史
+  /// （副作用留在 UI 层，不改 CalculatorController）。
   void _handleDone(BuildContext context) {
     controller.commitAndClose();
     if (controller.result != null) {
-      InterstitialManager.instance.recordCalculation();
       final snapshot = controller.snapshot();
       if (snapshot != null) {
         context.read<HistoryController>().record(snapshot);
@@ -56,10 +64,10 @@ class TileKeyboard extends StatelessWidget {
     final canFt = e?.kind == ImperialFieldKind.feetAndInches;
 
     Widget fractionKey(KeyFraction f) => _Key.fraction(
-          label: f.label,
-          selected: e?.selectedFraction == f,
-          onTap: () => controller.keyFraction(f),
-        );
+      label: f.label,
+      selected: e?.selectedFraction == f,
+      onTap: () => controller.keyFraction(f),
+    );
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -111,8 +119,9 @@ class TileKeyboard extends StatelessWidget {
   Widget _metricGrid(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final unit = controller.metricEditor?.unit;
-    final separator =
-        decimalSeparatorOf(Localizations.localeOf(context).toString());
+    final separator = decimalSeparatorOf(
+      Localizations.localeOf(context).toString(),
+    );
     // 单位键按字段自适应（brief §3.2b 两键布局不变）：
     // 缝宽字段惯用 mm，两键给 cm/mm；其余字段维持 m/cm。
     final isGrout = controller.editing?.kind == FieldKind.grout;
@@ -170,25 +179,25 @@ class TileKeyboard extends StatelessWidget {
       _Key.digit(label: '$d', onTap: () => controller.keyDigit(d));
 
   Widget _row(List<Widget> keys) => Padding(
-        padding: const EdgeInsets.only(bottom: AppDimens.space8),
-        child: Row(
-          children: [
-            for (var i = 0; i < keys.length; i++) ...[
-              if (i > 0) const SizedBox(width: AppDimens.space8),
-              Expanded(
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(
-                    minHeight: tablet
-                        ? AppDimens.tabletKeySize
-                        : AppDimens.minTouchTarget,
-                  ),
-                  child: keys[i],
-                ),
+    padding: const EdgeInsets.only(bottom: AppDimens.space8),
+    child: Row(
+      children: [
+        for (var i = 0; i < keys.length; i++) ...[
+          if (i > 0) const SizedBox(width: AppDimens.space8),
+          Expanded(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                minHeight: tablet
+                    ? AppDimens.tabletKeySize
+                    : AppDimens.minTouchTarget,
               ),
-            ],
-          ],
-        ),
-      );
+              child: keys[i],
+            ),
+          ),
+        ],
+      ],
+    ),
+  );
 }
 
 enum _KeyStyle { digit, fraction, fn, segment, done }
@@ -220,41 +229,38 @@ class _Key extends StatelessWidget {
     required String label,
     required bool selected,
     required VoidCallback onTap,
-  }) =>
-      _Key._(
-        label: label,
-        style: _KeyStyle.fraction,
-        selected: selected,
-        onTap: onTap,
-      );
+  }) => _Key._(
+    label: label,
+    style: _KeyStyle.fraction,
+    selected: selected,
+    onTap: onTap,
+  );
 
   factory _Key.fn({
     String? label,
     Widget? child,
     required VoidCallback onTap,
     VoidCallback? onLongPress,
-  }) =>
-      _Key._(
-        label: label,
-        style: _KeyStyle.fn,
-        onTap: onTap,
-        onLongPress: onLongPress,
-        child: child,
-      );
+  }) => _Key._(
+    label: label,
+    style: _KeyStyle.fn,
+    onTap: onTap,
+    onLongPress: onLongPress,
+    child: child,
+  );
 
   factory _Key.segment({
     required String label,
     required bool active,
     required bool enabled,
     required VoidCallback onTap,
-  }) =>
-      _Key._(
-        label: label,
-        style: _KeyStyle.segment,
-        selected: active,
-        enabled: enabled,
-        onTap: onTap,
-      );
+  }) => _Key._(
+    label: label,
+    style: _KeyStyle.segment,
+    selected: active,
+    enabled: enabled,
+    onTap: onTap,
+  );
 
   factory _Key.done({required String label, required VoidCallback onTap}) =>
       _Key._(label: label, style: _KeyStyle.done, onTap: onTap);
@@ -266,25 +272,25 @@ class _Key extends StatelessWidget {
 
     final (Color bg, Color fg, TextStyle? labelStyle) = switch (style) {
       _KeyStyle.digit => (
-          scheme.surfaceContainerLowest,
-          scheme.onSurface,
-          text.headlineSmall,
-        ),
+        scheme.surfaceContainerLowest,
+        scheme.onSurface,
+        text.headlineSmall,
+      ),
       _KeyStyle.fraction => (
-          selected ? scheme.primaryContainer : scheme.surfaceContainerLowest,
-          selected ? scheme.onPrimaryContainer : scheme.onSurface,
-          text.bodyLarge,
-        ),
+        selected ? scheme.primaryContainer : scheme.surfaceContainerLowest,
+        selected ? scheme.onPrimaryContainer : scheme.onSurface,
+        text.bodyLarge,
+      ),
       _KeyStyle.segment => (
-          selected ? scheme.primaryContainer : scheme.surfaceContainerLowest,
-          selected ? scheme.onPrimaryContainer : scheme.onSurface,
-          text.labelLarge,
-        ),
+        selected ? scheme.primaryContainer : scheme.surfaceContainerLowest,
+        selected ? scheme.onPrimaryContainer : scheme.onSurface,
+        text.labelLarge,
+      ),
       _KeyStyle.fn => (
-          scheme.surfaceContainerLow,
-          scheme.onSurface,
-          text.labelLarge,
-        ),
+        scheme.surfaceContainerLow,
+        scheme.onSurface,
+        text.labelLarge,
+      ),
       _KeyStyle.done => (scheme.primary, scheme.onPrimary, text.labelLarge),
     };
 
@@ -297,8 +303,9 @@ class _Key extends StatelessWidget {
         onLongPress: enabled ? onLongPress : null,
         borderRadius: radius,
         child: Container(
-          constraints:
-              const BoxConstraints(minHeight: AppDimens.minTouchTarget),
+          constraints: const BoxConstraints(
+            minHeight: AppDimens.minTouchTarget,
+          ),
           decoration: BoxDecoration(
             borderRadius: radius,
             border: style == _KeyStyle.done

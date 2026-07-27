@@ -4,7 +4,10 @@ import 'package:flutter/material.dart';
 /// 数字、单位、尺寸表达式在所有语言下均用 Latin 字族 + tabular figures
 abstract final class AppTypography {
   static const String _family = 'IBM Plex Sans';
-  static const List<String> _fallback = ['IBM Plex Sans Arabic', 'Noto Sans SC'];
+  static const List<String> _fallback = [
+    'IBM Plex Sans Arabic',
+    'Noto Sans SC',
+  ];
   static const List<FontFeature> _tabular = [FontFeature.tabularFigures()];
 
   static const TextTheme textTheme = TextTheme(
@@ -62,7 +65,7 @@ abstract final class AppTypography {
       height: 21 / 14,
       fontWeight: FontWeight.w400,
     ),
-    // 说明文字、广告标注
+    // 说明文字
     bodySmall: TextStyle(
       fontFamily: _family,
       fontFamilyFallback: _fallback,

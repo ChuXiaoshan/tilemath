@@ -43,7 +43,7 @@ abstract final class AppColors {
     surfaceContainerLowest: Color(0xFFF8F4F4),
     // 输入框填充、键盘托盘
     surfaceContainerLow: Color(0xFFEAE9E9),
-    // 按压态、广告 banner 占位底
+    // 按压态
     surfaceContainerHigh: Color(0xFFD7D3D3),
   );
 

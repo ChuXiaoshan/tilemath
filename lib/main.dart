@@ -3,7 +3,6 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'ads/ads_service.dart';
 import 'history/history_controller.dart';
 import 'l10n/app_localizations.dart';
 import 'state/calculator_controller.dart';
@@ -15,10 +14,6 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final prefs = await SharedPreferences.getInstance();
   runApp(TileMathApp(prefs: prefs));
-  // 首帧后再走同意流 + 广告 SDK 初始化，不阻塞启动；失败可重试、不崩
-  WidgetsBinding.instance.addPostFrameCallback((_) {
-    AdsService.instance.initialize();
-  });
 }
 
 class TileMathApp extends StatelessWidget {

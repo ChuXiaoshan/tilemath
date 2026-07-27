@@ -37,8 +37,9 @@ void main() {
     await tester.pump(const Duration(milliseconds: 250));
 
     // brief §3.2 硬性要求：激活字段不被键盘遮挡（字段底沿在键盘上沿之上）
-    final fieldRect =
-        tester.getRect(find.byKey(const ValueKey('field-areaLength-0')));
+    final fieldRect = tester.getRect(
+      find.byKey(const ValueKey('field-areaLength-0')),
+    );
     final keyboardRect = tester.getRect(find.byType(TileKeyboard));
     expect(fieldRect.bottom, lessThanOrEqualTo(keyboardRect.top));
 
@@ -96,5 +97,64 @@ void main() {
     // 高度恒定 = 无换行无跳动（若溢出测试框架会直接抛异常失败）
     expect(tester.getRect(segmented).height, heightBefore);
     expect(find.text('20%'), findsOneWidget);
+  });
+
+  // 撤掉底部广告底座后的回归：BannerFooter 曾是全仓唯一消费底部安全区的组件
+  // （其内部 SafeArea + 作为 bottomNavigationBar 让 Scaffold 移除 body 底 padding）。
+  // 移除后若不补偿，键盘末排与列表末项会被 Home Indicator / 手势条压住。
+  const safeBottom = 34.0;
+
+  testWidgets('底部安全区：键盘末排不被 Home Indicator 遮挡', (tester) async {
+    tester.view.physicalSize = const Size(420, 900);
+    tester.view.devicePixelRatio = 1.0;
+    tester.view.padding = const FakeViewPadding(bottom: safeBottom);
+    addTearDown(tester.view.reset);
+
+    SharedPreferences.setMockInitialValues({});
+    final prefs = await SharedPreferences.getInstance();
+    await tester.pumpWidget(TileMathApp(prefs: prefs));
+    await tester.pump();
+
+    await tester.tap(find.byKey(const ValueKey('field-areaLength-0')));
+    await tester.pump();
+
+    // 量键帽触摸区而非文字：文字在键帽内居中，只测文字会漏掉键帽下沿的遮挡
+    final doneKey = find.ancestor(
+      of: find.text('Done'),
+      matching: find.byType(InkWell),
+    );
+    expect(doneKey, findsOneWidget);
+    expect(tester.getRect(doneKey).bottom, lessThanOrEqualTo(900 - safeBottom));
+  });
+
+  testWidgets('底部安全区：设置页滚到底后末项不被遮挡', (tester) async {
+    // 矮屏保证列表可滚动，否则断言退化为恒真
+    tester.view.physicalSize = const Size(420, 500);
+    tester.view.devicePixelRatio = 1.0;
+    tester.view.padding = const FakeViewPadding(bottom: safeBottom);
+    addTearDown(tester.view.reset);
+
+    SharedPreferences.setMockInitialValues({});
+    final prefs = await SharedPreferences.getInstance();
+    await tester.pumpWidget(TileMathApp(prefs: prefs));
+    await tester.pump();
+
+    await tester.tap(find.byIcon(Icons.settings_outlined));
+    await tester.pumpAndSettle();
+
+    await tester.dragUntilVisible(
+      find.text('Version'),
+      find.byType(ListView),
+      const Offset(0, -100),
+    );
+    await tester.pumpAndSettle();
+    // 拖到列表尽头，确保末项停在最终位置而非中途
+    await tester.fling(find.byType(ListView), const Offset(0, -400), 2000);
+    await tester.pumpAndSettle();
+
+    expect(
+      tester.getRect(find.text('Version')).bottom,
+      lessThanOrEqualTo(500 - safeBottom),
+    );
   });
 }

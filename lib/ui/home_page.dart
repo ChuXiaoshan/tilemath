@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart' show RenderAbstractViewport;
 import 'package:provider/provider.dart';
 
-import '../ads/interstitial_manager.dart';
 import '../domain/length.dart';
 import '../domain/tile_calculation.dart';
 import '../history/history_controller.dart';
@@ -11,15 +10,13 @@ import '../l10n/app_localizations.dart';
 import '../state/calculator_controller.dart';
 import '../state/settings_controller.dart';
 import '../theme/app_dimens.dart';
-import 'banner_footer.dart';
 import 'format.dart';
 import 'history_page.dart';
 import 'keyboard/tile_keyboard.dart';
 import 'result_card.dart';
 import 'settings_page.dart';
 
-/// 主计算页（brief §3.1/3.3）：≥600dp 双栏（输入左 / 结果右），
-/// 键盘 ↔ banner 间保留 16dp 非交互隔离带（AdMob 误触政策硬约束）。
+/// 主计算页（brief §3.1/3.3）：≥600dp 双栏（输入左 / 结果右）。
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -88,85 +85,81 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
             onPressed: () async {
               // 存档点：让当前算完的结果出现在即将打开的列表里
               _recordCurrentCalculation();
-              // 自然断点低频插屏：进历史页前尝试展示（频控不满足时静默跳过）
-              await InterstitialManager.instance.maybeShow();
-              if (!context.mounted) return;
-              await Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const HistoryPage()),
-              );
+              await Navigator.of(
+                context,
+              ).push(MaterialPageRoute(builder: (_) => const HistoryPage()));
             },
           ),
           IconButton(
             icon: const Icon(Icons.settings_outlined),
             tooltip: l10n.settings,
-            onPressed: () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const SettingsPage()),
-            ),
+            onPressed: () => Navigator.of(
+              context,
+            ).push(MaterialPageRoute(builder: (_) => const SettingsPage())),
           ),
         ],
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                final twoPane = constraints.maxWidth >= 600;
-                final form = _InputForm(calc: calc);
-                final results = _ResultsSection(
-                  calc: calc,
-                  settings: settings,
-                );
-                if (!twoPane) {
-                  return Column(
-                    children: [
-                      Expanded(
-                        child: ListView(
-                          padding: const EdgeInsets.all(AppDimens.space16),
-                          children: [
-                            form,
-                            const SizedBox(height: 24),
-                            results,
-                          ],
-                        ),
-                      ),
-                      if (calc.editing != null)
-                        TileKeyboard(controller: calc),
-                    ],
-                  );
-                }
-                // 双栏：输入左 / 结果右（2026-07-24 拍板维持不镜像）；
-                // 设计稿 4b：键盘在左栏底部常驻（56dp 键），无焦点时按键无效果
-                return Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Column(
-                        children: [
-                          Expanded(
-                            child: ListView(
-                              padding:
-                                  const EdgeInsets.all(AppDimens.space16),
-                              children: [form],
-                            ),
-                          ),
-                          TileKeyboard(controller: calc, tablet: true),
-                        ],
-                      ),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final twoPane = constraints.maxWidth >= 600;
+          final form = _InputForm(calc: calc);
+          final results = _ResultsSection(calc: calc, settings: settings);
+          if (!twoPane) {
+            return Column(
+              children: [
+                Expanded(
+                  child: ListView(
+                    // 键盘在场时由键盘负责垫底部安全区，此处不能重复加
+                    padding: EdgeInsets.fromLTRB(
+                      AppDimens.space16,
+                      AppDimens.space16,
+                      AppDimens.space16,
+                      AppDimens.space16 +
+                          (calc.editing != null
+                              ? 0
+                              : MediaQuery.paddingOf(context).bottom),
                     ),
-                    const SizedBox(width: AppDimens.space32),
+                    children: [form, const SizedBox(height: 24), results],
+                  ),
+                ),
+                if (calc.editing != null) TileKeyboard(controller: calc),
+              ],
+            );
+          }
+          // 双栏：输入左 / 结果右（2026-07-24 拍板维持不镜像）；
+          // 设计稿 4b：键盘在左栏底部常驻（56dp 键），无焦点时按键无效果
+          return Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Column(
+                  children: [
                     Expanded(
                       child: ListView(
                         padding: const EdgeInsets.all(AppDimens.space16),
-                        children: [results],
+                        children: [form],
                       ),
                     ),
+                    TileKeyboard(controller: calc, tablet: true),
                   ],
-                );
-              },
-            ),
-          ),
-          const BannerFooter(),
-        ],
+                ),
+              ),
+              const SizedBox(width: AppDimens.space32),
+              Expanded(
+                child: ListView(
+                  // 右栏没有键盘垫底，自行让出安全区
+                  padding: EdgeInsets.fromLTRB(
+                    AppDimens.space16,
+                    AppDimens.space16,
+                    AppDimens.space16,
+                    AppDimens.space16 + MediaQuery.paddingOf(context).bottom,
+                  ),
+                  children: [results],
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
@@ -294,12 +287,14 @@ class _AreaRow extends StatelessWidget {
               area == null
                   ? ''
                   : (data.isCutout
-                      ? '−${formatArea(-area, calc.unitSystem, locale)}'
-                      : formatArea(area, calc.unitSystem, locale)),
+                        ? '−${formatArea(-area, calc.unitSystem, locale)}'
+                        : formatArea(area, calc.unitSystem, locale)),
               textDirection: TextDirection.ltr,
               textAlign: TextAlign.end,
               style: text.bodyMedium!.copyWith(
-                color: data.isCutout ? scheme.tertiary : scheme.onSurfaceVariant,
+                color: data.isCutout
+                    ? scheme.tertiary
+                    : scheme.onSurfaceVariant,
               ),
             ),
           ),
@@ -369,9 +364,9 @@ class _ValueFieldState extends State<_ValueField> {
     } else if (target < bottomOffset) {
       target = bottomOffset; // 字段底部被键盘/视口下沿遮挡
     }
-    target =
-        target.clamp(position.minScrollExtent, position.maxScrollExtent)
-            .toDouble();
+    target = target
+        .clamp(position.minScrollExtent, position.maxScrollExtent)
+        .toDouble();
     if ((target - position.pixels).abs() < 0.5) return;
     position.animateTo(
       target,
@@ -391,15 +386,20 @@ class _ValueFieldState extends State<_ValueField> {
 
     final String display;
     if (active) {
-      display = calc.imperialEditor?.displayText ??
+      display =
+          calc.imperialEditor?.displayText ??
           (calc.metricEditor == null
               ? ''
               : calc.metricEditor!.isEmpty
-                  ? ''
-                  : '${calc.metricEditor!.text} ${calc.metricEditor!.unit.name}');
+              ? ''
+              : '${calc.metricEditor!.text} ${calc.metricEditor!.unit.name}');
     } else if (widget.value != null) {
-      display =
-          formatLength(widget.value!, calc.unitSystem, widget.metricUnit, locale);
+      display = formatLength(
+        widget.value!,
+        calc.unitSystem,
+        widget.metricUnit,
+        locale,
+      );
     } else {
       display = '';
     }
@@ -423,8 +423,9 @@ class _ValueFieldState extends State<_ValueField> {
           },
           borderRadius: BorderRadius.circular(AppDimens.radius2),
           child: Container(
-            constraints:
-                const BoxConstraints(minHeight: AppDimens.minTouchTarget),
+            constraints: const BoxConstraints(
+              minHeight: AppDimens.minTouchTarget,
+            ),
             padding: const EdgeInsets.symmetric(
               horizontal: AppDimens.space12,
               vertical: AppDimens.space8,
@@ -436,8 +437,8 @@ class _ValueFieldState extends State<_ValueField> {
                 color: active
                     ? scheme.secondary
                     : widget.accent
-                        ? scheme.tertiary
-                        : scheme.outline,
+                    ? scheme.tertiary
+                    : scheme.outline,
                 width: active ? 1.5 : 1,
               ),
             ),
@@ -468,11 +469,22 @@ class _TileSection extends StatefulWidget {
 
 class _TileSectionState extends State<_TileSection> {
   static const _imperialPresets = [
-    (4, 4), (6, 6), (12, 12), (12, 24), (18, 18), (24, 24), (24, 48),
+    (4, 4),
+    (6, 6),
+    (12, 12),
+    (12, 24),
+    (18, 18),
+    (24, 24),
+    (24, 48),
   ];
   // 公制常见规格（cm）；brief 未给清单，按市场惯例
   static const _metricPresets = [
-    (20, 20), (30, 30), (30, 60), (45, 45), (60, 60), (60, 120),
+    (20, 20),
+    (30, 30),
+    (30, 60),
+    (45, 45),
+    (60, 60),
+    (60, 120),
   ];
 
   /// 用户显式选择了 Custom（点 chip 或手动编辑过 W/H）；点预设 chip 清除。
@@ -492,7 +504,8 @@ class _TileSectionState extends State<_TileSection> {
 
     // 编辑焦点在 W/H 上（点击或 Next 推进）＝手动改动，粘性选中 Custom。
     // build 内直接赋值（不 setState）：本帧已按该值渲染，无需再触发重建。
-    final editingSize = calc.editing?.kind == FieldKind.tileWidth ||
+    final editingSize =
+        calc.editing?.kind == FieldKind.tileWidth ||
         calc.editing?.kind == FieldKind.tileHeight;
     if (editingSize) _customChosen = true;
     // Custom 选中 = 显式点选 / 手动编辑过 / 当前值不匹配任何预设（含未录入）
@@ -515,8 +528,9 @@ class _TileSectionState extends State<_TileSection> {
             children: [
               for (final p in presets)
                 Padding(
-                  padding:
-                      const EdgeInsetsDirectional.only(end: AppDimens.space8),
+                  padding: const EdgeInsetsDirectional.only(
+                    end: AppDimens.space8,
+                  ),
                   child: ChoiceChip(
                     label: Text(
                       '${p.$1}×${p.$2}',
@@ -588,11 +602,11 @@ class _PatternSelector extends StatelessWidget {
     final text = Theme.of(context).textTheme;
 
     String nameOf(LayoutPattern p) => switch (p) {
-          LayoutPattern.straight => l10n.patternStraight,
-          LayoutPattern.diagonal => l10n.patternDiagonal,
-          LayoutPattern.herringbone => l10n.patternHerringbone,
-          LayoutPattern.custom => l10n.patternCustom,
-        };
+      LayoutPattern.straight => l10n.patternStraight,
+      LayoutPattern.diagonal => l10n.patternDiagonal,
+      LayoutPattern.herringbone => l10n.patternHerringbone,
+      LayoutPattern.custom => l10n.patternCustom,
+    };
     // 各铺法损耗百分比（brief §3.1：选项旁必须标注）；Custom 显示当前滑块值
     int pctOf(LayoutPattern p) => p == LayoutPattern.custom
         ? calc.customWastePct
@@ -628,18 +642,15 @@ class _PatternSelector extends StatelessWidget {
                         height: 20,
                         child: FittedBox(
                           fit: BoxFit.scaleDown,
-                          child: Text(
-                            nameOf(p),
-                            maxLines: 1,
-                            softWrap: false,
-                          ),
+                          child: Text(nameOf(p), maxLines: 1, softWrap: false),
                         ),
                       ),
                       Text(
                         '${pctOf(p)}%',
                         textDirection: TextDirection.ltr,
-                        style: text.labelSmall!
-                            .copyWith(color: scheme.onSurfaceVariant),
+                        style: text.labelSmall!.copyWith(
+                          color: scheme.onSurfaceVariant,
+                        ),
                       ),
                     ],
                   ),
@@ -689,8 +700,9 @@ class _BoxesAndCostState extends State<_BoxesAndCost> {
   void initState() {
     super.initState();
     final calc = widget.calc;
-    _tilesCtrl =
-        TextEditingController(text: calc.tilesPerBox?.toString() ?? '');
+    _tilesCtrl = TextEditingController(
+      text: calc.tilesPerBox?.toString() ?? '',
+    );
     _priceCtrl = TextEditingController(text: _priceText(calc.pricePerBox));
   }
 
@@ -741,8 +753,9 @@ class _BoxesAndCostState extends State<_BoxesAndCost> {
               child: TextField(
                 controller: _priceCtrl,
                 decoration: InputDecoration(labelText: l10n.pricePerBox),
-                keyboardType:
-                    const TextInputType.numberWithOptions(decimal: true),
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                ),
                 onTap: _dismissCustomKeyboard,
                 onChanged: (v) => calc.setBoxInfo(
                   tilesPerBox: calc.tilesPerBox,
@@ -776,4 +789,3 @@ class _Kicker extends StatelessWidget {
     );
   }
 }
-

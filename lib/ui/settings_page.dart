@@ -4,19 +4,13 @@ import 'package:provider/provider.dart';
 import '../l10n/app_localizations.dart';
 import '../state/settings_controller.dart';
 import '../theme/app_dimens.dart';
-import 'banner_footer.dart';
 
 /// 产品语言清单：语言码 → 母语自称（设计稿 5b，自称不翻译）。
 /// 当前实现 en/zh/ar，其余语言随 ARB 落地逐个开放。
-const _languageNames = {
-  'en': 'English',
-  'zh': '中文（简体）',
-  'ar': 'العربية',
-};
+const _languageNames = {'en': 'English', 'zh': '中文（简体）', 'ar': 'العربية'};
 
 /// 设置页（brief §3.6 / 设计稿 5b）：Units 行内紧凑分段（短标签）、
-/// Language/Appearance 值+chevron 进子页、行间极细分隔线（组件内允许）、
-/// 底部锚 banner。
+/// Language/Appearance 值+chevron 进子页、行间极细分隔线（组件内允许）。
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
 
@@ -36,7 +30,7 @@ class SettingsPage extends StatelessWidget {
     final languageLabel = settings.localeOverride == null
         ? l10n.languageSystem
         : _languageNames[settings.localeOverride!.languageCode] ??
-            settings.localeOverride!.languageCode;
+              settings.localeOverride!.languageCode;
 
     final rows = <Widget>[
       ListTile(
@@ -63,9 +57,9 @@ class SettingsPage extends StatelessWidget {
       _ChevronRow(
         title: l10n.language,
         value: languageLabel,
-        onTap: () => Navigator.of(context).push(
-          MaterialPageRoute(builder: (_) => const LanguagePage()),
-        ),
+        onTap: () => Navigator.of(
+          context,
+        ).push(MaterialPageRoute(builder: (_) => const LanguagePage())),
       ),
       ListTile(
         contentPadding: EdgeInsets.zero,
@@ -84,16 +78,22 @@ class SettingsPage extends StatelessWidget {
       _ChevronRow(
         title: l10n.themeMode,
         value: themeLabel,
-        onTap: () => Navigator.of(context).push(
-          MaterialPageRoute(builder: (_) => const AppearancePage()),
-        ),
+        onTap: () => Navigator.of(
+          context,
+        ).push(MaterialPageRoute(builder: (_) => const AppearancePage())),
       ),
     ];
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.settings)),
       body: ListView(
-        padding: const EdgeInsets.all(AppDimens.space16),
+        // 显式 padding 会让 ListView 跳过 MediaQuery 底 inset 的自动补偿
+        padding: EdgeInsets.fromLTRB(
+          AppDimens.space16,
+          AppDimens.space16,
+          AppDimens.space16,
+          AppDimens.space16 + MediaQuery.paddingOf(context).bottom,
+        ),
         children: [
           // 行间极细分隔线（outlineVariant hairline，组件内允许）
           for (var i = 0; i < rows.length; i++) ...[
@@ -118,11 +118,10 @@ class SettingsPage extends StatelessWidget {
           ListTile(
             contentPadding: EdgeInsets.zero,
             title: Text(l10n.versionLabel),
-            trailing: const Text('0.1.0'), // TODO: 接 package_info_plus
+            trailing: const Text('1.0.0'), // TODO: 接 package_info_plus
           ),
         ],
       ),
-      bottomNavigationBar: const BannerFooter(),
     );
   }
 }
@@ -150,10 +149,9 @@ class _ChevronRow extends StatelessWidget {
         children: [
           Text(
             value,
-            style: Theme.of(context)
-                .textTheme
-                .bodyMedium!
-                .copyWith(color: scheme.onSurfaceVariant),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium!.copyWith(color: scheme.onSurfaceVariant),
           ),
           const SizedBox(width: AppDimens.space4),
           Icon(Icons.chevron_right, size: 20, color: scheme.onSurfaceVariant),
@@ -182,9 +180,8 @@ class LanguagePage extends StatelessWidget {
         trailing: selected
             ? Icon(Icons.check, color: scheme.primary, size: 20)
             : null,
-        onTap: () => settings.setLocaleOverride(
-          code == null ? null : Locale(code),
-        ),
+        onTap: () =>
+            settings.setLocaleOverride(code == null ? null : Locale(code)),
       );
     }
 
@@ -201,15 +198,13 @@ class LanguagePage extends StatelessWidget {
             padding: const EdgeInsets.all(AppDimens.space16),
             child: Text(
               l10n.languagePageNote,
-              style: Theme.of(context)
-                  .textTheme
-                  .bodySmall!
-                  .copyWith(color: scheme.onSurfaceVariant),
+              style: Theme.of(
+                context,
+              ).textTheme.bodySmall!.copyWith(color: scheme.onSurfaceVariant),
             ),
           ),
         ],
       ),
-      bottomNavigationBar: const BannerFooter(),
     );
   }
 }
@@ -246,7 +241,6 @@ class AppearancePage extends StatelessWidget {
           option(ThemeMode.dark, l10n.themeDark),
         ],
       ),
-      bottomNavigationBar: const BannerFooter(),
     );
   }
 }
