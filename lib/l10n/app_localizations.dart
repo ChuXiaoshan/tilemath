@@ -349,7 +349,7 @@ abstract class AppLocalizations {
   /// Secondary line under the big tiles-needed figure
   ///
   /// In en, this message translates to:
-  /// **'{base} tiles + {waste}% waste'**
+  /// **'{base, plural, one{{base} tile + {waste}% waste} other{{base} tiles + {waste}% waste}}'**
   String wasteLine(int base, int waste);
 
   /// No description provided for @smallAreaHint.

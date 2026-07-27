@@ -41,7 +41,7 @@
   "pricePerBox": "سعر الصندوق",
   "boxesToBuy": "الصناديق المطلوبة",
   "estimatedCost": "التكلفة التقديرية",
-  "wasteLine": "{base} بلاطة + {waste}% هدر",
+  "wasteLine": "{base, plural, zero{هدر {waste}%} one{بلاطة واحدة + هدر {waste}%} two{بلاطتان + هدر {waste}%} few{{base} بلاطات + هدر {waste}%} many{{base} بلاطة + هدر {waste}%} other{{base} بلاطة + هدر {waste}%}}",
   "smallAreaHint": "المساحات الصغيرة تزيد هدر القص — يُنصح بإضافة 5%.",
   "resultEmptyPrompt": "أدخل المقاسات لعرض النتائج",
   "languageSystem": "لغة النظام",

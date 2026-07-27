@@ -30,19 +30,28 @@ class HistoryController extends ChangeNotifier {
   /// 倒序（最新在前）。
   List<HistoryEntry> get entries => List.unmodifiable(_entries);
 
-  /// 记录一次计算。与最新一条输入完全相同时只刷新该条
-  /// （连续 Done 微调同一次计算不刷屏）。
-  void record(HistoryEntry entry) {
-    if (_entries.isNotEmpty && _entries.first.sameInputs(entry)) {
-      _entries[0] = entry;
-    } else {
-      _entries.insert(0, entry);
+  /// 记录一次计算。输入完全相同的旧记录不新增，只刷新并上移到最前。
+  ///
+  /// 去重必须比对整张表而非仅最新一条：存档点有三个（Done / 打开 History 前 /
+  /// 退后台），只比第一条会让"从历史恢复某条后再打开 History"重复入库；
+  /// 清空后列表为空更是直接把当前计算又写回去，看起来就像删除没生效。
+  /// [explicit] 区分用户主动按 Done 与被动存档（打开 History 前 / 退后台）。
+  /// 用户刚删过东西时，被动存档必须闭嘴，否则屏上那次计算会立刻被写回去，
+  /// 看起来就像"删除没生效"。下一次主动 Done 解除抑制。
+  void record(HistoryEntry entry, {bool explicit = false}) {
+    if (!explicit && _suppressPassiveRecord) return;
+    if (explicit) _suppressPassiveRecord = false;
+    final existing = _entries.indexWhere((e) => e.sameInputs(entry));
+    if (existing >= 0) {
+      _entries.removeAt(existing);
     }
+    _entries.insert(0, entry);
     _persist();
     notifyListeners();
   }
 
   void remove(int id) {
+    _suppressPassiveRecord = true;
     _entries.removeWhere((e) => e.id == id);
     _persist();
     notifyListeners();
@@ -50,9 +59,13 @@ class HistoryController extends ChangeNotifier {
 
   void clear() {
     _entries.clear();
+    _suppressPassiveRecord = true;
     _persist();
     notifyListeners();
   }
+
+  /// 仅本次会话有效，不持久化——重启 app 后恢复正常存档。
+  bool _suppressPassiveRecord = false;
 
   void _persist() {
     _prefs.setString(

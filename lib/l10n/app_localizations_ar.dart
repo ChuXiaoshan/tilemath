@@ -159,7 +159,17 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String wasteLine(int base, int waste) {
-    return '$base بلاطة + $waste% هدر';
+    String _temp0 = intl.Intl.pluralLogic(
+      base,
+      locale: localeName,
+      other: '$base بلاطة + هدر $waste%',
+      many: '$base بلاطة + هدر $waste%',
+      few: '$base بلاطات + هدر $waste%',
+      two: 'بلاطتان + هدر $waste%',
+      one: 'بلاطة واحدة + هدر $waste%',
+      zero: 'هدر $waste%',
+    );
+    return '$_temp0';
   }
 
   @override

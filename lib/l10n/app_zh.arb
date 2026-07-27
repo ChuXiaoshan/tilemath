@@ -41,7 +41,7 @@
   "pricePerBox": "每箱价格",
   "boxesToBuy": "购买箱数",
   "estimatedCost": "预估成本",
-  "wasteLine": "{base} 片 + {waste}% 损耗",
+  "wasteLine": "{base, plural, other{{base} 片 + {waste}% 损耗}}",
   "smallAreaHint": "小面积切割损耗更高，建议加 5%。",
   "resultEmptyPrompt": "输入尺寸后显示结果",
   "languageSystem": "跟随系统",

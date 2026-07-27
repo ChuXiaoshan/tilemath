@@ -48,6 +48,17 @@ class TileMathApp extends StatelessWidget {
             GlobalCupertinoLocalizations.delegate,
           ],
           supportedLocales: AppLocalizations.supportedLocales,
+          // 不能依赖 Flutter 的默认解析：匹配不上时它取 supportedLocales.first，
+          // 而 gen-l10n 生成的列表按字母序、首项是 ar——西班牙语等设备会直接
+          // 落到阿拉伯语 + 全屏 RTL。这里显式兜底英语。
+          localeListResolutionCallback: (deviceLocales, supported) {
+            for (final device in deviceLocales ?? const <Locale>[]) {
+              for (final s in supported) {
+                if (s.languageCode == device.languageCode) return s;
+              }
+            }
+            return const Locale('en');
+          },
           home: const HomePage(),
         ),
       ),

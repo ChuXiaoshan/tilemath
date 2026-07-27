@@ -149,7 +149,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String wasteLine(int base, int waste) {
-    return '$base 片 + $waste% 损耗';
+    String _temp0 = intl.Intl.pluralLogic(
+      base,
+      locale: localeName,
+      other: '$base 片 + $waste% 损耗',
+    );
+    return '$_temp0';
   }
 
   @override

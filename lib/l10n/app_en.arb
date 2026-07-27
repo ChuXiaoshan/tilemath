@@ -87,7 +87,7 @@
   "pricePerBox": "Price per box",
   "boxesToBuy": "Boxes to buy",
   "estimatedCost": "Estimated cost",
-  "wasteLine": "{base} tiles + {waste}% waste",
+  "wasteLine": "{base, plural, one{{base} tile + {waste}% waste} other{{base} tiles + {waste}% waste}}",
   "@wasteLine": {
     "description": "Secondary line under the big tiles-needed figure",
     "placeholders": {

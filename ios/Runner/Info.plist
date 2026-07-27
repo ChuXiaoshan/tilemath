@@ -63,11 +63,11 @@
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
+	<!-- 仅竖屏：分数键盘要占掉大半屏高，iPhone 横屏（高 375-430）放不下，
+	     键盘会被裁切到无法收起。计算器类工具锁竖屏是通行做法。 -->
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 </dict>
 </plist>

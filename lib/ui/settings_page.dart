@@ -19,9 +19,6 @@ const _privacyPolicyUrl = 'https://xs-albus.github.io/privacy.html';
 /// App Store 条目 ID，用于跳转评分页。
 const _appStoreId = '6795019764';
 
-/// 版本号取自包信息，避免与 pubspec 手工同步而失配。
-/// 顶层 lazy final：只查一次平台通道，rebuild 不重复查询。
-final Future<PackageInfo> _packageInfo = PackageInfo.fromPlatform();
 
 /// 打开外部链接，失败时给出可见反馈（静默失败等同于按钮没反应）。
 Future<void> _openExternal(BuildContext context, Uri uri) async {
@@ -73,26 +70,9 @@ class SettingsPage extends StatelessWidget {
               settings.localeOverride!.languageCode;
 
     final rows = <Widget>[
-      ListTile(
-        contentPadding: EdgeInsets.zero,
-        title: Text(l10n.units),
-        trailing: SegmentedButton<UnitSystem>(
-          // 选中 ✓ 图标会在长本地化标签下挤压换行，选中态由填色表达
-          showSelectedIcon: false,
-          style: const ButtonStyle(visualDensity: VisualDensity.compact),
-          segments: [
-            ButtonSegment(
-              value: UnitSystem.imperial,
-              label: Text(l10n.unitImperial),
-            ),
-            ButtonSegment(
-              value: UnitSystem.metric,
-              label: Text(l10n.unitMetric),
-            ),
-          ],
-          selected: {settings.effectiveUnitSystem(deviceLocale)},
-          onSelectionChanged: (s) => settings.setUnitSystem(s.first),
-        ),
+      _UnitsRow(
+        selected: settings.effectiveUnitSystem(deviceLocale),
+        onChanged: settings.setUnitSystem,
       ),
       _ChevronRow(
         title: l10n.language,
@@ -156,16 +136,89 @@ class SettingsPage extends StatelessWidget {
             onTap: () => _openStoreReview(context),
           ),
           const Divider(height: 1),
-          FutureBuilder<PackageInfo>(
-            future: _packageInfo,
-            // 读取失败或未完成时留空而非占位符，避免版本号闪烁跳动
-            builder: (context, snapshot) => ListTile(
-              contentPadding: EdgeInsets.zero,
-              title: Text(l10n.versionLabel),
-              trailing: Text(snapshot.data?.version ?? ''),
-            ),
-          ),
+          const _VersionRow(),
         ],
+      ),
+    );
+  }
+}
+
+/// 单位制切换行（设计稿 5b：标题在左、紧凑分段在右）。
+///
+/// 默认维持设计稿的左右布局，但**不能**把分段控件塞进 `ListTile.trailing`
+/// ——trailing 拿到的是松约束，控件会吃满整行、把标题挤成负宽，进而击穿
+/// 整条布局链（375dp 机型配 iOS 标准最大字号 ≈1.35 即可触发）。
+/// 这里用两端都带 flex 的 Row 保证双方宽度都有界；字号继续放大到左右排不下时，
+/// 退化成上下堆叠——与铺法选择器"降级只缩不换行"的思路一致。
+class _UnitsRow extends StatelessWidget {
+  final UnitSystem selected;
+  final ValueChanged<UnitSystem> onChanged;
+
+  const _UnitsRow({required this.selected, required this.onChanged});
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final scale = MediaQuery.textScalerOf(context).scale(14) / 14;
+    final stacked = scale > 1.15;
+
+    final title = Text(l10n.units, style: Theme.of(context).textTheme.bodyLarge);
+    final control = SegmentedButton<UnitSystem>(
+      // 选中 ✓ 图标会在长本地化标签下挤压换行，选中态由填色表达
+      showSelectedIcon: false,
+      style: const ButtonStyle(visualDensity: VisualDensity.compact),
+      segments: [
+        ButtonSegment(value: UnitSystem.imperial, label: Text(l10n.unitImperial)),
+        ButtonSegment(value: UnitSystem.metric, label: Text(l10n.unitMetric)),
+      ],
+      selected: {selected},
+      onSelectionChanged: (s) => onChanged(s.first),
+    );
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: AppDimens.space12),
+      child: stacked
+          ? Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                title,
+                const SizedBox(height: AppDimens.space8),
+                SizedBox(width: double.infinity, child: control),
+              ],
+            )
+          : Row(
+              children: [
+                Expanded(flex: 2, child: title),
+                const SizedBox(width: AppDimens.space12),
+                Expanded(flex: 3, child: control),
+              ],
+            ),
+    );
+  }
+}
+
+/// 版本号行：取自包信息，避免与 pubspec 手工同步而失配。
+/// 刻意用 State 持有 Future 而非顶层 final —— 顶层 final 是整个 isolate
+/// 共享的可变状态，一次解析失败就永久缓存，测试之间也会互相污染。
+class _VersionRow extends StatefulWidget {
+  const _VersionRow();
+
+  @override
+  State<_VersionRow> createState() => _VersionRowState();
+}
+
+class _VersionRowState extends State<_VersionRow> {
+  late final Future<PackageInfo> _info = PackageInfo.fromPlatform();
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<PackageInfo>(
+      future: _info,
+      // 读取失败或未完成时留空而非占位符，避免版本号闪烁跳动
+      builder: (context, snapshot) => ListTile(
+        contentPadding: EdgeInsets.zero,
+        title: Text(AppLocalizations.of(context).versionLabel),
+        trailing: Text(snapshot.data?.version ?? ''),
       ),
     );
   }
@@ -194,9 +247,12 @@ class _ChevronRow extends StatelessWidget {
         children: [
           Text(
             value,
-            style: Theme.of(
-              context,
-            ).textTheme.bodyMedium!.copyWith(color: scheme.onSurfaceVariant),
+            // height 置 1：正文行高是 1.5，字形贴基线而非在盒内居中，
+            // 与图标按盒子居中对齐时视觉上会偏。单行内联值不需要段落行高。
+            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+              color: scheme.onSurfaceVariant,
+              height: 1,
+            ),
           ),
           const SizedBox(width: AppDimens.space4),
           Icon(Icons.chevron_right, size: 20, color: scheme.onSurfaceVariant),

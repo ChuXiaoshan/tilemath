@@ -151,7 +151,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String wasteLine(int base, int waste) {
-    return '$base tiles + $waste% waste';
+    String _temp0 = intl.Intl.pluralLogic(
+      base,
+      locale: localeName,
+      other: '$base tiles + $waste% waste',
+      one: '$base tile + $waste% waste',
+    );
+    return '$_temp0';
   }
 
   @override

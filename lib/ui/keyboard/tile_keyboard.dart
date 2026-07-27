@@ -52,7 +52,7 @@ class TileKeyboard extends StatelessWidget {
     if (controller.result != null) {
       final snapshot = controller.snapshot();
       if (snapshot != null) {
-        context.read<HistoryController>().record(snapshot);
+        context.read<HistoryController>().record(snapshot, explicit: true);
       }
     }
   }

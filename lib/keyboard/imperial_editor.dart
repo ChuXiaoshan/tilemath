@@ -141,6 +141,17 @@ class ImperialEditor {
         _inches = _dropLast(_inches);
       }
     }
+    // 退到空必须与 clear() 同态。否则经 in 键或分数键改判后退空，激活段仍停在
+    // inch，而字段外观与全新字段毫无区别——用户重新输 12 得到的是 12″ 而非
+    // 12′，每个维度差 12 倍，屏上只有一撇之差，几乎不可能发现。
+    if (isEmpty) _resetSegment();
+  }
+
+  void _resetSegment() {
+    _feetLabeled = false;
+    _active = kind == ImperialFieldKind.inchesOnly
+        ? ImperialSegment.inches
+        : ImperialSegment.feet;
   }
 
   static String _dropLast(String s) => s.substring(0, s.length - 1);
@@ -149,10 +160,7 @@ class ImperialEditor {
     _feet = '';
     _inches = '';
     _fraction = null;
-    _feetLabeled = false;
-    _active = kind == ImperialFieldKind.inchesOnly
-        ? ImperialSegment.inches
-        : ImperialSegment.feet;
+    _resetSegment();
   }
 
   /// 空态返回 null（字段显示占位符）。

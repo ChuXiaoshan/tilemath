@@ -158,9 +158,18 @@ class CalculatorController extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// 箱规与单价来自系统数字键盘，没有 InputFormatter 约束，用户能直接打出 0
+  /// （把 "10" 改成 "20" 的中间态也是 "0"）。非法值在此归一成"未填"，
+  /// 否则会击穿 domain 层的参数断言，让 build 期读 [result] 抛错——
+  /// 而 [result] 的契约正是"build 期读取永不抛错"。
   void setBoxInfo({int? tilesPerBox, double? pricePerBox}) {
-    this.tilesPerBox = tilesPerBox;
-    this.pricePerBox = pricePerBox;
+    this.tilesPerBox = (tilesPerBox != null && tilesPerBox > 0)
+        ? tilesPerBox
+        : null;
+    this.pricePerBox =
+        (pricePerBox != null && pricePerBox.isFinite && pricePerBox >= 0)
+        ? pricePerBox
+        : null;
     notifyListeners();
   }
 

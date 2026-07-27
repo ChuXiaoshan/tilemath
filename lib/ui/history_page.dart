@@ -185,7 +185,11 @@ class _HistoryTile extends StatelessWidget {
           children: [
             Text(
               formatRelativeTime(entry.timestamp, l10n, locale),
-              style: text.bodySmall!.copyWith(color: scheme.onSurfaceVariant),
+              // 同 _ChevronRow：行高 1.5 会让字形相对图标偏上
+              style: text.bodySmall!.copyWith(
+                color: scheme.onSurfaceVariant,
+                height: 1,
+              ),
             ),
             const SizedBox(width: AppDimens.space4),
             Icon(Icons.chevron_right, size: 18, color: scheme.onSurfaceVariant),

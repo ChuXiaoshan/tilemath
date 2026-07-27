@@ -141,6 +141,105 @@ void main() {
     expect(tester.getRect(doneKey).bottom, lessThanOrEqualTo(900 - safeBottom));
   });
 
+  // 两个键盘同屏是用户实测缺陷（2026-07-27）：焦点经非点击途径落到系统输入框时，
+  // 自定义键盘不会收起。onTap 里的补救盖不住这条路径。
+  testWidgets('系统输入框取得焦点时自定义键盘必须收起', (tester) async {
+    tester.view.physicalSize = const Size(420, 900);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
+
+    SharedPreferences.setMockInitialValues({});
+    final prefs = await SharedPreferences.getInstance();
+    await tester.pumpWidget(TileMathApp(prefs: prefs));
+    await tester.pump();
+
+    await tester.tap(find.text('Boxes & cost'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const ValueKey('field-areaLength-0')));
+    await tester.pump();
+    expect(find.byType(TileKeyboard), findsOneWidget);
+
+    // 绕开 onTap，直接请求焦点——等价于路由弹回时 iOS 的焦点恢复
+    tester.widget<TextField>(find.byType(TextField).first).focusNode!
+        .requestFocus();
+    await tester.pump();
+    expect(find.byType(TileKeyboard), findsNothing);
+  });
+
+  testWidgets('离开主页会释放输入框焦点，返回时系统键盘不自动弹出', (tester) async {
+    tester.view.physicalSize = const Size(420, 900);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
+
+    SharedPreferences.setMockInitialValues({});
+    final prefs = await SharedPreferences.getInstance();
+    await tester.pumpWidget(TileMathApp(prefs: prefs));
+    await tester.pump();
+
+    await tester.tap(find.text('Boxes & cost'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byType(TextField).first);
+    await tester.pump();
+    expect(
+      tester.widget<TextField>(find.byType(TextField).first).focusNode!.hasFocus,
+      isTrue,
+    );
+
+    await tester.tap(find.byIcon(Icons.settings_outlined));
+    await tester.pumpAndSettle();
+    await tester.pageBack();
+    await tester.pumpAndSettle();
+
+    // 焦点没被带回来，否则 iOS 会自动重新弹出系统键盘
+    expect(
+      tester.widget<TextField>(find.byType(TextField).first).focusNode!.hasFocus,
+      isFalse,
+    );
+  });
+
+  testWidgets('系统键盘弹出时给 Done 横条，收起时不留 bottomNavigationBar', (tester) async {
+    tester.view.physicalSize = const Size(420, 900);
+    tester.view.devicePixelRatio = 1.0;
+    tester.view.padding = const FakeViewPadding(bottom: safeBottom);
+    addTearDown(tester.view.reset);
+
+    SharedPreferences.setMockInitialValues({});
+    final prefs = await SharedPreferences.getInstance();
+    await tester.pumpWidget(TileMathApp(prefs: prefs));
+    await tester.pump();
+
+    Scaffold home() => tester.widget<Scaffold>(find.byType(Scaffold).first);
+
+    // 无系统键盘时必须是 null：非 null 的 bottomNavigationBar 会让 Scaffold
+    // 移除 body 底部 padding，自定义键盘让出 Home Indicator 就失效了
+    expect(home().bottomNavigationBar, isNull);
+
+    // 模拟系统数字键盘弹出
+    tester.view.viewInsets = const FakeViewPadding(bottom: 300);
+    await tester.pump();
+    expect(home().bottomNavigationBar, isNotNull);
+    final doneButton = find.widgetWithText(TextButton, 'Done');
+    expect(doneButton, findsOneWidget);
+
+    // 横条必须自己约束高度。bottomNavigationBar 槽位是松约束，写成 Align
+    // 之类会撑满整屏把 body 压没——只断言"按钮存在"是抓不到这个的。
+    // ancestor 由近及远排序，取 first 才是横条自身那层 Material
+    final bar = find
+        .ancestor(of: doneButton, matching: find.byType(Material))
+        .first;
+    expect(tester.getSize(bar).height, lessThan(80));
+    // body 仍要有可用高度，表单不能被挤没
+    expect(
+      tester.getSize(find.byKey(const ValueKey('field-areaLength-0'))).height,
+      greaterThan(0),
+    );
+
+    tester.view.viewInsets = FakeViewPadding.zero;
+    await tester.pump();
+    expect(home().bottomNavigationBar, isNull);
+  });
+
   testWidgets('底部安全区：设置页滚到底后末项不被遮挡', (tester) async {
     // 矮屏保证列表可滚动，否则断言退化为恒真
     tester.view.physicalSize = const Size(420, 500);
