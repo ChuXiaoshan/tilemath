@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:in_app_review/in_app_review.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../l10n/app_localizations.dart';
 import '../state/settings_controller.dart';
@@ -8,6 +11,43 @@ import '../theme/app_dimens.dart';
 /// 产品语言清单：语言码 → 母语自称（设计稿 5b，自称不翻译）。
 /// 当前实现 en/zh/ar，其余语言随 ARB 落地逐个开放。
 const _languageNames = {'en': 'English', 'zh': '中文（简体）', 'ar': 'العربية'};
+
+/// 隐私政策托管地址。审核指南 5.1.1(i) 要求 app 内也能访问，
+/// 必须与 App Store Connect 里填的是同一份。
+const _privacyPolicyUrl = 'https://xs-albus.github.io/privacy.html';
+
+/// App Store 条目 ID，用于跳转评分页。
+const _appStoreId = '6795019764';
+
+/// 版本号取自包信息，避免与 pubspec 手工同步而失配。
+/// 顶层 lazy final：只查一次平台通道，rebuild 不重复查询。
+final Future<PackageInfo> _packageInfo = PackageInfo.fromPlatform();
+
+/// 打开外部链接，失败时给出可见反馈（静默失败等同于按钮没反应）。
+Future<void> _openExternal(BuildContext context, Uri uri) async {
+  final messenger = ScaffoldMessenger.of(context);
+  final message = AppLocalizations.of(context).linkOpenFailed;
+  var ok = false;
+  try {
+    ok = await launchUrl(uri, mode: LaunchMode.externalApplication);
+  } catch (_) {
+    ok = false;
+  }
+  if (!ok) messenger.showSnackBar(SnackBar(content: Text(message)));
+}
+
+/// 评分入口走 openStoreListing 而非 requestReview：后者有系统配额
+/// （365 天内每用户至多 3 次）且不保证展示，用户主动点击却毫无反应
+/// 比没有入口更糟。requestReview 留给将来的自然时机触发。
+Future<void> _openStoreReview(BuildContext context) async {
+  final messenger = ScaffoldMessenger.of(context);
+  final message = AppLocalizations.of(context).linkOpenFailed;
+  try {
+    await InAppReview.instance.openStoreListing(appStoreId: _appStoreId);
+  } catch (_) {
+    messenger.showSnackBar(SnackBar(content: Text(message)));
+  }
+}
 
 /// 设置页（brief §3.6 / 设计稿 5b）：Units 行内紧凑分段（短标签）、
 /// Language/Appearance 值+chevron 进子页、行间极细分隔线（组件内允许）。
@@ -101,24 +141,29 @@ class SettingsPage extends StatelessWidget {
             rows[i],
           ],
           const SizedBox(height: AppDimens.space24),
-          // TODO: 上架前接隐私政策 URL 与商店评分（url_launcher / in_app_review）
           ListTile(
             contentPadding: EdgeInsets.zero,
             title: Text(l10n.privacyPolicy),
             trailing: const Icon(Icons.open_in_new, size: 18),
-            onTap: () {},
+            onTap: () =>
+                _openExternal(context, Uri.parse(_privacyPolicyUrl)),
           ),
           const Divider(height: 1),
           ListTile(
             contentPadding: EdgeInsets.zero,
             title: Text(l10n.rateApp),
-            onTap: () {},
+            trailing: const Icon(Icons.open_in_new, size: 18),
+            onTap: () => _openStoreReview(context),
           ),
           const Divider(height: 1),
-          ListTile(
-            contentPadding: EdgeInsets.zero,
-            title: Text(l10n.versionLabel),
-            trailing: const Text('1.0.0'), // TODO: 接 package_info_plus
+          FutureBuilder<PackageInfo>(
+            future: _packageInfo,
+            // 读取失败或未完成时留空而非占位符，避免版本号闪烁跳动
+            builder: (context, snapshot) => ListTile(
+              contentPadding: EdgeInsets.zero,
+              title: Text(l10n.versionLabel),
+              trailing: Text(snapshot.data?.version ?? ''),
+            ),
           ),
         ],
       ),

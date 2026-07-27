@@ -228,6 +228,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get languagePageNote => '仅覆盖本应用的语言——为没有分应用语言设置的旧设备提供。';
 
   @override
+  String get linkOpenFailed => '无法打开链接';
+
+  @override
   String wasteShort(int pct) {
     return '$pct% 损耗';
   }

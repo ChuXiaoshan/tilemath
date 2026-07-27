@@ -252,6 +252,9 @@ class AppLocalizationsAr extends AppLocalizations {
       'يغيّر لغة هذا التطبيق فقط — للأجهزة القديمة التي لا تدعم لغة لكل تطبيق.';
 
   @override
+  String get linkOpenFailed => 'تعذّر فتح الرابط';
+
+  @override
   String wasteShort(int pct) {
     return 'هدر $pct%';
   }

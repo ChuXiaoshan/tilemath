@@ -460,6 +460,12 @@ abstract class AppLocalizations {
   /// **'Overrides the OS language for this app only — for older devices without per-app language settings.'**
   String get languagePageNote;
 
+  /// No description provided for @linkOpenFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t open the link'**
+  String get linkOpenFailed;
+
   /// No description provided for @wasteShort.
   ///
   /// In en, this message translates to:

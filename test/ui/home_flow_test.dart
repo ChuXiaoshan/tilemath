@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tilemath/domain/tile_calculation.dart';
@@ -11,6 +12,19 @@ import 'package:tilemath/ui/keyboard/tile_keyboard.dart';
 /// 测试环境 locale 为 en_US → 地区默认英制。
 /// 预期：默认缝宽 1/16″ 参与节距 → base 119，+10%（Straight 默认）→ 131。
 void main() {
+  // 设置页版本号走 package_info_plus；不 mock 的话平台通道在测试环境不可用，
+  // 该行会渲染空串。放 setUpAll 是因为 SettingsPage 里的 Future 是顶层 lazy
+  // final，整个 isolate 只求值一次，必须在首次访问前注入。
+  setUpAll(() {
+    PackageInfo.setMockInitialValues(
+      appName: 'TileMath',
+      packageName: 'com.tilemath.calculator',
+      version: '1.0.0',
+      buildNumber: '1',
+      buildSignature: '',
+    );
+  });
+
   testWidgets('英制输入闭环冒烟', (tester) async {
     // 手机竖屏尺寸（单栏 + 键盘常驻可见）
     tester.view.physicalSize = const Size(420, 900);
@@ -156,5 +170,7 @@ void main() {
       tester.getRect(find.text('Version')).bottom,
       lessThanOrEqualTo(500 - safeBottom),
     );
+    // 版本号来自包信息而非硬编码，改 pubspec 版本不会再失配
+    expect(find.text('1.0.0'), findsOneWidget);
   });
 }

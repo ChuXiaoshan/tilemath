@@ -60,5 +60,6 @@
   "cancel": "取消",
   "historyFooterNote": "每次计算都会保存——免费，无上限。",
   "languagePageNote": "仅覆盖本应用的语言——为没有分应用语言设置的旧设备提供。",
+  "linkOpenFailed": "无法打开链接",
   "wasteShort": "{pct}% 损耗"
 }

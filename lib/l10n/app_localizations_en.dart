@@ -236,6 +236,9 @@ class AppLocalizationsEn extends AppLocalizations {
       'Overrides the OS language for this app only — for older devices without per-app language settings.';
 
   @override
+  String get linkOpenFailed => 'Couldn\'t open the link';
+
+  @override
   String wasteShort(int pct) {
     return '$pct% waste';
   }

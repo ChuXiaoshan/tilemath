@@ -141,6 +141,7 @@
   "cancel": "Cancel",
   "historyFooterNote": "Every calculation is saved — free, no limit.",
   "languagePageNote": "Overrides the OS language for this app only — for older devices without per-app language settings.",
+  "linkOpenFailed": "Couldn't open the link",
   "wasteShort": "{pct}% waste",
   "@wasteShort": {
     "placeholders": {
