@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+# 把已抓取的截图规范化为 App Store 可接受的形式，并校验。
+#
+# 用法： tool/screenshots/normalize.sh <png 文件>
+#
+# App Store 的两条硬要求最容易翻车：
+#   1. 不得含 alpha 通道
+#   2. 像素尺寸必须精确匹配某一档位，差一像素都会被拒
+set -euo pipefail
+
+FILE="${1:?用法: normalize.sh <png>}"
+[ -f "$FILE" ] || { echo "✗ 文件不存在: $FILE"; exit 1; }
+
+# 6.5 英寸显示屏档位（ASC 版本页给出的合法尺寸，含横屏）
+VALID="1242x2688 2688x1242 1284x2778 2778x1284"
+
+# 经 JPEG 中转强制合成掉 alpha，再转回 PNG
+if sips -g hasAlpha "$FILE" | grep -q "hasAlpha: yes"; then
+  TMP="${FILE%.png}.tmp.jpg"
+  sips -s format jpeg -s formatOptions best "$FILE" --out "$TMP" >/dev/null
+  sips -s format png "$TMP" --out "$FILE" >/dev/null
+  rm -f "$TMP"
+fi
+
+W=$(sips -g pixelWidth  "$FILE" | awk '/pixelWidth/{print $2}')
+H=$(sips -g pixelHeight "$FILE" | awk '/pixelHeight/{print $2}')
+ALPHA=$(sips -g hasAlpha "$FILE" | awk '/hasAlpha/{print $2}')
+
+printf '%s  %sx%s  alpha=%s  ' "$FILE" "$W" "$H" "$ALPHA"
+
+if [[ " $VALID " != *" ${W}x${H} "* ]]; then
+  printf '✗ 尺寸不在 6.5 英寸档合法值内（%s）\n' "$VALID"
+  exit 1
+fi
+if [[ "$ALPHA" != "no" ]]; then
+  printf '✗ 仍带 alpha 通道，App Store 会拒收\n'
+  exit 1
+fi
+printf '✓\n'

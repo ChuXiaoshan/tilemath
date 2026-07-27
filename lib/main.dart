@@ -34,6 +34,8 @@ class TileMathApp extends StatelessWidget {
       ],
       child: Consumer<SettingsController>(
         builder: (context, settings, _) => MaterialApp(
+          // 模拟器只能出 debug 包，飘带会污染商店截图
+          debugShowCheckedModeBanner: false,
           onGenerateTitle: (context) => AppLocalizations.of(context).appTitle,
           theme: AppTheme.light,
           darkTheme: AppTheme.dark,
