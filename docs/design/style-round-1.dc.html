@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style data-omelette-injected>html,body{background:transparent}</style><script data-omelette-injected>(()=>{{const W=new URLSearchParams(location.search).get("theme");if(W==="light"||W==="dark"){document.documentElement.dataset.theme=W}}{if(new URLSearchParams(location.search).get("_omthumb")==="1"){const W=(q)=>{const X=q.focus;if(!X)return;q.focus=function(H){X.call(this,{...H,preventScroll:true})}};W(HTMLElement.prototype);W(SVGElement.prototype);if(typeof MathMLElement!=="undefined"){W(MathMLElement.prototype)}const $=(q)=>{q.removeAttribute("autofocus");q.inert=true;if(!(q instanceof HTMLElement))q.removeAttribute("tabindex")};const z=(q)=>{if(q.hasAttribute("autofocus"))$(q);for(const X of q.querySelectorAll("[autofocus]")){$(X)}};z(document.documentElement);new MutationObserver((q)=>{for(const X of q){for(const H of X.addedNodes){if(H.nodeType===1)z(H)}}}).observe(document,{childList:true,subtree:true})}}{const W=()=>{try{if(document.querySelector('meta[name="color-scheme"]'))return;const $=getComputedStyle(document.documentElement).getPropertyValue("color-scheme").trim();if($&&$!=="normal")return;const z=(j)=>{if(!j)return null;const F=getComputedStyle(j).backgroundColor.match(/^rgba?\(\s*(\d+)[,\s]+(\d+)[,\s]+(\d+)(?:[,\s/]+([\d.]+%?))?\s*\)$/);if(!F)return null;const G=F[4]==null?1:parseFloat(F[4])/(F[4].endsWith("%")?100:1);if(G<0.99)return null;return[+F[1],+F[2],+F[3]]};const q=z(document.body)||z(document.documentElement);if(!q)return;const X=(j)=>{const F=j/255;return F<=0.04045?F/12.92:((F+0.055)/1.055)**2.4};const H=0.2126*X(q[0])+0.7152*X(q[1])+0.0722*X(q[2]);document.documentElement.style.setProperty("color-scheme",H<0.4?"dark":"light")}catch{}};if(document.readyState==="complete")W();else window.addEventListener("load",W)}var b=["https://claude.ai","https://preview.claude.ai","https://5f146642-4e8b-4697-9a3d-4a2d8850b728.claudeusercontent.com"];var p=true;var u=30000;var d=3000;document.addEventListener("DOMContentLoaded",()=>{const W=window.Babel;const $="om-src-id";if(W&&W.registerPlugin&&!(W.availablePlugins&&W.availablePlugins[$])){W.registerPlugin($,({types:H})=>({visitor:{JSXOpeningElement(j,F){const G=j.node;if(G.name&&G.name.type==="JSXMemberExpression")return;for(let Q=0;Q<G.attributes.length;Q++){const V=G.attributes[Q];if(V.type==="JSXAttribute"&&V.name&&V.name.name==="data-om-id")return}const P=F.file&&F.file.opts&&F.file.opts.filename||"?";const R=G.loc&&G.loc.start;const J=`jsx:${P}:${G.start??0}:${R?R.line:0}:${R?R.column+1:0}`;G.attributes.push(H.jsxAttribute(H.jsxIdentifier("data-om-id"),H.stringLiteral(J)))}}}))}const z="om-text-extract";let q=false;if(p&&W&&W.registerPlugin&&!(W.availablePlugins&&W.availablePlugins[z])){const H=window.React;if(H&&H.useSyncExternalStore&&H.createElement){q=true;const j={};const F=new Set;let G=0;window.__omTextO=j;window.__omTextSet=(J)=>{for(const Q in J){const V=J[Q];if(V==null)delete j[Q];else j[Q]=V}G++;F.forEach((Q)=>Q())};const P=(J)=>{F.add(J);return()=>F.delete(J)};const R=()=>G;window.__OmT=function J(Q){H.useSyncExternalStore(P,R,R);return H.createElement("span",{"data-om-text":Q.i,className:"__om-t"},Q.i in j?j[Q.i]:Q.children)};W.registerPlugin(z,({types:J})=>{const Q={style:1,script:1,noscript:1,textarea:1,title:1,option:1,text:1,tspan:1,textPath:1};const V={placeholder:1,alt:1,title:1,label:1,"aria-label":1,"aria-description":1,"aria-placeholder":1};const Y=(K,M)=>J.logicalExpression("??",J.memberExpression(J.logicalExpression("||",J.memberExpression(J.identifier("window"),J.identifier("__omTextO")),J.objectExpression([])),J.stringLiteral(K),true),M);const Z=(K)=>K.file&&K.file.opts&&K.file.opts.filename||"?";const B=(K)=>K.file&&K.file.code||"";const U=(K,M)=>{const L=(D)=>D&&D.start!=null&&D.end!=null&&(D.type==="StringLiteral"||D.type==="TemplateLiteral"&&D.expressions.length===0)?[D.start,D.end]:null;const N=L(M);if(N)return N;if(M&&M.type==="Identifier"){const D=K.scope.getBinding(M.name);if(D&&D.constant&&D.path.node.type==="VariableDeclarator"){return L(D.path.node.init)}}return null};const x=(K,M,L)=>{const N=K.node;let D=false;const f=(w,A)=>{D=true;return J.jsxElement(J.jsxOpeningElement(J.jsxIdentifier("__OmT"),[J.jsxAttribute(J.jsxIdentifier("i"),J.stringLiteral(w))],false),J.jsxClosingElement(J.jsxIdentifier("__OmT")),[A],false)};const C=N.children.map((w)=>{if(w.type==="JSXText"){if(w.start==null||w.end==null)return w;const A=L.slice(w.start,w.end);const S=A.length-A.trimStart().length;const O=A.length-A.trimEnd().length;if(S+O>=A.length)return w;return f(`txt:${M}:${w.start+S}:${w.end-O}`,w)}if(w.type==="JSXExpressionContainer"){const A=U(K,w.expression);if(A)return f(`str:${M}:${A[0]}:${A[1]}`,w)}return w});if(D)N.children=C};return{visitor:{JSXOpeningElement(K,M){const L=K.node;const N=Z(M);const D={};for(let f=0;f<L.attributes.length;f++){const C=L.attributes[f];if(C.type!=="JSXAttribute"||!C.name)continue;const w=C.name.name;if(!V[w])continue;if(!C.value||C.value.type!=="StringLiteral")continue;if(C.value.start==null||C.value.end==null)continue;const A=`txt:${N}:${C.value.start}:${C.value.end}`;D[w]=A;C.value=J.jsxExpressionContainer(Y(A,J.stringLiteral(C.value.value)))}if(Object.keys(D).length){L.attributes.push(J.jsxAttribute(J.jsxIdentifier("data-om-text-attrs"),J.stringLiteral(JSON.stringify(D))))}},JSXElement(K,M){const L=K.node.openingElement;const N=L&&L.name&&L.name.name;if(N==="__OmT")return;if(typeof N==="string"&&Q[N])return;x(K,Z(M),B(M))},JSXFragment(K,M){x(K,Z(M),B(M))}}}})}}const X=q?["transform-react-jsx-source",$,z]:["transform-react-jsx-source",$];document.querySelectorAll('script[type="text/babel"],script[type="text/jsx"]').forEach((H,j)=>{const F=H.getAttribute("data-plugins")||"";const G=X.filter((P)=>F.indexOf(P)<0);if(G.length){H.setAttribute("data-plugins",F?`${F},${G.join(",")}`:G.join(","))}if(!H.hasAttribute("data-filename")){H.setAttribute("data-filename",H.getAttribute("src")||`inline-${j}`)}})});var I=window.parent;var g="not editable here — open the project in the Claude Design editor to save";var n=()=>Promise.resolve({persisted:false,noHost:true,reason:g});var k=n;var v="data/storage.json";var l=()=>{try{const W=new URL(document.baseURI);const $=W.pathname.match(/\/projects\/([^/]+)\/serve\//);if($)return $[1];return W.hostname.split(".")[0]||""}catch{return location.hostname.split(".")[0]||""}};var o=()=>{try{const W=new URL(document.baseURI);const $=W.pathname.indexOf("/serve/");if($>=0)return W.origin+W.pathname.slice(0,$+"/serve/".length)+v}catch{}return"./"+v};var E=null;var _=()=>{if(!E){E=fetch(o(),{cache:"no-store"}).then((W)=>{if(W.ok)return W.text();return W.status===404?"":null}).catch(()=>null).then((W)=>{if(W===null){E=null;return null}const $=new Map;if(!W)return $;let z;try{z=JSON.parse(W)}catch{console.warn("[omelette.storage] "+v+" is not valid JSON; treating the store as unreadable so a save cannot overwrite the "+"hand-edited bytes. Fix the JSON (or delete the file) to re-enable persistence.");E=null;return null}if(z===null||typeof z!=="object"||Array.isArray(z)){console.warn("[omelette.storage] "+v+" doesn't hold a JSON object; treating the store as unreadable so a save cannot "+"overwrite the hand-edited bytes. Make the top level a JSON object to re-enable persistence.");E=null;return null}const q=z;if("data"in q){const X=q.data;if(X===null||typeof X!=="object"||Array.isArray(X)){console.warn("[omelette.storage] "+v+' has a "data" field that is not a JSON object; treating the store as unreadable so a '+'save cannot overwrite the hand-edited bytes. Make "data" a JSON object to re-enable persistence.');E=null;return null}const H=q._meta;const j=H!==null&&typeof H==="object"?H.project:undefined;if(typeof j==="string"&&j!==""&&j!==l())return $;for(const F of Object.keys(X))$.set(F,X[F]);return $}for(const X of Object.keys(q)){if(X!=="_meta")$.set(X,q[X])}return $})}return E};var y=(W)=>k(v,JSON.stringify({_meta:{project:l(),version:1},data:Object.fromEntries(W)},null,2));var m=Promise.resolve();var T=(W)=>{const $=m.then(W);m=$.then(()=>{return},()=>{return});return $};var s=/sk-(?:ant-)?[A-Za-z0-9_-]{16,}|AKIA[0-9A-Z]{16}|gh[pousr]_[A-Za-z0-9]{20,}|xox[a-z]-[A-Za-z0-9][A-Za-z0-9-]{9,}|AIza[0-9A-Za-z_-]{30,}|-----BEGIN [A-Z ]*PRIVATE KEY-----/;var a=/password|passwd|secret|api[_-]?key|access[_-]?token|auth[_-]?token|credential/i;var r=(W,$,z)=>{if(s.test($)||a.test(W)&&typeof z==="string"&&z.length>=8){console.warn('[omelette.storage] the value for "'+W+'" looks like a credential. The storage file is a plaintext project file — visible to '+"everyone with project access and copied when the project is duplicated. Do not store secrets here.")}};var c={persisted:false,reason:"could not load the existing store — not overwriting it"};var i={persisted:false,reason:"stored value changed since a failed read — re-read this key before saving"};var h=new Set;var t={get:(W)=>{if(typeof W!=="string"){return Promise.reject(new TypeError("storage.get: key must be a string"))}return T(_).then(($)=>{if($===null){h.add(W);return null}h.delete(W);if(!$.has(W))return null;const z=$.get(W);return z==null?null:JSON.parse(JSON.stringify(z))})},set:(W,$)=>{if(typeof W!=="string"){return Promise.reject(new TypeError("storage.set: key must be a string"))}let z;try{z=JSON.stringify($)}catch(X){return Promise.reject(new TypeError("storage.set: value must be JSON-serializable ("+String(X)+")"))}if(z===undefined){return Promise.reject(new TypeError("storage.set: value must be JSON-serializable"))}r(W,z,$);const q=JSON.parse(z);return T(()=>_().then((X)=>{if(X===null)return c;if(h.has(W)){if(X.has(W))return i;h.delete(W)}X.set(W,q);return y(X)}))},delete:(W)=>{if(typeof W!=="string"){return Promise.reject(new TypeError("storage.delete: key must be a string"))}return T(()=>_().then(($)=>{if($===null)return c;if(h.has(W)){if($.has(W))return i;h.delete(W)}$.delete(W);return y($)}))},keys:()=>T(_).then((W)=>W===null?[]:Array.from(W.keys()))};window.omelette={writeFile:(W,$)=>k(W,$).then((z)=>{if(!z.persisted&&!z.noHost){throw new Error(z.reason||"write failed")}}),storage:t};if(I&&I!==window){const W=(J,Q)=>{try{I.postMessage({__omelette_log:true,type:J,data:Q},"*")}catch{}};["log","warn","error"].forEach((J)=>{const Q=console[J];console[J]=(...V)=>{const Y=V.map((Z)=>{try{return typeof Z==="object"?JSON.stringify(Z):String(Z)}catch{try{return String(Z)}catch{return"[unstringifiable]"}}}).join(" ");W(J,Y);Q.apply(console,V)}});window.addEventListener("error",(J)=>{const Q=J.target;if(Q&&Q!==window&&Q.tagName){const V=Q.src||Q.href||"";W("resource_error",`${Q.tagName} failed to load: ${V}`)}else{W("error",`${J.message||"Unknown error"} at ${J.filename||"?"}:${J.lineno||0}:${J.colno||0}`)}},true);window.addEventListener("unhandledrejection",(J)=>{const Q=J.reason;const V=Q instanceof Error?`${Q.message} ${Q.stack}`:String(Q);W("error",`Unhandled rejection: ${V}`)});window.addEventListener("click",(J)=>{if(J.defaultPrevented||J.button!==0)return;if(J.metaKey||J.ctrlKey||J.shiftKey||J.altKey)return;const Q=J.composedPath?J.composedPath():[];const V=["button","input","select","textarea","summary","label"];let Y=null;for(const x of Q){if(!(x instanceof Element))continue;if(x.localName==="a"){if(!(x instanceof HTMLAnchorElement))return;Y=x;break}if(V.indexOf(x.localName)!==-1)return}if(!Y)return;if(Y.isContentEditable)return;const Z=Y.closest("[contenteditable]");if(Z&&Z.getAttribute("contenteditable")!=="false")return;const B=(Y.getAttribute("target")||"_self").toLowerCase();if(B!=="_self"&&B!=="_top"&&B!=="_parent")return;let U;try{U=new URL(Y.href)}catch{return}if(U.protocol!=="http:"&&U.protocol!=="https:")return;if(location.origin==="null")return;if(U.origin===location.origin)return;J.preventDefault();window.open(U.href,"_blank","noopener,noreferrer")});const $=()=>{try{I.postMessage({type:"omelette:height",height:document.documentElement.scrollHeight},"*")}catch{}};if(window.ResizeObserver)new ResizeObserver($).observe(document.documentElement);const z=()=>{$();if(!document.querySelector('script[type="text/babel"],script[type="text/jsx"]'))return;const J=()=>document.getElementById("root")||document.querySelector("body > div[id]");const Q=J()?.firstElementChild??null;let V=0;const Y=()=>{const Z=J();if(Z&&Z.firstElementChild!==Q||++V>30){$();return}setTimeout(Y,100)};setTimeout(Y,100)};if(document.readyState==="complete")z();else window.addEventListener("load",z);const q={};let X=0;const H=(J)=>new Promise((Q,V)=>{if(!b.length){V(new Error("claude.complete: no parent origin"));return}const Y=`c${++X}`;const Z=()=>setTimeout(()=>{delete q[Y];V(new Error(`claude.complete: no data for ${u/1000}s`))},u);const B=Z();q[Y]={resolve:Q,reject:V,text:"",t:B,arm:Z};try{for(const U of b){I.postMessage({__om_api:true,id:Y,body:J},U)}}catch(U){clearTimeout(B);delete q[Y];V(U)}});const j=8;const F=async(J,Q)=>{if(!Array.isArray(J.messages)){throw new Error("claude.complete: tools require a messages array")}const V=J.messages.slice();const Y={...J,tools:J.tools.map((U)=>{if(U===null||typeof U!=="object")return U;const x={};for(const K of Object.keys(U)){if(typeof U[K]!=="function")x[K]=U[K]}return x})};const Z=Y.tool_choice;const B=Z!=null&&(Z.type==="any"||Z.type==="tool")?{...Y,tool_choice:Z.disable_parallel_tool_use!==undefined?{type:"auto",disable_parallel_tool_use:Z.disable_parallel_tool_use}:{type:"auto"}}:Y;for(let U=0;U<j;U++){const x=await H({...U===0?Y:B,messages:V});const K=x.message;const M=K&&Array.isArray(K.content)?K.content:null;const L=M?M.filter((D)=>D?.type==="tool_use"):[];if(K?.stop_reason!=="tool_use"||L.length===0){return x.text}const N=[];for(const D of L){const f=Q.get(D.name);if(!f){N.push({type:"tool_result",tool_use_id:D.id,content:`no handler for tool "${D.name}"`,is_error:true});continue}try{const C=await f(D.input);const w=typeof C==="string"?C:R(C)??"";N.push({type:"tool_result",tool_use_id:D.id,content:w})}catch(C){N.push({type:"tool_result",tool_use_id:D.id,content:String(C?.message??C??"tool handler failed"),is_error:true})}}V.push({role:"assistant",content:M},{role:"user",content:N})}throw new Error(`claude.complete: exceeded ${j} tool turns`)};window.claude={complete(J){const Q=J;if(Q!==null&&typeof Q==="object"&&Array.isArray(Q.tools)&&Q.tools.some((V)=>V!==null&&typeof V==="object"&&typeof V.run==="function")){const V=new Map;for(const Y of Q.tools){if(Y!==null&&typeof Y==="object"&&typeof Y.run==="function"){V.set(String(Y.name),Y.run)}}return F(Q,V)}return H(J).then((V)=>V.text)}};const G={};let P=0;k=(J,Q)=>new Promise((V)=>{if(!b.length){V({persisted:false,noHost:true,reason:g});return}const Y=`f${++P}`;const Z=setTimeout(()=>{delete G[Y];V({persisted:false,noHost:true,reason:g})},d);G[Y]={settle:V,t:Z};try{for(const B of b){I.postMessage({__om_file:true,id:Y,op:"write",path:J,content:Q},B)}}catch{clearTimeout(Z);delete G[Y];V({persisted:false,noHost:true,reason:g})}});const R=(J)=>{try{return JSON.stringify(J)}catch{return JSON.stringify(String(J))}};window.addEventListener("message",(J)=>{if(b.indexOf(J.origin)<0)return;if(J.source!==I)return;const Q=J.data;if(!Q)return;if(Q.type==="omelette-preview-refresh"){if(typeof Q.token!=="string"||!/^[0-9a-f.-]+(\.(rc|pr-[0-9]+))?(\.[0-9]+\.[0-9a-f]{16})?$/.test(Q.token))return;const Z=Math.max(1,Math.floor((Q.expiresAt||0)-Date.now()/1000));document.cookie="__Host-omelette-preview="+Q.token+"; Path=/; Secure; SameSite=None; Partitioned; Max-Age="+Z;return}if(Q.__om_file_r){const Z=G[Q.id];if(!Z)return;clearTimeout(Z.t);delete G[Q.id];Z.settle(Q.ok?{persisted:true}:{persisted:false,reason:Q.error||"write failed"});return}if(Q.__om_api_r){const Z=q[Q.id];if(!Z)return;if(Q.error!=null){clearTimeout(Z.t);delete q[Q.id];Z.reject(new Error(Q.error));return}if(Q.chunk!=null){clearTimeout(Z.t);Z.t=Z.arm();Z.text+=Q.chunk;return}if(Q.done){clearTimeout(Z.t);delete q[Q.id];Z.resolve({text:Q.text!=null?Q.text:Z.text,message:Q.message});return}return}if(!Q.__om_eval)return;const V=Q;const Y=(Z)=>{J.source.postMessage({...Z,__om_eval_r:1,id:V.id},J.origin)};try{const Z=(0,eval)(V.code);if(Z&&typeof Z.then==="function"){Z.then((B)=>Y({ok:1,v:R(B)}),(B)=>Y({ok:0,e:String(B)}))}else{Y({ok:1,v:R(Z)})}}catch(Z){Y({ok:0,e:String(Z)})}})}})();
+</script>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="stylesheet" href="_ds/broadsheet-e33169e9-81be-46f1-9b6b-64df03b8e3dc/styles.css">
+<script src="_ds/broadsheet-e33169e9-81be-46f1-9b6b-64df03b8e3dc/_ds_bundle.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/duotone/style.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&family=Noto+Serif:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Noto+Sans+Arabic:wght@400;600&display=swap">
+<style>
+body{margin:0;background:#dcd9d8;font-family:system-ui,sans-serif}
+a{color:var(--color-accent)}a:hover{color:var(--color-accent-600)}
+.dv-turn{padding:40px 44px 32px;scroll-margin-top:16px}
+.dv-thd{display:flex;align-items:baseline;gap:10px;margin:0 0 20px}
+.dv-tid{font:600 10px ui-monospace,Menlo,monospace;padding:3px 7px;background:#1a1a1a;color:#fff;border-radius:4px;text-decoration:none}
+.dv-tname{font:600 13px/1.2 system-ui,sans-serif;color:#1a1a1a}
+.dv-opts{display:flex;flex-wrap:wrap;gap:32px;align-items:flex-start}
+.dv-opt{flex:none;display:flex;flex-direction:column;gap:9px;scroll-margin-top:16px}
+.dv-oid{font:600 10.5px ui-monospace,Menlo,monospace;padding:3px 7px;background:rgba(0,0,0,.08);color:#1a1a1a;border-radius:5px;text-decoration:none}
+.dv-olabel{display:flex;align-items:baseline;gap:8px;font:400 11px/1.3 system-ui,sans-serif;color:rgba(0,0,0,.55);max-width:420px}
+.dv-card{max-width:100%;background:var(--color-bg);border:1px solid rgba(0,0,0,.1);border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.06);overflow:hidden}
+.dv-opt:target .dv-oid{background:#2a78d6;color:#fff}
+.dv-next{margin:22px 0 0;font:12px/1.5 system-ui,sans-serif;color:rgba(0,0,0,.5)}
+</style>
+</helmet>
+<section class="dv-turn" id="t9">
+<div class="dv-thd"><a class="dv-tid" href="#t9">9</a><span class="dv-tname">8a 定稿 — 主屏同框 + 交付规格。图形不再改动，本轮只交代它怎么落地。</span></div>
+<div class="dv-opts">
+
+<div class="dv-opt" id="9a">
+<div class="dv-olabel"><a class="dv-oid" href="#9a">9a</a>主屏同框 — 与邻居图标一起看，验证三种外观下都不塌。邻居为占位图形。</div>
+<div class="dv-card" style="width:420px;padding:22px">
+<div style="font-family:'IBM Plex Sans','Noto Sans SC',sans-serif;color:var(--color-text);display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+  <div style="display:flex;flex-direction:column;gap:7px"><div style="border-radius:8px;overflow:hidden;padding:13px 11px;background:linear-gradient(155deg,#c9d1d4,#9aa5ab 70%,#7f8a91);display:grid;grid-template-columns:1fr 1fr;gap:11px 10px">
+<div style="display:flex;flex-direction:column;align-items:center;gap:4px"><div style="width:100%;aspect-ratio:1;border-radius:22.4%;overflow:hidden;background:linear-gradient(180deg,#2c2c2f,#0d0d0f)"><svg viewBox="0 0 120 120" style="width:100%;height:100%;display:block"><defs><clipPath id="h1"><path d="M0 0 H120 V64 L64 120 H0 Z"></path></clipPath></defs><rect width="120" height="120" fill="#f4f3f2"></rect><path d="M120 68 L120 120 L68 120 Z" fill="#0088b0"></path><g clip-path="url(#h1)" stroke="#201e1d" stroke-width="4" fill="none"><path d="M16 -4 V124"></path><path d="M68 -4 V124"></path><path d="M-4 28 H124"></path><path d="M-4 80 H124"></path></g><path d="M126 62 L62 126" stroke="#201e1d" stroke-width="4" fill="none"></path></svg></div><span style="font-size:6.5px;font-weight:500;color:#ffffff;text-shadow:0 1px 2px rgba(0,0,0,.45)">Tile Calc</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:4px"><div style="width:100%;aspect-ratio:1;border-radius:22.4%;background:#a8a29c;display:flex;align-items:center;justify-content:center"><span style="width:44%;height:44%;border-radius:50%;background:#ffffff;opacity:.75"></span></div><span style="width:58%;height:3px;border-radius:2px;background:rgba(255,255,255,.42)"></span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:4px"><div style="width:100%;aspect-ratio:1;border-radius:22.4%;background:#a8a29c;display:flex;align-items:center;justify-content:center"><span style="width:46%;height:16%;border-radius:1px;background:#ffffff;opacity:.75"></span></div><span style="width:58%;height:3px;border-radius:2px;background:rgba(255,255,255,.42)"></span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:4px"><div style="width:100%;aspect-ratio:1;border-radius:22.4%;background:#a8a29c;display:flex;align-items:center;justify-content:center"><span style="width:40%;height:40%;border-radius:2px;background:#ffffff;opacity:.75"></span></div><span style="width:58%;height:3px;border-radius:2px;background:rgba(255,255,255,.42)"></span></div>
+</div><div style="font-size:10px;color:var(--color-neutral-600);text-align:center">Light</div></div>
+  <div style="display:flex;flex-direction:column;gap:7px"><div style="border-radius:8px;overflow:hidden;padding:13px 11px;background:linear-gradient(155deg,#26272a,#0b0b0d);display:grid;grid-template-columns:1fr 1fr;gap:11px 10px">
+<div style="display:flex;flex-direction:column;align-items:center;gap:4px"><div style="width:100%;aspect-ratio:1;border-radius:22.4%;overflow:hidden;background:linear-gradient(180deg,#2c2c2f,#0d0d0f)"><svg viewBox="0 0 120 120" style="width:100%;height:100%;display:block"><defs><mask id="h2"><rect width="120" height="120" fill="#fff"></rect><g stroke="#000" stroke-width="4" fill="none"><path d="M16 -4 V124"></path><path d="M68 -4 V124"></path><path d="M-4 28 H124"></path><path d="M-4 80 H124"></path><path d="M126 62 L62 126"></path></g></mask></defs><rect width="120" height="120" fill="#ffffff" opacity="0.15" mask="url(#h2)"></rect><path d="M120 68 L120 120 L68 120 Z" fill="#62c5ee"></path></svg></div><span style="font-size:6.5px;font-weight:500;color:#e8e6e4;text-shadow:0 1px 2px rgba(0,0,0,.45)">Tile Calc</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:4px"><div style="width:100%;aspect-ratio:1;border-radius:22.4%;background:linear-gradient(180deg,#2c2c2f,#0d0d0f);display:flex;align-items:center;justify-content:center"><span style="width:44%;height:44%;border-radius:50%;background:#e8e6e4;opacity:.75"></span></div><span style="width:58%;height:3px;border-radius:2px;background:rgba(255,255,255,.42)"></span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:4px"><div style="width:100%;aspect-ratio:1;border-radius:22.4%;background:linear-gradient(180deg,#2c2c2f,#0d0d0f);display:flex;align-items:center;justify-content:center"><span style="width:46%;height:16%;border-radius:1px;background:#e8e6e4;opacity:.75"></span></div><span style="width:58%;height:3px;border-radius:2px;background:rgba(255,255,255,.42)"></span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:4px"><div style="width:100%;aspect-ratio:1;border-radius:22.4%;background:linear-gradient(180deg,#2c2c2f,#0d0d0f);display:flex;align-items:center;justify-content:center"><span style="width:40%;height:40%;border-radius:2px;background:#e8e6e4;opacity:.75"></span></div><span style="width:58%;height:3px;border-radius:2px;background:rgba(255,255,255,.42)"></span></div>
+</div><div style="font-size:10px;color:var(--color-neutral-600);text-align:center">Dark</div></div>
+  <div style="display:flex;flex-direction:column;gap:7px"><div style="border-radius:8px;overflow:hidden;padding:13px 11px;background:linear-gradient(155deg,#26272a,#0b0b0d);display:grid;grid-template-columns:1fr 1fr;gap:11px 10px">
+<div style="display:flex;flex-direction:column;align-items:center;gap:4px"><div style="width:100%;aspect-ratio:1;border-radius:22.4%;overflow:hidden;background:linear-gradient(180deg,#2c2c2f,#0d0d0f)"><svg viewBox="0 0 120 120" style="width:100%;height:100%;display:block"><defs><linearGradient id="h3g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#dcecf4"></stop><stop offset="1" stop-color="#4f8ba1"></stop></linearGradient></defs><defs><mask id="h3"><rect width="120" height="120" fill="#fff"></rect><g stroke="#000" stroke-width="4" fill="none"><path d="M16 -4 V124"></path><path d="M68 -4 V124"></path><path d="M-4 28 H124"></path><path d="M-4 80 H124"></path><path d="M126 62 L62 126"></path></g></mask></defs><rect width="120" height="120" fill="url(#h3g)" opacity="0.3" mask="url(#h3)"></rect><path d="M120 68 L120 120 L68 120 Z" fill="url(#h3g)"></path></svg></div><span style="font-size:6.5px;font-weight:500;color:#cfe4ee;text-shadow:0 1px 2px rgba(0,0,0,.45)">Tile Calc</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:4px"><div style="width:100%;aspect-ratio:1;border-radius:22.4%;background:linear-gradient(180deg,#2c2c2f,#0d0d0f);display:flex;align-items:center;justify-content:center"><span style="width:44%;height:44%;border-radius:50%;background:#cfe4ee;opacity:.75"></span></div><span style="width:58%;height:3px;border-radius:2px;background:rgba(255,255,255,.42)"></span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:4px"><div style="width:100%;aspect-ratio:1;border-radius:22.4%;background:linear-gradient(180deg,#2c2c2f,#0d0d0f);display:flex;align-items:center;justify-content:center"><span style="width:46%;height:16%;border-radius:1px;background:#cfe4ee;opacity:.75"></span></div><span style="width:58%;height:3px;border-radius:2px;background:rgba(255,255,255,.42)"></span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:4px"><div style="width:100%;aspect-ratio:1;border-radius:22.4%;background:linear-gradient(180deg,#2c2c2f,#0d0d0f);display:flex;align-items:center;justify-content:center"><span style="width:40%;height:40%;border-radius:2px;background:#cfe4ee;opacity:.75"></span></div><span style="width:58%;height:3px;border-radius:2px;background:rgba(255,255,255,.42)"></span></div>
+</div><div style="font-size:10px;color:var(--color-neutral-600);text-align:center">Tinted</div></div>
+</div>
+</div>
+</div>
+
+<div class="dv-opt" id="9b">
+<div class="dv-olabel"><a class="dv-oid" href="#9b">9b</a>三张母版与交付规格 — 棋盘格处为透明。</div>
+<div class="dv-card" style="width:430px;padding:22px">
+<div style="font-family:'IBM Plex Sans','Noto Sans SC',sans-serif;color:var(--color-text);display:flex;flex-direction:column;gap:20px">
+
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px">
+    <div style="display:flex;flex-direction:column;gap:8px"><div style="font:600 9.5px/1 'IBM Plex Sans',sans-serif;letter-spacing:.09em;text-transform:uppercase;color:var(--color-neutral-500)">Default</div><div style="width:100%;aspect-ratio:1;border-radius:6px;overflow:hidden;background:repeating-conic-gradient(rgba(32,30,29,.12) 0 25%,transparent 0 50%) 0 0/12px 12px, #fbfafa"><svg viewBox="0 0 120 120" style="width:100%;height:100%;display:block"><defs><clipPath id="s1"><path d="M0 0 H120 V64 L64 120 H0 Z"></path></clipPath></defs><rect width="120" height="120" fill="#f4f3f2"></rect><path d="M120 68 L120 120 L68 120 Z" fill="#0088b0"></path><g clip-path="url(#s1)" stroke="#201e1d" stroke-width="4" fill="none"><path d="M16 -4 V124"></path><path d="M68 -4 V124"></path><path d="M-4 28 H124"></path><path d="M-4 80 H124"></path></g><path d="M126 62 L62 126" stroke="#201e1d" stroke-width="4" fill="none"></path></svg></div><div style="font-size:10.5px;line-height:1.45;color:var(--color-neutral-600)">不透明，无 alpha</div></div>
+    <div style="display:flex;flex-direction:column;gap:8px"><div style="font:600 9.5px/1 'IBM Plex Sans',sans-serif;letter-spacing:.09em;text-transform:uppercase;color:var(--color-neutral-500)">Dark</div><div style="width:100%;aspect-ratio:1;border-radius:6px;overflow:hidden;background:repeating-conic-gradient(rgba(255,255,255,.16) 0 25%,transparent 0 50%) 0 0/12px 12px, #6a6a6e"><svg viewBox="0 0 120 120" style="width:100%;height:100%;display:block"><defs><mask id="s2"><rect width="120" height="120" fill="#fff"></rect><g stroke="#000" stroke-width="4" fill="none"><path d="M16 -4 V124"></path><path d="M68 -4 V124"></path><path d="M-4 28 H124"></path><path d="M-4 80 H124"></path><path d="M126 62 L62 126"></path></g></mask></defs><rect width="120" height="120" fill="#ffffff" opacity="0.15" mask="url(#s2)"></rect><path d="M120 68 L120 120 L68 120 Z" fill="#62c5ee"></path></svg></div><div style="font-size:10.5px;line-height:1.45;color:var(--color-neutral-600)">背景与缝全透明</div></div>
+    <div style="display:flex;flex-direction:column;gap:8px"><div style="font:600 9.5px/1 'IBM Plex Sans',sans-serif;letter-spacing:.09em;text-transform:uppercase;color:var(--color-neutral-500)">Mono</div><div style="width:100%;aspect-ratio:1;border-radius:6px;overflow:hidden;background:repeating-conic-gradient(rgba(255,255,255,.16) 0 25%,transparent 0 50%) 0 0/12px 12px, #6a6a6e"><svg viewBox="0 0 120 120" style="width:100%;height:100%;display:block"><defs><mask id="s3"><rect width="120" height="120" fill="#fff"></rect><g stroke="#000" stroke-width="4" fill="none"><path d="M16 -4 V124"></path><path d="M68 -4 V124"></path><path d="M-4 28 H124"></path><path d="M-4 80 H124"></path><path d="M126 62 L62 126"></path></g></mask></defs><rect width="120" height="120" fill="#ffffff" opacity="0.42" mask="url(#s3)"></rect><path d="M120 68 L120 120 L68 120 Z" fill="#ffffff"></path></svg></div><div style="font-size:10.5px;line-height:1.45;color:var(--color-neutral-600)">灰度：切下料纯白，铺面 42%</div></div>
+  </div>
+
+  <ul style="margin:0;padding-left:16px;font-size:11.5px;line-height:1.75;color:var(--color-neutral-700)">
+    <li>三张 <span style="font-variant-numeric:tabular-nums">1024×1024</span> 母版 → Icon Composer 的 Default / Dark / Mono 三槽位，导出单个 <span style="font-family:ui-monospace,Menlo,monospace">.icon</span> 拖进 Xcode</li>
+    <li>母版<b>不带圆角、不带遮罩、不带阴影</b>——squircle 与高光由系统渲染</li>
+    <li>Mono 层不要自己上色；Tinted 与 Clear（玻璃）两种外观都由它派生</li>
+    <li>线宽按 1024 折算：勾缝与锯缝 <span style="font-variant-numeric:tabular-nums">34px</span>；模数 <span style="font-variant-numeric:tabular-nums">444px</span>，起铺点距左 <span style="font-variant-numeric:tabular-nums">137px</span>、距上 <span style="font-variant-numeric:tabular-nums">239px</span></li>
+    <li>Android：Mono 层即 <span style="font-family:ui-monospace,Menlo,monospace">monochrome</span> 主题图标层；adaptive icon 前景缩到 <span style="font-variant-numeric:tabular-nums">72%</span> 落进 <span style="font-variant-numeric:tabular-nums">66dp</span> 安全区（出血图形缩放后需重新裁一版，不能直接缩）</li>
+    <li>App Store 商店图 <span style="font-variant-numeric:tabular-nums">1024</span> 用 Default 版，方角不加圆</li>
+  </ul>
+
+</div>
+</div>
+</div>
+
+</div>
+<p class="dv-next">图标到此收口。剩下可做：把它放进 <a class="dv-oid" href="#5b">5b</a> Settings 的 About 行与 <a class="dv-oid" href="#5c">5c</a> 同意首屏；或从 Export 走 Claude Code handoff（token 表见 design-tokens.md）。</p>
+</section>
+<section class="dv-turn" id="t8">
+<div class="dv-thd"><a class="dv-tid" href="#t8">8</a><span class="dv-tname">B · Cut tile 出血版 — 保留切角构图，墨底整个删掉。铺面直接铺满整枚图标、由 squircle 裁切；切角变成对整枚图标的切割，切口把网格一起切断。</span></div>
+<div class="dv-opts">
+
+<div class="dv-opt" id="8a">
+<div class="dv-olabel"><a class="dv-oid" href="#8a">8a</a>三外观。切口线与勾缝同一档线宽（4/120）——它就是一道锯缝，不是描边。切下料走青色，和 App 主色统一。</div>
+<div class="dv-card" style="width:470px;padding:22px">
+<div style="font-family:'IBM Plex Sans','Noto Sans SC',sans-serif;color:var(--color-text);display:flex;flex-direction:column;gap:22px">
+
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px">
+    <div style="display:flex;flex-direction:column;gap:9px"><div style="font:600 9.5px/1 'IBM Plex Sans',sans-serif;letter-spacing:.09em;text-transform:uppercase;color:var(--color-neutral-500)">Light</div><div style="width:100%;aspect-ratio:1;border-radius:22.4%;overflow:hidden;box-shadow:var(--shadow-md)"><svg viewBox="0 0 120 120" style="width:100%;height:100%;display:block"><defs><clipPath id="c8a1"><path d="M0 0 H120 V64 L64 120 H0 Z"></path></clipPath></defs><rect width="120" height="120" fill="#f4f3f2"></rect><path d="M120 68 L120 120 L68 120 Z" fill="#0088b0"></path><g clip-path="url(#c8a1)" stroke="#201e1d" stroke-width="4" fill="none"><path d="M16 -4 V124"></path><path d="M68 -4 V124"></path><path d="M-4 28 H124"></path><path d="M-4 80 H124"></path></g><path d="M126 62 L62 126" stroke="#201e1d" stroke-width="4" fill="none"></path></svg></div></div>
+    <div style="display:flex;flex-direction:column;gap:9px"><div style="font:600 9.5px/1 'IBM Plex Sans',sans-serif;letter-spacing:.09em;text-transform:uppercase;color:var(--color-neutral-500)">Dark</div><div style="width:100%;aspect-ratio:1;border-radius:22.4%;overflow:hidden;box-shadow:var(--shadow-md);background:linear-gradient(180deg,#2c2c2f,#0d0d0f)"><svg viewBox="0 0 120 120" style="width:100%;height:100%;display:block"><defs><mask id="m8d1"><rect width="120" height="120" fill="#fff"></rect><g stroke="#000" stroke-width="4" fill="none"><path d="M16 -4 V124"></path><path d="M68 -4 V124"></path><path d="M-4 28 H124"></path><path d="M-4 80 H124"></path><path d="M126 62 L62 126"></path></g></mask></defs><rect width="120" height="120" fill="#ffffff" opacity="0.15" mask="url(#m8d1)"></rect><path d="M120 68 L120 120 L68 120 Z" fill="#62c5ee"></path></svg></div></div>
+    <div style="display:flex;flex-direction:column;gap:9px"><div style="font:600 9.5px/1 'IBM Plex Sans',sans-serif;letter-spacing:.09em;text-transform:uppercase;color:var(--color-neutral-500)">Tinted</div><div style="width:100%;aspect-ratio:1;border-radius:22.4%;overflow:hidden;box-shadow:var(--shadow-md);background:linear-gradient(180deg,#2c2c2f,#0d0d0f)"><svg viewBox="0 0 120 120" style="width:100%;height:100%;display:block"><defs><linearGradient id="m8t1g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#dcecf4"></stop><stop offset="1" stop-color="#4f8ba1"></stop></linearGradient></defs><defs><mask id="m8t1"><rect width="120" height="120" fill="#fff"></rect><g stroke="#000" stroke-width="4" fill="none"><path d="M16 -4 V124"></path><path d="M68 -4 V124"></path><path d="M-4 28 H124"></path><path d="M-4 80 H124"></path><path d="M126 62 L62 126"></path></g></mask></defs><rect width="120" height="120" fill="url(#m8t1g)" opacity="0.3" mask="url(#m8t1)"></rect><path d="M120 68 L120 120 L68 120 Z" fill="url(#m8t1g)"></path></svg></div></div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px">
+    <div style="display:flex;align-items:flex-end;gap:10px"><div style="width:60px;height:60px;border-radius:22.4%;overflow:hidden;flex:none;box-shadow:var(--shadow-md)"><svg viewBox="0 0 120 120" style="width:100%;height:100%;display:block"><defs><clipPath id="c8a2"><path d="M0 0 H120 V64 L64 120 H0 Z"></path></clipPath></defs><rect width="120" height="120" fill="#f4f3f2"></rect><path d="M120 68 L120 120 L68 120 Z" fill="#0088b0"></path><g clip-path="url(#c8a2)" stroke="#201e1d" stroke-width="4" fill="none"><path d="M16 -4 V124"></path><path d="M68 -4 V124"></path><path d="M-4 28 H124"></path><path d="M-4 80 H124"></path></g><path d="M126 62 L62 126" stroke="#201e1d" stroke-width="4" fill="none"></path></svg></div><div style="width:29px;height:29px;border-radius:22.4%;overflow:hidden;flex:none;box-shadow:var(--shadow-md)"><svg viewBox="0 0 120 120" style="width:100%;height:100%;display:block"><defs><clipPath id="c8a3"><path d="M0 0 H120 V64 L64 120 H0 Z"></path></clipPath></defs><rect width="120" height="120" fill="#f4f3f2"></rect><path d="M120 68 L120 120 L68 120 Z" fill="#0088b0"></path><g clip-path="url(#c8a3)" stroke="#201e1d" stroke-width="4" fill="none"><path d="M16 -4 V124"></path><path d="M68 -4 V124"></path><path d="M-4 28 H124"></path><path d="M-4 80 H124"></path></g><path d="M126 62 L62 126" stroke="#201e1d" stroke-width="4" fill="none"></path></svg></div></div>
+    <div style="display:flex;align-items:flex-end;gap:10px"><div style="width:60px;height:60px;border-radius:22.4%;overflow:hidden;flex:none;box-shadow:var(--shadow-sm);background:linear-gradient(180deg,#2c2c2f,#0d0d0f)"><svg viewBox="0 0 120 120" style="width:100%;height:100%;display:block"><defs><mask id="m8d2"><rect width="120" height="120" fill="#fff"></rect><g stroke="#000" stroke-width="4" fill="none"><path d="M16 -4 V124"></path><path d="M68 -4 V124"></path><path d="M-4 28 H124"></path><path d="M-4 80 H124"></path><path d="M126 62 L62 126"></path></g></mask></defs><rect width="120" height="120" fill="#ffffff" opacity="0.15" mask="url(#m8d2)"></rect><path d="M120 68 L120 120 L68 120 Z" fill="#62c5ee"></path></svg></div><div style="width:29px;height:29px;border-radius:22.4%;overflow:hidden;flex:none;box-shadow:var(--shadow-sm);background:linear-gradient(180deg,#2c2c2f,#0d0d0f)"><svg viewBox="0 0 120 120" style="width:100%;height:100%;display:block"><defs><mask id="m8d3"><rect width="120" height="120" fill="#fff"></rect><g stroke="#000" stroke-width="4" fill="none"><path d="M16 -4 V124"></path><path d="M68 -4 V124"></path><path d="M-4 28 H124"></path><path d="M-4 80 H124"></path><path d="M126 62 L62 126"></path></g></mask></defs><rect width="120" height="120" fill="#ffffff" opacity="0.15" mask="url(#m8d3)"></rect><path d="M120 68 L120 120 L68 120 Z" fill="#62c5ee"></path></svg></div></div>
+    <div style="display:flex;align-items:flex-end;gap:10px"><div style="width:60px;height:60px;border-radius:22.4%;overflow:hidden;flex:none;box-shadow:var(--shadow-sm);background:linear-gradient(180deg,#2c2c2f,#0d0d0f)"><svg viewBox="0 0 120 120" style="width:100%;height:100%;display:block"><defs><linearGradient id="m8t2g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#dcecf4"></stop><stop offset="1" stop-color="#4f8ba1"></stop></linearGradient></defs><defs><mask id="m8t2"><rect width="120" height="120" fill="#fff"></rect><g stroke="#000" stroke-width="4" fill="none"><path d="M16 -4 V124"></path><path d="M68 -4 V124"></path><path d="M-4 28 H124"></path><path d="M-4 80 H124"></path><path d="M126 62 L62 126"></path></g></mask></defs><rect width="120" height="120" fill="url(#m8t2g)" opacity="0.3" mask="url(#m8t2)"></rect><path d="M120 68 L120 120 L68 120 Z" fill="url(#m8t2g)"></path></svg></div><div style="width:29px;height:29px;border-radius:22.4%;overflow:hidden;flex:none;box-shadow:var(--shadow-sm);background:linear-gradient(180deg,#2c2c2f,#0d0d0f)"><svg viewBox="0 0 120 120" style="width:100%;height:100%;display:block"><defs><linearGradient id="m8t3g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#dcecf4"></stop><stop offset="1" stop-color="#4f8ba1"></stop></linearGradient></defs><defs><mask id="m8t3"><rect width="120" height="120" fill="#fff"></rect><g stroke="#000" stroke-width="4" fill="none"><path d="M16 -4 V124"></path><path d="M68 -4 V124"></path><path d="M-4 28 H124"></path><path d="M-4 80 H124"></path><path d="M126 62 L62 126"></path></g></mask></defs><rect width="120" height="120" fill="url(#m8t3g)" opacity="0.3" mask="url(#m8t3)"></rect><path d="M120 68 L120 120 L68 120 Z" fill="url(#m8t3g)"></path></svg></div></div>
+  </div>
+
+  <p style="margin:0;font-size:11.5px;line-height:1.6;color:var(--color-neutral-700)">浅色是纸面 + 墨勾缝 + 青色切下料（与 App 主色一致）；深色把纸面换成 15% 白，勾缝与锯缝变成透出系统底的<b>空隙</b>（不是画上去的黑线），切下料提到 dark primary <span style="font-variant-numeric:tabular-nums">#62C5EE</span>；着色版铺面 30%、切下料 100%，切角成为最亮处。三版恒定的是「被切掉一角的铺面」这个轮廓。网格不再居中：砖是同一个 <span style="font-variant-numeric:tabular-nums">52/120</span> 模数，但起铺点偏左上，左边留 <span style="font-variant-numeric:tabular-nums">16</span>、上边 <span style="font-variant-numeric:tabular-nums">28</span>、下边 <span style="font-variant-numeric:tabular-nums">40</span>、右边正好一整块——像真实房间那样，只有一面墙是从整砖起铺的。</p>
+
+</div>
+</div>
+</div>
+
+<div class="dv-opt" id="8b">
+<div class="dv-olabel"><a class="dv-oid" href="#8b">8b</a>深色版铺面的一处取舍。</div>
+<div class="dv-card" style="width:330px;padding:22px">
+<div style="font-family:'IBM Plex Sans','Noto Sans SC',sans-serif;color:var(--color-text);display:flex;flex-direction:column;gap:20px">
+
+  <div style="display:flex;gap:14px;align-items:center">
+    <div style="width:72px;height:72px;border-radius:22.4%;overflow:hidden;flex:none;box-shadow:var(--shadow-sm);background:linear-gradient(180deg,#2c2c2f,#0d0d0f)"><svg viewBox="0 0 120 120" style="width:100%;height:100%;display:block"><defs><mask id="m8b2"><rect width="120" height="120" fill="#fff"></rect><g stroke="#000" stroke-width="4" fill="none"><path d="M16 -4 V124"></path><path d="M68 -4 V124"></path><path d="M-4 28 H124"></path><path d="M-4 80 H124"></path><path d="M126 62 L62 126"></path></g></mask></defs><rect width="120" height="120" fill="#d3cfcc" mask="url(#m8b2)"></rect><path d="M120 68 L120 120 L68 120 Z" fill="#62c5ee"></path></svg></div>
+    <div style="flex:1">
+      <div style="font-size:12px;font-weight:600;margin-bottom:4px">深色版铺面保持不透明</div>
+      <p style="margin:0;font-size:11.5px;line-height:1.55;color:var(--color-neutral-600)">和浅色版长得更像，但深色模式下等于一整块亮面，夜里会发光。<b>不推荐</b>——8a 的 15% 白才是 iOS 深色图标的常规做法。</p>
+    </div>
+  </div>
+
+</div>
+</div>
+</div>
+
+</div>
+<p class="dv-next">选定后我补主屏同框与交付规格（1024 母版 / Mono 层 / Android monochrome 复用）。</p>
+</section>
+<section class="dv-turn" id="t5">
+<div class="dv-thd"><a class="dv-tid" href="#t5">5</a><span class="dv-tname">其余屏幕 — 3.5 History · 3.6 Settings（含 Language 展开）· 3.8 隐私同意（UMP + ATT）。界面文案英文，全部 IBM Plex Sans。</span></div>
+<div class="dv-opts">
+
+<div class="dv-opt" id="5a">
+<div class="dv-olabel"><a class="dv-oid" href="#5a">5a</a>3.5 History — 倒序列表，整条点击恢复，左滑删除（第 2 行已滑开露出 Delete，用 error 色而非 cutout 品红），右上角 Clear all。历史无限免费，无条数上限/升级提示。右为空状态。</div>
+<div style="display:flex;gap:16px">
+<div class="dv-card" style="width:412px">
+<div style="display:flex;flex-direction:column;height:915px;font-family:'IBM Plex Sans','Noto Sans SC',sans-serif;color:var(--color-text)">
+  <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 18px 0;font-size:13px;font-weight:600;font-variant-numeric:tabular-nums"><span>9:41</span><span style="display:flex;gap:6px;color:var(--color-neutral-700)"><i class="ph-duotone ph-cell-signal-full" style="font-size:14px"></i><i class="ph-duotone ph-wifi-high" style="font-size:14px"></i><i class="ph-duotone ph-battery-high" style="font-size:15px"></i></span></div>
+  <div style="display:flex;align-items:center;gap:4px;padding:8px 12px 8px 8px">
+    <span style="display:flex;align-items:center;justify-content:center;width:44px;height:44px;color:var(--color-text)"><i class="ph-duotone ph-caret-left" style="font-size:22px"></i></span>
+    <span style="flex:1;font-size:19px;font-weight:600">History</span>
+    <span style="display:flex;align-items:center;justify-content:center;height:44px;padding:0 12px;font-size:14px;font-weight:600;color:var(--color-accent-700)">Clear all</span>
+  </div>
+  <div style="flex:1;overflow:hidden;display:flex;flex-direction:column">
+    <div style="display:flex;align-items:center;gap:12px;padding:14px 18px;border-top:1px solid var(--color-divider)">
+      <div style="flex:1;min-width:0">
+        <div style="font-size:16px;font-weight:600;font-variant-numeric:tabular-nums">129.33 ft² · 141 tiles</div>
+        <div style="font-size:12.5px;color:var(--color-neutral-600);margin-top:3px;font-variant-numeric:tabular-nums">17 boxes · $425.00 · 12×12 straight</div>
+      </div>
+      <span style="font-size:12px;color:var(--color-neutral-500);white-space:nowrap">2 hours ago</span>
+      <i class="ph-duotone ph-caret-right" style="font-size:16px;color:var(--color-neutral-500)"></i>
+    </div>
+    <div style="position:relative;border-top:1px solid var(--color-divider);overflow:hidden">
+      <div style="position:absolute;inset:0;background:var(--color-error, #B3261E);display:flex;align-items:center;justify-content:flex-end;padding-right:22px;color:#fff"><span style="display:flex;flex-direction:column;align-items:center;gap:2px"><i class="ph-duotone ph-trash" style="font-size:20px"></i><span style="font-size:11px;font-weight:600">Delete</span></span></div>
+      <div style="position:relative;transform:translateX(-88px);display:flex;align-items:center;gap:12px;padding:14px 18px;background:var(--color-bg);box-shadow:-6px 0 12px rgba(32,30,29,0.1)">
+        <div style="flex:1;min-width:0">
+          <div style="font-size:16px;font-weight:600;font-variant-numeric:tabular-nums">86.00 ft² · 98 tiles</div>
+          <div style="font-size:12.5px;color:var(--color-neutral-600);margin-top:3px;font-variant-numeric:tabular-nums">12 boxes · $288.00 · 18×18 straight</div>
+        </div>
+        <span style="font-size:12px;color:var(--color-neutral-500);white-space:nowrap">Yesterday</span>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;padding:14px 18px;border-top:1px solid var(--color-divider)">
+      <div style="flex:1;min-width:0">
+        <div style="font-size:16px;font-weight:600;font-variant-numeric:tabular-nums">45.50 ft² · 66 tiles</div>
+        <div style="font-size:12.5px;color:var(--color-neutral-600);margin-top:3px;font-variant-numeric:tabular-nums">6×6 diagonal · 15% waste</div>
+      </div>
+      <span style="font-size:12px;color:var(--color-neutral-500);white-space:nowrap">3 days ago</span>
+      <i class="ph-duotone ph-caret-right" style="font-size:16px;color:var(--color-neutral-500)"></i>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;padding:14px 18px;border-top:1px solid var(--color-divider)">
+      <div style="flex:1;min-width:0">
+        <div style="font-size:16px;font-weight:600;font-variant-numeric:tabular-nums">212.75 ft² · 232 tiles</div>
+        <div style="font-size:12.5px;color:var(--color-neutral-600);margin-top:3px;font-variant-numeric:tabular-nums">24×24 herringbone · 20% waste</div>
+      </div>
+      <span style="font-size:12px;color:var(--color-neutral-500);white-space:nowrap">Last week</span>
+      <i class="ph-duotone ph-caret-right" style="font-size:16px;color:var(--color-neutral-500)"></i>
+    </div>
+    <div style="border-top:1px solid var(--color-divider)"></div>
+    <div style="padding:14px 18px 0;font-size:11.5px;color:var(--color-neutral-500);display:flex;align-items:center;gap:6px"><i class="ph-duotone ph-infinity" style="font-size:15px"></i>Every calculation is saved — free, no limit.</div>
+  </div>
+  <div style="height:18px;background:var(--color-bg);background-image:repeating-linear-gradient(90deg,var(--color-neutral-400) 0 1px,transparent 1px 8px),repeating-linear-gradient(90deg,var(--color-neutral-500) 0 1px,transparent 1px 40px);background-repeat:no-repeat;background-size:100% 6px,100% 11px;background-position:top left,top left"></div>
+  <div style="height:60px;background:var(--color-neutral-200);background-image:repeating-linear-gradient(45deg,transparent 0 10px,rgba(32,30,29,0.035) 10px 11px);display:flex;align-items:center;justify-content:center;color:var(--color-neutral-600);font-size:11px;letter-spacing:0.08em;text-transform:uppercase">Ad · anchored adaptive banner · 50–70dp</div>
+</div>
+</div>
+<div class="dv-card" style="width:412px">
+<div style="display:flex;flex-direction:column;height:915px;font-family:'IBM Plex Sans','Noto Sans SC',sans-serif;color:var(--color-text)">
+  <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 18px 0;font-size:13px;font-weight:600;font-variant-numeric:tabular-nums"><span>9:41</span><span style="display:flex;gap:6px;color:var(--color-neutral-700)"><i class="ph-duotone ph-cell-signal-full" style="font-size:14px"></i><i class="ph-duotone ph-wifi-high" style="font-size:14px"></i><i class="ph-duotone ph-battery-high" style="font-size:15px"></i></span></div>
+  <div style="display:flex;align-items:center;gap:4px;padding:8px 12px 8px 8px">
+    <span style="display:flex;align-items:center;justify-content:center;width:44px;height:44px;color:var(--color-text)"><i class="ph-duotone ph-caret-left" style="font-size:22px"></i></span>
+    <span style="flex:1;font-size:19px;font-weight:600">History</span>
+    <span style="display:flex;align-items:center;justify-content:center;height:44px;padding:0 12px;font-size:14px;font-weight:600;color:var(--color-neutral-400)">Clear all</span>
+  </div>
+  <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:0 40px;text-align:center">
+    <i class="ph-duotone ph-clock-counter-clockwise" style="font-size:40px;color:var(--color-neutral-400)"></i>
+    <span style="font-size:15px;color:var(--color-neutral-600);line-height:1.5">Your calculations will appear here.</span>
+  </div>
+  <div style="height:18px;background:var(--color-bg);background-image:repeating-linear-gradient(90deg,var(--color-neutral-400) 0 1px,transparent 1px 8px),repeating-linear-gradient(90deg,var(--color-neutral-500) 0 1px,transparent 1px 40px);background-repeat:no-repeat;background-size:100% 6px,100% 11px;background-position:top left,top left"></div>
+  <div style="height:60px;background:var(--color-neutral-200);background-image:repeating-linear-gradient(45deg,transparent 0 10px,rgba(32,30,29,0.035) 10px 11px);display:flex;align-items:center;justify-content:center;color:var(--color-neutral-600);font-size:11px;letter-spacing:0.08em;text-transform:uppercase">Ad · anchored adaptive banner · 50–70dp</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="dv-opt" id="5b">
+<div class="dv-olabel"><a class="dv-oid" href="#5b">5b</a>3.6 Settings — Units 分段控件、Language（v2.1.x 新增，右为展开态含支持语言列表）、Currency symbol 文本输入、Appearance 跟随系统、Privacy policy / Rate / Version。行内用极细分隔线（组件内允许），组间靠留白。</div>
+<div style="display:flex;gap:16px">
+<div class="dv-card" style="width:412px">
+<div style="display:flex;flex-direction:column;height:915px;font-family:'IBM Plex Sans','Noto Sans SC',sans-serif;color:var(--color-text)">
+  <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 18px 0;font-size:13px;font-weight:600;font-variant-numeric:tabular-nums"><span>9:41</span><span style="display:flex;gap:6px;color:var(--color-neutral-700)"><i class="ph-duotone ph-cell-signal-full" style="font-size:14px"></i><i class="ph-duotone ph-wifi-high" style="font-size:14px"></i><i class="ph-duotone ph-battery-high" style="font-size:15px"></i></span></div>
+  <div style="display:flex;align-items:center;gap:4px;padding:8px 12px 8px 8px">
+    <span style="display:flex;align-items:center;justify-content:center;width:44px;height:44px;color:var(--color-text)"><i class="ph-duotone ph-caret-left" style="font-size:22px"></i></span>
+    <span style="flex:1;font-size:19px;font-weight:600">Settings</span>
+  </div>
+  <div style="flex:1;overflow:hidden;padding:8px 18px 0;display:flex;flex-direction:column">
+    <div style="display:flex;align-items:center;gap:12px;min-height:64px;border-top:1px solid var(--color-divider)">
+      <span style="flex:1;font-size:16px">Units</span>
+      <div style="display:flex;gap:4px;padding:3px;background:var(--color-neutral-100);border:1px solid var(--color-divider);border-radius:var(--radius-md)">
+        <span style="display:flex;align-items:center;height:34px;padding:0 14px;background:var(--color-accent-700);color:var(--color-bg);border-radius:3px;font-size:14px;font-weight:600">Imperial</span>
+        <span style="display:flex;align-items:center;height:34px;padding:0 14px;color:var(--color-neutral-800);font-size:14px">Metric</span>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;min-height:64px;border-top:1px solid var(--color-divider)">
+      <span style="flex:1;font-size:16px">Language</span>
+      <span style="font-size:15px;color:var(--color-neutral-600)">System</span>
+      <i class="ph-duotone ph-caret-right" style="font-size:16px;color:var(--color-neutral-500)"></i>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;min-height:64px;border-top:1px solid var(--color-divider)">
+      <span style="flex:1;font-size:16px">Currency symbol</span>
+      <div style="display:flex;align-items:center;justify-content:center;width:56px;height:44px;background:var(--color-surface);border:1px solid var(--color-divider);border-radius:var(--radius-md);font-size:16px">$</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;min-height:64px;border-top:1px solid var(--color-divider);border-bottom:1px solid var(--color-divider)">
+      <span style="flex:1;font-size:16px">Appearance</span>
+      <span style="font-size:15px;color:var(--color-neutral-600)">System</span>
+      <i class="ph-duotone ph-caret-right" style="font-size:16px;color:var(--color-neutral-500)"></i>
+    </div>
+    <div style="height:24px"></div>
+    <div style="display:flex;align-items:center;gap:12px;min-height:56px;border-top:1px solid var(--color-divider)">
+      <span style="flex:1;font-size:16px">Privacy policy</span>
+      <i class="ph-duotone ph-arrow-up-right" style="font-size:16px;color:var(--color-neutral-500)"></i>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;min-height:56px;border-top:1px solid var(--color-divider)">
+      <span style="flex:1;font-size:16px">Rate this app</span>
+      <i class="ph-duotone ph-caret-right" style="font-size:16px;color:var(--color-neutral-500)"></i>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;min-height:56px;border-top:1px solid var(--color-divider);border-bottom:1px solid var(--color-divider)">
+      <span style="flex:1;font-size:16px;color:var(--color-neutral-600)">Version</span>
+      <span style="font-size:15px;color:var(--color-neutral-500);font-variant-numeric:tabular-nums">1.0.0</span>
+    </div>
+  </div>
+  <div style="height:18px;background:var(--color-bg);background-image:repeating-linear-gradient(90deg,var(--color-neutral-400) 0 1px,transparent 1px 8px),repeating-linear-gradient(90deg,var(--color-neutral-500) 0 1px,transparent 1px 40px);background-repeat:no-repeat;background-size:100% 6px,100% 11px;background-position:top left,top left"></div>
+  <div style="height:60px;background:var(--color-neutral-200);background-image:repeating-linear-gradient(45deg,transparent 0 10px,rgba(32,30,29,0.035) 10px 11px);display:flex;align-items:center;justify-content:center;color:var(--color-neutral-600);font-size:11px;letter-spacing:0.08em;text-transform:uppercase">Ad · anchored adaptive banner · 50–70dp</div>
+</div>
+</div>
+<div class="dv-card" style="width:412px">
+<div style="display:flex;flex-direction:column;height:915px;font-family:'IBM Plex Sans','Noto Sans SC',sans-serif;color:var(--color-text)">
+  <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 18px 0;font-size:13px;font-weight:600;font-variant-numeric:tabular-nums"><span>9:41</span><span style="display:flex;gap:6px;color:var(--color-neutral-700)"><i class="ph-duotone ph-cell-signal-full" style="font-size:14px"></i><i class="ph-duotone ph-wifi-high" style="font-size:14px"></i><i class="ph-duotone ph-battery-high" style="font-size:15px"></i></span></div>
+  <div style="display:flex;align-items:center;gap:4px;padding:8px 12px 8px 8px">
+    <span style="display:flex;align-items:center;justify-content:center;width:44px;height:44px;color:var(--color-text)"><i class="ph-duotone ph-caret-left" style="font-size:22px"></i></span>
+    <span style="flex:1;font-size:19px;font-weight:600">Language</span>
+  </div>
+  <div style="flex:1;overflow:hidden;padding:8px 18px 0;display:flex;flex-direction:column">
+    <div style="display:flex;align-items:center;gap:12px;min-height:52px;border-top:1px solid var(--color-divider)"><span style="flex:1;font-size:16px;font-weight:600">System default</span><i class="ph-duotone ph-check" style="font-size:19px;color:var(--color-accent-700)"></i></div>
+    <div style="display:flex;align-items:center;gap:12px;min-height:52px;border-top:1px solid var(--color-divider)"><span style="flex:1;font-size:16px">English</span></div>
+    <div style="display:flex;align-items:center;gap:12px;min-height:52px;border-top:1px solid var(--color-divider)"><span style="flex:1;font-size:16px">Español</span></div>
+    <div style="display:flex;align-items:center;gap:12px;min-height:52px;border-top:1px solid var(--color-divider)"><span style="flex:1;font-size:16px">Português</span></div>
+    <div style="display:flex;align-items:center;gap:12px;min-height:52px;border-top:1px solid var(--color-divider)"><span style="flex:1;font-size:16px">Bahasa Indonesia</span></div>
+    <div style="display:flex;align-items:center;gap:12px;min-height:52px;border-top:1px solid var(--color-divider)"><span style="flex:1;font-size:16px">Tiếng Việt</span></div>
+    <div style="display:flex;align-items:center;gap:12px;min-height:52px;border-top:1px solid var(--color-divider)"><span style="flex:1;font-size:16px">हिन्दी</span></div>
+    <div style="display:flex;align-items:center;gap:12px;min-height:52px;border-top:1px solid var(--color-divider)"><span style="flex:1;font-size:16px">ไทย</span></div>
+    <div style="display:flex;align-items:center;gap:12px;min-height:52px;border-top:1px solid var(--color-divider)"><span style="flex:1;font-size:16px;font-family:'IBM Plex Sans','IBM Plex Sans Arabic',sans-serif">العربية</span></div>
+    <div style="display:flex;align-items:center;gap:12px;min-height:52px;border-top:1px solid var(--color-divider);border-bottom:1px solid var(--color-divider)"><span style="flex:1;font-size:16px">中文（简体）</span></div>
+    <div style="padding:14px 0 0;font-size:11.5px;color:var(--color-neutral-500);line-height:1.5">Overrides the OS language for this app only — for older devices without per-app language settings.</div>
+  </div>
+  <div style="height:18px;background:var(--color-bg);background-image:repeating-linear-gradient(90deg,var(--color-neutral-400) 0 1px,transparent 1px 8px),repeating-linear-gradient(90deg,var(--color-neutral-500) 0 1px,transparent 1px 40px);background-repeat:no-repeat;background-size:100% 6px,100% 11px;background-position:top left,top left"></div>
+  <div style="height:60px;background:var(--color-neutral-200);background-image:repeating-linear-gradient(45deg,transparent 0 10px,rgba(32,30,29,0.035) 10px 11px);display:flex;align-items:center;justify-content:center;color:var(--color-neutral-600);font-size:11px;letter-spacing:0.08em;text-transform:uppercase">Ad · anchored adaptive banner · 50–70dp</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="dv-opt" id="5c">
+<div class="dv-olabel"><a class="dv-oid" href="#5c">5c</a>3.8 隐私同意 — 左：EEA / UMP 广告同意首屏；右：iOS ATT 前置说明屏。诚实、简短、无诱导：Consent 与 Do not consent 等权重（非一灰一亮），说清"广告让 App 免费"。同意前无 banner。</div>
+<div style="display:flex;gap:16px">
+<div class="dv-card" style="width:412px">
+<div style="display:flex;flex-direction:column;height:915px;font-family:'IBM Plex Sans','Noto Sans SC',sans-serif;color:var(--color-text)">
+  <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 18px 0;font-size:13px;font-weight:600;font-variant-numeric:tabular-nums"><span>9:41</span><span style="display:flex;gap:6px;color:var(--color-neutral-700)"><i class="ph-duotone ph-cell-signal-full" style="font-size:14px"></i><i class="ph-duotone ph-wifi-high" style="font-size:14px"></i><i class="ph-duotone ph-battery-high" style="font-size:15px"></i></span></div>
+  <div style="flex:1;display:flex;flex-direction:column;padding:40px 26px 0">
+    <div style="display:flex;align-items:center;justify-content:center;width:56px;height:56px;border-radius:var(--radius-lg);background:#201e1d;margin-bottom:26px">
+      <svg width="30" height="30" viewBox="0 0 120 120"><rect x="26" y="26" width="30" height="30" rx="2" fill="#f3f2f2"></rect><rect x="64" y="26" width="30" height="30" rx="2" fill="#f3f2f2"></rect><rect x="26" y="64" width="30" height="30" rx="2" fill="#f3f2f2"></rect><rect x="64" y="64" width="30" height="30" rx="2" fill="#f3f2f2"></rect><rect x="58" y="24" width="4" height="72" fill="#0088b0"></rect><rect x="24" y="58" width="72" height="4" fill="#0088b0"></rect></svg>
+    </div>
+    <h2 style="margin:0;font-size:26px;font-weight:600;letter-spacing:-0.01em;line-height:1.2">Ads keep Tile Calculator free</h2>
+    <p style="margin:16px 0 0;font-size:15px;line-height:1.6;color:var(--color-neutral-800)">This app is free and works fully offline. The only thing that needs the internet is the ad at the bottom of the screen — and that ad is what pays for the app.</p>
+    <p style="margin:14px 0 0;font-size:15px;line-height:1.6;color:var(--color-neutral-800)">With your consent, our ad partner (Google) may use your device data to show ads. You can say no and still use every feature — you'll just see less relevant ads.</p>
+    <p style="margin:14px 0 0;font-size:13.5px;line-height:1.6;color:var(--color-neutral-600)">You can change this anytime in Settings → Privacy.</p>
+    <div style="margin-top:auto;padding:24px 0 28px;display:flex;flex-direction:column;gap:10px">
+      <span style="display:flex;align-items:center;justify-content:center;height:52px;background:var(--color-accent-700);color:var(--color-bg);border-radius:var(--radius-md);font-size:16px;font-weight:600">Consent</span>
+      <span style="display:flex;align-items:center;justify-content:center;height:52px;background:transparent;border:1px solid var(--color-accent-700);color:var(--color-accent-700);border-radius:var(--radius-md);font-size:16px;font-weight:600">Do not consent</span>
+      <span style="display:flex;align-items:center;justify-content:center;height:44px;font-size:14px;font-weight:600;color:var(--color-neutral-700)">Manage options</span>
+    </div>
+  </div>
+</div>
+</div>
+<div class="dv-card" style="width:412px">
+<div style="display:flex;flex-direction:column;height:915px;font-family:'IBM Plex Sans','Noto Sans SC',sans-serif;color:var(--color-text)">
+  <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 18px 0;font-size:13px;font-weight:600;font-variant-numeric:tabular-nums"><span>9:41</span><span style="display:flex;gap:6px;color:var(--color-neutral-700)"><i class="ph-duotone ph-cell-signal-full" style="font-size:14px"></i><i class="ph-duotone ph-wifi-high" style="font-size:14px"></i><i class="ph-duotone ph-battery-high" style="font-size:15px"></i></span></div>
+  <div style="flex:1;display:flex;flex-direction:column;padding:40px 26px 0">
+    <div style="display:flex;align-items:center;justify-content:center;width:56px;height:56px;border-radius:var(--radius-lg);background:var(--color-accent-100);margin-bottom:26px;color:var(--color-accent-800)"><i class="ph-duotone ph-hand-tap" style="font-size:28px"></i></div>
+    <h2 style="margin:0;font-size:26px;font-weight:600;letter-spacing:-0.01em;line-height:1.2">One quick question next</h2>
+    <p style="margin:16px 0 0;font-size:15px;line-height:1.6;color:var(--color-neutral-800)">On the next screen, iOS will ask whether Tile Calculator can track you across other apps and websites.</p>
+    <p style="margin:14px 0 0;font-size:15px;line-height:1.6;color:var(--color-neutral-800)">Allowing it lets us show ads that pay a little more, which keeps the app free. Choosing <span style="font-weight:600">Ask App Not to Track</span> is completely fine — nothing in the app changes.</p>
+    <div style="margin-top:20px;padding:14px 16px;background:var(--color-surface);border-radius:var(--radius-md);display:flex;gap:10px;align-items:flex-start">
+      <i class="ph-duotone ph-lock-simple" style="font-size:18px;color:var(--color-neutral-700);margin-top:1px"></i>
+      <span style="font-size:13px;line-height:1.55;color:var(--color-neutral-700)">We never collect your measurements, prices, or history. Those stay on your device.</span>
+    </div>
+    <div style="margin-top:auto;padding:24px 0 28px;display:flex;flex-direction:column;gap:10px">
+      <span style="display:flex;align-items:center;justify-content:center;height:52px;background:var(--color-accent-700);color:var(--color-bg);border-radius:var(--radius-md);font-size:16px;font-weight:600">Continue</span>
+      <span style="text-align:center;font-size:12.5px;color:var(--color-neutral-500);line-height:1.5">The system dialog opens after you tap Continue.</span>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+<p class="dv-next">下一步：3.7 深色可延伸到 History/Settings；或对 <a class="dv-oid" href="#5a">5a</a>–<a class="dv-oid" href="#5c">5c</a> 任一张调整。定稿后可从 Export 走 Claude Code handoff，token 表见 design-tokens.md。</p>
+</section>
+<section class="dv-turn" id="t4">
+<div class="dv-thd"><a class="dv-tid" href="#t4">4</a><span class="dv-tname">第二轮 — 3.2b 公制键盘 · 3.3 iPad 双栏 · 深色 3.2 + 3.4 · 3.10 阿拉伯语 RTL。全部 IBM Plex Sans。（3.11 中文见 <a class="dv-oid" href="#1d">1d</a>，已统一 Plex。）</span></div>
+<div class="dv-opts">
+
+<div class="dv-opt" id="4a">
+<div class="dv-olabel"><a class="dv-oid" href="#4a">4a</a>3.2b 公制键盘 — 无分数行（键盘更矮，内容区更高）。Clear 移入长按 ⌫：小数点键占用其键位，且 ⌫ 连删后 Clear 属低频操作。`.` 键帽随地区可变（./,）</div>
+<div class="dv-card" style="width:412px">
+<div style="display:flex;flex-direction:column;height:915px;font-family:'IBM Plex Sans','Noto Sans SC',sans-serif;color:var(--color-text)">
+  <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 18px 0;font-size:13px;font-weight:600;font-variant-numeric:tabular-nums"><span>9:41</span><span style="display:flex;gap:6px;color:var(--color-neutral-700)"><i class="ph-duotone ph-cell-signal-full" style="font-size:14px"></i><i class="ph-duotone ph-wifi-high" style="font-size:14px"></i><i class="ph-duotone ph-battery-high" style="font-size:15px"></i></span></div>
+  <div style="display:flex;align-items:center;gap:2px;padding:10px 8px 6px 18px">
+    <span style="flex:1;font-size:19px;font-weight:600">Tile Calculator</span>
+    <span style="display:flex;align-items:center;justify-content:center;width:44px;height:44px;color:var(--color-text)"><i class="ph-duotone ph-clock-counter-clockwise" style="font-size:22px"></i></span>
+    <span style="display:flex;align-items:center;justify-content:center;width:44px;height:44px;color:var(--color-text)"><i class="ph-duotone ph-gear-six" style="font-size:22px"></i></span>
+  </div>
+  <div style="flex:1;overflow:hidden;padding:6px 18px 0;display:flex;flex-direction:column;gap:24px">
+    <div>
+      <div style="font-size:12px;letter-spacing:0.08em;text-transform:uppercase;font-weight:600;color:var(--color-neutral-700);margin-bottom:10px">Areas</div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="display:grid;grid-template-columns:1fr auto 44px;gap:10px;align-items:end">
+          <div style="display:flex;flex-direction:column;gap:5px">
+            <span style="font-size:11px;color:var(--color-neutral-600)">Area 1</span>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="display:flex;align-items:center;width:96px;height:44px;padding:0 11px;background:var(--color-surface);border:1px solid var(--color-divider);border-radius:var(--radius-md);font-size:15px;font-variant-numeric:tabular-nums">3.85 m</div>
+              <span style="color:var(--color-neutral-500);font-size:14px">×</span>
+              <div style="display:flex;align-items:center;width:96px;height:44px;padding:0 11px;background:var(--color-surface);border:1px solid var(--color-divider);border-radius:var(--radius-md);font-size:15px;font-variant-numeric:tabular-nums">2.95 m</div>
+            </div>
+          </div>
+          <div style="font-size:15px;font-variant-numeric:tabular-nums;white-space:nowrap;padding-bottom:12px">11.36 m²</div>
+          <span style="display:flex;align-items:center;justify-content:center;width:44px;height:44px;color:var(--color-neutral-500)"><i class="ph-duotone ph-x" style="font-size:15px"></i></span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr auto 44px;gap:10px;align-items:end">
+          <div style="display:flex;flex-direction:column;gap:5px">
+            <span style="font-size:11px;font-weight:600;color:var(--color-accent-700)">Area 2 — editing length</span>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="display:flex;align-items:center;width:96px;height:44px;padding:0 11px;background:var(--color-surface);border:1px solid var(--color-divider);border-radius:var(--radius-md);font-size:15px;font-variant-numeric:tabular-nums">1.60 m</div>
+              <span style="color:var(--color-neutral-500);font-size:14px">×</span>
+              <div style="display:flex;align-items:center;width:96px;height:44px;padding:0 11px;background:var(--color-neutral-100);border:1.5px solid var(--color-accent);border-radius:var(--radius-md);font-size:15px;font-variant-numeric:tabular-nums">2.4<span style="display:inline-block;width:2px;height:20px;background:var(--color-accent);margin-left:2px"></span><span style="margin-left:auto;color:var(--color-neutral-500)">m</span></div>
+            </div>
+          </div>
+          <div style="font-size:15px;color:var(--color-neutral-500);font-variant-numeric:tabular-nums;white-space:nowrap;padding-bottom:12px">3.84 m²</div>
+          <span style="display:flex;align-items:center;justify-content:center;width:44px;height:44px;color:var(--color-neutral-500)"><i class="ph-duotone ph-x" style="font-size:15px"></i></span>
+        </div>
+      </div>
+      <div style="display:flex;gap:22px;margin-top:12px;min-height:44px;align-items:center">
+        <span style="display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:600;color:var(--color-accent-700)"><i class="ph-duotone ph-plus" style="font-size:15px"></i>Add area</span>
+        <span style="display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:600;color:var(--color-accent-2-700)"><i class="ph-duotone ph-plus" style="font-size:15px"></i>Add cutout</span>
+      </div>
+    </div>
+    <div>
+      <div style="font-size:12px;letter-spacing:0.08em;text-transform:uppercase;font-weight:600;color:var(--color-neutral-700);margin-bottom:10px">Tile size</div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px">
+        <span style="display:inline-flex;align-items:center;justify-content:center;height:44px;min-width:64px;padding:0 16px;background:var(--color-neutral-100);border:1px solid var(--color-divider);border-radius:var(--radius-md);font-size:15px;font-variant-numeric:tabular-nums">30×30</span>
+        <span style="display:inline-flex;align-items:center;justify-content:center;height:44px;min-width:64px;padding:0 16px;background:var(--color-accent-700);border:1px solid var(--color-accent-700);border-radius:var(--radius-md);font-size:15px;font-weight:600;color:var(--color-bg);font-variant-numeric:tabular-nums">60×60</span>
+        <span style="display:inline-flex;align-items:center;justify-content:center;height:44px;min-width:64px;padding:0 16px;background:var(--color-neutral-100);border:1px solid var(--color-divider);border-radius:var(--radius-md);font-size:15px;font-variant-numeric:tabular-nums">60×120</span>
+        <span style="display:inline-flex;align-items:center;justify-content:center;height:44px;min-width:64px;padding:0 16px;background:var(--color-neutral-100);border:1px solid var(--color-divider);border-radius:var(--radius-md);font-size:15px;font-variant-numeric:tabular-nums">80×80</span>
+        <span style="display:inline-flex;align-items:center;justify-content:center;height:44px;min-width:64px;padding:0 16px;background:transparent;border:1px solid var(--color-accent);border-radius:var(--radius-md);font-size:15px;color:var(--color-accent-700)">Custom</span>
+      </div>
+      <div style="margin-top:6px;font-size:11px;color:var(--color-neutral-600)">Sizes in cm</div>
+    </div>
+  </div>
+  <div style="background:var(--color-surface);padding:10px 12px 12px;display:flex;flex-direction:column;gap:8px">
+    <div style="display:flex;align-items:baseline;gap:10px;min-height:26px;padding:0 4px">
+      <span style="font-size:12px;color:var(--color-neutral-600)">Area 2 · Length</span>
+      <span style="margin-left:auto;font-size:18px;font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap">2.4 <span style="color:var(--color-neutral-600);font-weight:400">m</span></span>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+      <span style="display:flex;align-items:center;justify-content:center;height:54px;background:var(--color-neutral-100);border:1px solid var(--color-divider);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);font-size:23px;font-weight:600;font-variant-numeric:tabular-nums">7</span>
+      <span style="display:flex;align-items:center;justify-content:center;height:54px;background:var(--color-neutral-100);border:1px solid var(--color-divider);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);font-size:23px;font-weight:600;font-variant-numeric:tabular-nums">8</span>
+      <span style="display:flex;align-items:center;justify-content:center;height:54px;background:var(--color-neutral-100);border:1px solid var(--color-divider);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);font-size:23px;font-weight:600;font-variant-numeric:tabular-nums">9</span>
+      <span style="display:flex;align-items:center;justify-content:center;height:54px;background:transparent;border:1px solid var(--color-divider);border-radius:var(--radius-md);color:var(--color-neutral-800)"><i class="ph-duotone ph-backspace" style="font-size:24px"></i></span>
+      <span style="display:flex;align-items:center;justify-content:center;height:54px;background:var(--color-neutral-100);border:1px solid var(--color-divider);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);font-size:23px;font-weight:600;font-variant-numeric:tabular-nums">4</span>
+      <span style="display:flex;align-items:center;justify-content:center;height:54px;background:var(--color-neutral-100);border:1px solid var(--color-divider);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);font-size:23px;font-weight:600;font-variant-numeric:tabular-nums">5</span>
+      <span style="display:flex;align-items:center;justify-content:center;height:54px;background:var(--color-neutral-100);border:1px solid var(--color-divider);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);font-size:23px;font-weight:600;font-variant-numeric:tabular-nums">6</span>
+      <span style="display:flex;align-items:center;justify-content:center;height:54px;background:var(--color-accent-100);border:1.5px solid var(--color-accent);border-radius:var(--radius-md);font-size:17px;font-weight:600;color:var(--color-accent-800)">m</span>
+      <span style="display:flex;align-items:center;justify-content:center;height:54px;background:var(--color-neutral-100);border:1px solid var(--color-divider);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);font-size:23px;font-weight:600;font-variant-numeric:tabular-nums">1</span>
+      <span style="display:flex;align-items:center;justify-content:center;height:54px;background:var(--color-neutral-100);border:1px solid var(--color-divider);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);font-size:23px;font-weight:600;font-variant-numeric:tabular-nums">2</span>
+      <span style="display:flex;align-items:center;justify-content:center;height:54px;background:var(--color-neutral-100);border:1px solid var(--color-divider);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);font-size:23px;font-weight:600;font-variant-numeric:tabular-nums">3</span>
+      <span style="display:flex;align-items:center;justify-content:center;height:54px;background:transparent;border:1px solid var(--color-divider);border-radius:var(--radius-md);font-size:17px;color:var(--color-neutral-800)">cm</span>
+      <span style="display:flex;align-items:center;justify-content:center;height:54px;background:var(--color-neutral-100);border:1px solid var(--color-divider);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);font-size:23px;font-weight:600;font-variant-numeric:tabular-nums">0</span>
+      <span style="display:flex;align-items:center;justify-content:center;height:54px;background:var(--color-neutral-100);border:1px solid var(--color-divider);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);font-size:23px;font-weight:600;font-variant-numeric:tabular-nums">.</span>
+      <span style="display:flex;align-items:center;justify-content:center;height:54px;background:transparent;border:1px solid var(--color-divider);border-radius:var(--radius-md);font-size:15px;font-weight:600;color:var(--color-neutral-800)">Next</span>
+      <span style="display:flex;align-items:center;justify-content:center;height:54px;background:var(--color-accent-700);border:1px solid var(--color-accent-700);border-radius:var(--radius-md);font-size:16px;font-weight:600;color:var(--color-bg)">Done</span>
+    </div>
+  </div>
+  <div style="height:18px;background:var(--color-bg);background-image:repeating-linear-gradient(90deg,var(--color-neutral-400) 0 1px,transparent 1px 8px),repeating-linear-gradient(90deg,var(--color-neutral-500) 0 1px,transparent 1px 40px);background-repeat:no-repeat;background-size:100% 6px,100% 11px;background-position:top left,top left"></div>
+  <div style="height:60px;background:var(--color-neutral-200);background-image:repeating-linear-gradient(45deg,transparent 0 10px,rgba(32,30,29,0.035) 10px 11px);display:flex;align-items:center;justify-content:center;color:var(--color-neutral-600);font-size:11px;letter-spacing:0.08em;text-transform:uppercase">Ad · anchored adaptive banner · 50–70dp</div>
+</div>
+</div>
+</div>
+
+<div class="dv-opt" id="4b">
+<div class="dv-olabel"><a class="dv-oid" href="#4b">4b</a>3.3 iPad 横屏 1194×834 — ≥600dp 双栏：左侧表单 + 常驻键盘（56dp 键），右侧实时结果；banner 全宽。分屏至 1/3 宽时退化为 <a class="dv-oid" href="#1a">1a</a> 单栏</div>
+<div class="dv-card" style="width:1194px">
+<div style="display:flex;flex-direction:column;height:834px;font-family:'IBM Plex Sans','Noto Sans SC',sans-serif;color:var(--color-text)">
+  <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 20px 0;font-size:13px;font-weight:600;font-variant-numeric:tabular-nums"><span>9:41</span><span style="display:flex;gap:6px;color:var(--color-neutral-700)"><i class="ph-duotone ph-wifi-high" style="font-size:14px"></i><i class="ph-duotone ph-battery-high" style="font-size:15px"></i></span></div>
+  <div style="display:flex;align-items:center;gap:2px;padding:6px 12px 4px 20px">
+    <span style="flex:1;font-size:20px;font-weight:600">Tile Calculator</span>
+    <span style="display:flex;align-items:center;justify-content:center;width:44px;height:44px;color:var(--color-text)"><i class="ph-duotone ph-clock-counter-clockwise" style="font-size:22px"></i></span>
+    <span style="display:flex;align-items:center;justify-content:center;width:44px;height:44px;color:var(--color-text)"><i class="ph-duotone ph-gear-six" style="font-size:22px"></i></span>
+  </div>
+  <div style="flex:1;display:flex;gap:32px;padding:8px 20px 16px;min-height:0">
+    <div style="flex:1.1;display:flex;flex-direction:column;min-width:0">
+      <div style="font-size:12px;letter-spacing:0.08em;text-transform:uppercase;font-weight:600;color:var(--color-neutral-700);margin-bottom:10px">Areas</div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="display:grid;grid-template-columns:1fr auto 44px;gap:10px;align-items:end">
+          <div style="display:flex;flex-direction:column;gap:5px">
+            <span style="font-size:11px;color:var(--color-neutral-600)">Area 1</span>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="display:flex;align-items:center;width:120px;height:44px;padding:0 11px;background:var(--color-surface);border:1px solid var(--color-divider);border-radius:var(--radius-md);font-size:15px;font-variant-numeric:tabular-nums">12′ 6″</div>
+              <span style="color:var(--color-neutral-500);font-size:14px">×</span>
+              <div style="display:flex;align-items:center;width:120px;height:44px;padding:0 11px;background:var(--color-surface);border:1px solid var(--color-divider);border-radius:var(--radius-md);font-size:15px;font-variant-numeric:tabular-nums">9′ 8″</div>
+            </div>
+          </div>
+          <div style="font-size:15px;font-variant-numeric:tabular-nums;white-space:nowrap;padding-bottom:12px">120.83 ft²</div>
+          <span style="display:flex;align-items:center;justify-content:center;width:44px;height:44px;color:var(--color-neutral-500)"><i class="ph-duotone ph-x" style="font-size:15px"></i></span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr auto 44px;gap:10px;align-items:end">
+          <div style="display:flex;flex-direction:column;gap:5px">
+            <span style="font-size:11px;font-weight:600;color:var(--color-accent-700)">Area 2 — editing length</span>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="display:flex;align-items:center;width:120px;height:44px;padding:0 11px;background:var(--color-surface);border:1px solid var(--color-divider);border-radius:var(--radius-md);font-size:15px;font-variant-numeric:tabular-nums">5′ 3″</div>
+              <span style="color:var(--color-neutral-500);font-size:14px">×</span>
+              <div style="display:flex;align-items:center;width:130px;height:44px;padding:0 11px;background:var(--color-neutral-100);border:1.5px solid var(--color-accent);border-radius:var(--radius-md);font-size:15px;font-variant-numeric:tabular-nums;white-space:nowrap">8′&nbsp;<span style="background:var(--color-accent-100);color:var(--color-accent-800);border-radius:2px;padding:0 3px">4-1/2″</span><span style="display:inline-block;width:2px;height:20px;background:var(--color-accent);margin-left:2px"></span></div>
+            </div>
+          </div>
+          <div style="font-size:15px;color:var(--color-neutral-500);font-variant-numeric:tabular-nums;white-space:nowrap;padding-bottom:12px">44.19 ft²</div>
+          <span style="display:flex;align-items:center;justify-content:center;width:44px;height:44px;color:var(--color-neutral-500)"><i class="ph-duotone ph-x" style="font-size:15px"></i></span>
+        </div>
+      </div>
+      <div style="display:flex;gap:22px;margin-top:10px;min-height:44px;align-items:center">
+        <span style="display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:600;color:var(--color-accent-700)"><i class="ph-duotone ph-plus" style="font-size:15px"></i>Add area</span>
+        <span style="display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:600;color:var(--color-accent-2-700)"><i class="ph-duotone ph-plus" style="font-size:15px"></i>Add cutout</span>
+      </div>
+      <div style="margin-top:auto;background:var(--color-surface);border-radius:var(--radius-lg);padding:12px 14px;display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;align-items:baseline;gap:10px;min-height:24px;padding:0 4px">
+          <span style="font-size:12px;color:var(--color-neutral-600)">Area 2 · Length</span>
+          <span style="margin-left:auto;font-size:18px;font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap">8′ <span style="background:var(--color-accent-100);color:var(--color-accent-800);border-radius:2px;padding:0 4px">4-1/2″</span></span>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+          <span style="display:flex;align-items:center;justify-content:center;height:48px;background:var(--color-neutral-100);border:1px solid var(--color-divider);border-radius:var(--radius-md);font-size:16px;font-variant-numeric:tabular-nums">1/16</span>
+          <span style="display:flex;align-items:center;justify-content:center;height:48px;background:var(--color-neutral-100);border:1px solid var(--color-divider);border-radius:var(--radius-md);font-size:16px;font-variant-numeric:tabular-nums">1/8</span>
+          <span style="display:flex;align-items:center;justify-content:center;height:48px;background:var(--color-neutral-100);border:1px solid var(--color-divider);border-radius:var(--radius-md);font-size:16px;font-variant-numeric:tabular-nums">1/4</span>
+          <span style="display:flex;align-items:center;justify-content:center;height:48px;background:var(--color-accent-700);border:1px solid var(--color-accent-700);border-radius:var(--radius-md);font-size:16px;font-weight:600;color:var(--color-neutral-100);font-variant-numeric:tabular-nums">1/2</span>
+          <span style="display:flex;align-items:center;justify-content:center;height:48px;background:var(--color-neutral-100);border:1px solid var(--color-divider);border-radius:var(--radius-md);font-size:16px;font-variant-numeric:tabular-nums">3/16</span>
+          <span style="display:flex;align-items:center;justify-content:center;height:48px;background:var(--color-neutral-100);border:1px solid var(--color-divider);border-radius:var(--radius-md);font-size:16px;font-variant-numeric:tabular-nums">3/8</span>
+          <span style="display:flex;align-items:center;justify-content:center;height:48px;background:var(--color-neutral-100);border:1px solid var(--color-divider);border-radius:var(--radius-md);font-size:16px;font-variant-numeric:tabular-nums">3/4</span>
+          <span style="display:flex;align-items:center;justify-content:center;height:48px;background:var(--color-neutral-100);border:1px solid var(--color-divider);border-radius:var(--radius-md);font-size:16px;font-variant-numeric:tabular-nums">7/8</span>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+          <span style="display:flex;align-items:center;justify-content:center;height:56px;background:var(--color-neutral-100);border:1px solid var(--color-divider);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);font-size:24px;font-weight:600;font-variant-numeric:tabular-nums">7</span>
+          <span style="display:flex;align-items:center;justify-content:center;height:56px;background:var(--color-neutral-100);border:1px solid var(--color-divider);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);font-size:24px;font-weight:600;font-variant-numeric:tabular-nums">8</span>
+          <span style="display:flex;align-items:center;justify-content:center;height:56px;background:var(--color-neutral-100);border:1px solid var(--color-divider);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);font-size:24px;font-weight:600;font-variant-numeric:tabular-nums">9</span>
+          <span style="display:flex;align-items:center;justify-content:center;height:56px;background:transparent;border:1px solid var(--color-divider);border-radius:var(--radius-md);color:var(--color-neutral-800)"><i class="ph-duotone ph-backspace" style="font-size:25px"></i></span>
+          <span style="display:flex;align-items:center;justify-content:center;height:56px;background:var(--color-neutral-100);border:1px solid var(--color-divider);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);font-size:24px;font-weight:600;font-variant-numeric:tabular-nums">4</span>
+          <span style="display:flex;align-items:center;justify-content:center;height:56px;background:var(--color-neutral-100);border:1px solid var(--color-divider);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);font-size:24px;font-weight:600;font-variant-numeric:tabular-nums">5</span>
+          <span style="display:flex;align-items:center;justify-content:center;height:56px;background:var(--color-neutral-100);border:1px solid var(--color-divider);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);font-size:24px;font-weight:600;font-variant-numeric:tabular-nums">6</span>
+          <span style="display:flex;align-items:center;justify-content:center;height:56px;background:transparent;border:1px solid var(--color-divider);border-radius:var(--radius-md);font-size:17px;color:var(--color-neutral-800)">ft</span>
+          <span style="display:flex;align-items:center;justify-content:center;height:56px;background:var(--color-neutral-100);border:1px solid var(--color-divider);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);font-size:24px;font-weight:600;font-variant-numeric:tabular-nums">1</span>
+          <span style="display:flex;align-items:center;justify-content:center;height:56px;background:var(--color-neutral-100);border:1px solid var(--color-divider);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);font-size:24px;font-weight:600;font-variant-numeric:tabular-nums">2</span>
+          <span style="display:flex;align-items:center;justify-content:center;height:56px;background:var(--color-neutral-100);border:1px solid var(--color-divider);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);font-size:24px;font-weight:600;font-variant-numeric:tabular-nums">3</span>
+          <span style="display:flex;align-items:center;justify-content:center;height:56px;background:var(--color-accent-100);border:1.5px solid var(--color-accent);border-radius:var(--radius-md);font-size:17px;font-weight:600;color:var(--color-accent-800)">in</span>
+          <span style="display:flex;align-items:center;justify-content:center;height:56px;background:var(--color-neutral-100);border:1px solid var(--color-divider);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);font-size:24px;font-weight:600;font-variant-numeric:tabular-nums">0</span>
+          <span style="display:flex;align-items:center;justify-content:center;height:56px;background:transparent;border:1px solid var(--color-divider);border-radius:var(--radius-md);font-size:15px;color:var(--color-neutral-800)">Clear</span>
+          <span style="display:flex;align-items:center;justify-content:center;height:56px;background:transparent;border:1px solid var(--color-divider);border-radius:var(--radius-md);font-size:15px;font-weight:600;color:var(--color-neutral-800)">Next</span>
+          <span style="display:flex;align-items:center;justify-content:center;height:56px;background:var(--color-accent-700);border:1px solid var(--color-accent-700);border-radius:var(--radius-md);font-size:16px;font-weight:600;color:var(--color-bg)">Done</span>
+        </div>
+      </div>
+    </div>
+    <div style="flex:1;min-width:0;display:flex;flex-direction:column">
+      <div style="font-size:12px;letter-spacing:0.08em;text-transform:uppercase;font-weight:600;color:var(--color-neutral-700);margin-bottom:10px">Results</div>
+      <div style="padding:20px 20px 16px;border-radius:var(--radius-lg);background-image:repeating-linear-gradient(90deg,transparent 0 26px,rgba(32,30,29,0.055) 26px 28px),repeating-linear-gradient(0deg,transparent 0 26px,rgba(32,30,29,0.055) 26px 28px)">
+        <div style="display:flex;justify-content:space-between;align-items:baseline">
+          <span style="font-size:14px;color:var(--color-neutral-700)">Total area</span>
+          <span style="font-size:19px;font-weight:600;font-variant-numeric:tabular-nums">165.02 ft²</span>
+        </div>
+        <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-top:18px">
+          <div>
+            <div style="font-size:12px;letter-spacing:0.08em;text-transform:uppercase;font-weight:600;color:var(--color-neutral-700)">Tiles needed</div>
+            <div style="font-size:80px;font-weight:600;line-height:0.95;letter-spacing:-0.02em;font-variant-numeric:tabular-nums;margin-top:4px">181</div>
+            <div style="font-size:14px;color:var(--color-neutral-600);margin-top:8px;font-variant-numeric:tabular-nums">164 tiles + 10% waste</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-start">
+            <div style="width:120px;height:120px;border-radius:var(--radius-sm);background-color:var(--color-neutral-300);background-image:repeating-linear-gradient(90deg,transparent 0 26px,var(--color-bg) 26px 28px),repeating-linear-gradient(0deg,transparent 0 26px,var(--color-bg) 26px 28px)"></div>
+            <span style="font-size:11px;color:var(--color-neutral-600)">Straight · 1/16″ grout</span>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px;margin-top:22px">
+          <div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-size:14px;color:var(--color-neutral-700)">Boxes to buy</span><span style="font-size:19px;font-weight:600;font-variant-numeric:tabular-nums">23</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-size:14px;color:var(--color-neutral-700)">Estimated cost</span><span style="font-size:19px;font-weight:600;font-variant-numeric:tabular-nums">$575.00</span></div>
+        </div>
+      </div>
+      <div style="margin-top:10px;font-size:12px;color:var(--color-neutral-600)">Recalculates on every keystroke — no Calculate button.</div>
+    </div>
+  </div>
+  <div style="height:18px;background:var(--color-bg);background-image:repeating-linear-gradient(90deg,var(--color-neutral-400) 0 1px,transparent 1px 8px),repeating-linear-gradient(90deg,var(--color-neutral-500) 0 1px,transparent 1px 40px);background-repeat:no-repeat;background-size:100% 6px,100% 11px;background-position:top left,top left"></div>
+  <div style="height:60px;background:var(--color-neutral-200);background-image:repeating-linear-gradient(45deg,transparent 0 10px,rgba(32,30,29,0.035) 10px 11px);display:flex;align-items:center;justify-content:center;color:var(--color-neutral-600);font-size:11px;letter-spacing:0.08em;text-transform:uppercase">Ad · anchored adaptive banner · full width · 50–70dp</div>
+</div>
+</div>
+</div>
+
+<div class="dv-opt" id="4c">
+<div class="dv-olabel"><a class="dv-oid" href="#4c">4c</a>3.7 深色 — 分数键盘。重新校准而非反相：primary 提亮至 #62C5EE（8.5:1），键帽升两级表面色，去投影（层次靠描边）</div>
+<div class="dv-card" style="width:412px;background:#201E1D">
+<div style="display:flex;flex-direction:column;height:915px;font-family:'IBM Plex Sans','Noto Sans SC',sans-serif;color:#EAE7E7;background:#201E1D">
+  <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 18px 0;font-size:13px;font-weight:600;font-variant-numeric:tabular-nums"><span>9:41</span><span style="display:flex;gap:6px;color:#9B9797"><i class="ph-duotone ph-cell-signal-full" style="font-size:14px"></i><i class="ph-duotone ph-wifi-high" style="font-size:14px"></i><i class="ph-duotone ph-battery-high" style="font-size:15px"></i></span></div>
+  <div style="display:flex;align-items:center;gap:2px;padding:10px 8px 6px 18px">
+    <span style="flex:1;font-size:19px;font-weight:600">Tile Calculator</span>
+    <span style="display:flex;align-items:center;justify-content:center;width:44px;height:44px;color:#EAE7E7"><i class="ph-duotone ph-clock-counter-clockwise" style="font-size:22px"></i></span>
+    <span style="display:flex;align-items:center;justify-content:center;width:44px;height:44px;color:#EAE7E7"><i class="ph-duotone ph-gear-six" style="font-size:22px"></i></span>
+  </div>
+  <div style="flex:1;overflow:hidden;padding:6px 18px 0">
+    <div style="font-size:12px;letter-spacing:0.08em;text-transform:uppercase;font-weight:600;color:#BAB6B6;margin-bottom:10px">Areas</div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div style="display:grid;grid-template-columns:1fr auto 44px;gap:10px;align-items:end">
+        <div style="display:flex;flex-direction:column;gap:5px">
+          <span style="font-size:11px;color:#9B9797">Area 1</span>
+          <div style="display:flex;align-items:center;gap:8px">
+            <div style="display:flex;align-items:center;width:96px;height:44px;padding:0 11px;background:#2D2B2B;border:1px solid #605D5D;border-radius:var(--radius-md);font-size:15px;font-variant-numeric:tabular-nums">12′ 6″</div>
+            <span style="color:#7D7979;font-size:14px">×</span>
+            <div style="display:flex;align-items:center;width:96px;height:44px;padding:0 11px;background:#2D2B2B;border:1px solid #605D5D;border-radius:var(--radius-md);font-size:15px;font-variant-numeric:tabular-nums">9′ 8″</div>
+          </div>
+        </div>
+        <div style="font-size:15px;font-variant-numeric:tabular-nums;white-space:nowrap;padding-bottom:12px">120.83 ft²</div>
+        <span style="display:flex;align-items:center;justify-content:center;width:44px;height:44px;color:#9B9797"><i class="ph-duotone ph-x" style="font-size:15px"></i></span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr auto 44px;gap:10px;align-items:end">
+        <div style="display:flex;flex-direction:column;gap:5px">
+          <span style="font-size:11px;font-weight:600;color:#62C5EE">Area 2 — editing length</span>
+          <div style="display:flex;align-items:center;gap:8px">
+            <div style="display:flex;align-items:center;width:96px;height:44px;padding:0 11px;background:#2D2B2B;border:1px solid #605D5D;border-radius:var(--radius-md);font-size:15px;font-variant-numeric:tabular-nums">5′ 3″</div>
+            <span style="color:#7D7979;font-size:14px">×</span>
+            <div style="display:flex;align-items:center;width:110px;height:44px;padding:0 11px;background:#2D2B2B;border:1.5px solid #38A6CF;border-radius:var(--radius-md);font-size:15px;font-variant-numeric:tabular-nums;white-space:nowrap">8′&nbsp;<span style="background:#004961;color:#CBEEFF;border-radius:2px;padding:0 3px">4-1/2″</span><span style="display:inline-block;width:2px;height:20px;background:#62C5EE;margin-left:2px"></span></div>
+          </div>
+        </div>
+        <div style="font-size:15px;color:#9B9797;font-variant-numeric:tabular-nums;white-space:nowrap;padding-bottom:12px">44.19 ft²</div>
+        <span style="display:flex;align-items:center;justify-content:center;width:44px;height:44px;color:#9B9797"><i class="ph-duotone ph-x" style="font-size:15px"></i></span>
+      </div>
+    </div>
+    <div style="display:flex;gap:22px;margin-top:12px;min-height:44px;align-items:center">
+      <span style="display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:600;color:#62C5EE"><i class="ph-duotone ph-plus" style="font-size:15px"></i>Add area</span>
+      <span style="display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:600;color:#FF90B1"><i class="ph-duotone ph-plus" style="font-size:15px"></i>Add cutout</span>
+    </div>
+  </div>
+  <div style="background:#2D2B2B;padding:10px 12px 12px;display:flex;flex-direction:column;gap:8px">
+    <div style="display:flex;align-items:baseline;gap:10px;min-height:26px;padding:0 4px">
+      <span style="font-size:12px;color:#9B9797">Area 2 · Length</span>
+      <span style="margin-left:auto;font-size:18px;font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap">8′ <span style="background:#004961;color:#CBEEFF;border-radius:2px;padding:0 4px">4-1/2″</span></span>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+      <span style="display:flex;align-items:center;justify-content:center;height:48px;background:#444141;border:1px solid #605D5D;border-radius:var(--radius-md);font-size:16px;font-variant-numeric:tabular-nums">1/16</span>
+      <span style="display:flex;align-items:center;justify-content:center;height:48px;background:#444141;border:1px solid #605D5D;border-radius:var(--radius-md);font-size:16px;font-variant-numeric:tabular-nums">1/8</span>
+      <span style="display:flex;align-items:center;justify-content:center;height:48px;background:#444141;border:1px solid #605D5D;border-radius:var(--radius-md);font-size:16px;font-variant-numeric:tabular-nums">1/4</span>
+      <span style="display:flex;align-items:center;justify-content:center;height:48px;background:#62C5EE;border:1px solid #62C5EE;border-radius:var(--radius-md);font-size:16px;font-weight:600;color:#0A303E;font-variant-numeric:tabular-nums">1/2</span>
+      <span style="display:flex;align-items:center;justify-content:center;height:48px;background:#444141;border:1px solid #605D5D;border-radius:var(--radius-md);font-size:16px;font-variant-numeric:tabular-nums">3/16</span>
+      <span style="display:flex;align-items:center;justify-content:center;height:48px;background:#444141;border:1px solid #605D5D;border-radius:var(--radius-md);font-size:16px;font-variant-numeric:tabular-nums">3/8</span>
+      <span style="display:flex;align-items:center;justify-content:center;height:48px;background:#444141;border:1px solid #605D5D;border-radius:var(--radius-md);font-size:16px;font-variant-numeric:tabular-nums">3/4</span>
+      <span style="display:flex;align-items:center;justify-content:center;height:48px;background:#444141;border:1px solid #605D5D;border-radius:var(--radius-md);font-size:16px;font-variant-numeric:tabular-nums">7/8</span>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:4px">
+      <span style="display:flex;align-items:center;justify-content:center;height:54px;background:#444141;border:1px solid #605D5D;border-radius:var(--radius-md);font-size:23px;font-weight:600;font-variant-numeric:tabular-nums">7</span>
+      <span style="display:flex;align-items:center;justify-content:center;height:54px;background:#444141;border:1px solid #605D5D;border-radius:var(--radius-md);font-size:23px;font-weight:600;font-variant-numeric:tabular-nums">8</span>
+      <span style="display:flex;align-items:center;justify-content:center;height:54px;background:#444141;border:1px solid #605D5D;border-radius:var(--radius-md);font-size:23px;font-weight:600;font-variant-numeric:tabular-nums">9</span>
+      <span style="display:flex;align-items:center;justify-content:center;height:54px;background:transparent;border:1px solid #605D5D;border-radius:var(--radius-md);color:#D7D3D3"><i class="ph-duotone ph-backspace" style="font-size:24px"></i></span>
+      <span style="display:flex;align-items:center;justify-content:center;height:54px;background:#444141;border:1px solid #605D5D;border-radius:var(--radius-md);font-size:23px;font-weight:600;font-variant-numeric:tabular-nums">4</span>
+      <span style="display:flex;align-items:center;justify-content:center;height:54px;background:#444141;border:1px solid #605D5D;border-radius:var(--radius-md);font-size:23px;font-weight:600;font-variant-numeric:tabular-nums">5</span>
+      <span style="display:flex;align-items:center;justify-content:center;height:54px;background:#444141;border:1px solid #605D5D;border-radius:var(--radius-md);font-size:23px;font-weight:600;font-variant-numeric:tabular-nums">6</span>
+      <span style="display:flex;align-items:center;justify-content:center;height:54px;background:transparent;border:1px solid #605D5D;border-radius:var(--radius-md);font-size:17px;color:#D7D3D3">ft</span>
+      <span style="display:flex;align-items:center;justify-content:center;height:54px;background:#444141;border:1px solid #605D5D;border-radius:var(--radius-md);font-size:23px;font-weight:600;font-variant-numeric:tabular-nums">1</span>
+      <span style="display:flex;align-items:center;justify-content:center;height:54px;background:#444141;border:1px solid #605D5D;border-radius:var(--radius-md);font-size:23px;font-weight:600;font-variant-numeric:tabular-nums">2</span>
+      <span style="display:flex;align-items:center;justify-content:center;height:54px;background:#444141;border:1px solid #605D5D;border-radius:var(--radius-md);font-size:23px;font-weight:600;font-variant-numeric:tabular-nums">3</span>
+      <span style="display:flex;align-items:center;justify-content:center;height:54px;background:#004961;border:1.5px solid #62C5EE;border-radius:var(--radius-md);font-size:17px;font-weight:600;color:#CBEEFF">in</span>
+      <span style="display:flex;align-items:center;justify-content:center;height:54px;background:#444141;border:1px solid #605D5D;border-radius:var(--radius-md);font-size:23px;font-weight:600;font-variant-numeric:tabular-nums">0</span>
+      <span style="display:flex;align-items:center;justify-content:center;height:54px;background:transparent;border:1px solid #605D5D;border-radius:var(--radius-md);font-size:15px;color:#D7D3D3">Clear</span>
+      <span style="display:flex;align-items:center;justify-content:center;height:54px;background:transparent;border:1px solid #605D5D;border-radius:var(--radius-md);font-size:15px;font-weight:600;color:#D7D3D3">Next</span>
+      <span style="display:flex;align-items:center;justify-content:center;height:54px;background:#62C5EE;border:1px solid #62C5EE;border-radius:var(--radius-md);font-size:16px;font-weight:600;color:#0A303E">Done</span>
+    </div>
+  </div>
+  <div style="height:18px;background:#201E1D;background-image:repeating-linear-gradient(90deg,#605D5D 0 1px,transparent 1px 8px),repeating-linear-gradient(90deg,#7D7979 0 1px,transparent 1px 40px);background-repeat:no-repeat;background-size:100% 6px,100% 11px;background-position:top left,top left"></div>
+  <div style="height:60px;background:#2D2B2B;background-image:repeating-linear-gradient(45deg,transparent 0 10px,rgba(234,231,231,0.03) 10px 11px);display:flex;align-items:center;justify-content:center;color:#9B9797;font-size:11px;letter-spacing:0.08em;text-transform:uppercase">Ad · anchored adaptive banner · 50–70dp</div>
+</div>
+</div>
+</div>
+
+<div class="dv-opt" id="4d">
+<div class="dv-olabel"><a class="dv-oid" href="#4d">4d</a>3.7 深色 — 结果卡三态。网格纹理与预览为深色重制；大数字保持"纸上墨"逻辑（13.2:1），不用彩色</div>
+<div style="display:flex;flex-direction:column;gap:16px">
+  <div class="dv-card" style="width:372px;padding:18px;background:#201E1D">
+    <div style="font-family:'IBM Plex Sans','Noto Sans SC',sans-serif;color:#EAE7E7">
+      <div style="font-size:12px;letter-spacing:0.08em;text-transform:uppercase;font-weight:600;color:#BAB6B6;margin-bottom:10px">Results</div>
+      <div style="min-height:150px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;border-radius:var(--radius-lg);background-image:repeating-linear-gradient(90deg,transparent 0 26px,rgba(234,231,231,0.05) 26px 28px),repeating-linear-gradient(0deg,transparent 0 26px,rgba(234,231,231,0.05) 26px 28px)">
+        <i class="ph-duotone ph-ruler" style="font-size:22px;color:#7D7979"></i>
+        <span style="font-size:14px;color:#9B9797">Enter dimensions to see results</span>
+      </div>
+    </div>
+  </div>
+  <div class="dv-card" style="width:372px;padding:18px;background:#201E1D">
+    <div style="font-family:'IBM Plex Sans','Noto Sans SC',sans-serif;color:#EAE7E7">
+      <div style="font-size:12px;letter-spacing:0.08em;text-transform:uppercase;font-weight:600;color:#BAB6B6;margin-bottom:10px">Results</div>
+      <div style="padding:14px 14px 12px;border-radius:var(--radius-lg);background-image:repeating-linear-gradient(90deg,transparent 0 26px,rgba(234,231,231,0.05) 26px 28px),repeating-linear-gradient(0deg,transparent 0 26px,rgba(234,231,231,0.05) 26px 28px)">
+        <div style="display:flex;justify-content:space-between;align-items:baseline">
+          <span style="font-size:13px;color:#BAB6B6">Total area</span>
+          <span style="font-size:17px;font-weight:600;font-variant-numeric:tabular-nums">120.00 ft²</span>
+        </div>
+        <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-top:14px">
+          <div>
+            <div style="font-size:12px;letter-spacing:0.08em;text-transform:uppercase;font-weight:600;color:#BAB6B6">Tiles needed</div>
+            <div style="font-size:66px;font-weight:600;line-height:0.95;letter-spacing:-0.02em;font-variant-numeric:tabular-nums;margin-top:4px">132</div>
+            <div style="font-size:13px;color:#9B9797;margin-top:8px;font-variant-numeric:tabular-nums">120 tiles + 10% waste</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:5px;align-items:flex-start">
+            <div style="width:84px;height:84px;border-radius:var(--radius-sm);background-color:#444141;background-image:repeating-linear-gradient(90deg,transparent 0 26px,#201E1D 26px 28px),repeating-linear-gradient(0deg,transparent 0 26px,#201E1D 26px 28px)"></div>
+            <span style="font-size:10.5px;color:#9B9797">Straight · 1/16″ grout</span>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;margin-top:18px">
+          <div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-size:13px;color:#BAB6B6">Boxes to buy</span><span style="font-size:17px;font-weight:600;font-variant-numeric:tabular-nums">17</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-size:13px;color:#BAB6B6">Estimated cost</span><span style="font-size:17px;font-weight:600;font-variant-numeric:tabular-nums">$425.00</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="dv-card" style="width:372px;padding:18px;background:#201E1D">
+    <div style="font-family:'IBM Plex Sans','Noto Sans SC',sans-serif;color:#EAE7E7">
+      <div style="font-size:12px;letter-spacing:0.08em;text-transform:uppercase;font-weight:600;color:#BAB6B6;margin-bottom:10px">Results</div>
+      <div style="padding:14px 14px 12px;border-radius:var(--radius-lg);background-image:repeating-linear-gradient(90deg,transparent 0 26px,rgba(234,231,231,0.05) 26px 28px),repeating-linear-gradient(0deg,transparent 0 26px,rgba(234,231,231,0.05) 26px 28px)">
+        <div style="display:flex;justify-content:space-between;align-items:baseline">
+          <span style="font-size:13px;color:#BAB6B6">Total area</span>
+          <span style="font-size:17px;font-weight:600;font-variant-numeric:tabular-nums">18.50 ft²</span>
+        </div>
+        <div style="margin-top:14px">
+          <div style="font-size:12px;letter-spacing:0.08em;text-transform:uppercase;font-weight:600;color:#BAB6B6">Tiles needed</div>
+          <div style="font-size:66px;font-weight:600;line-height:0.95;letter-spacing:-0.02em;font-variant-numeric:tabular-nums;margin-top:4px">21</div>
+          <div style="font-size:13px;color:#9B9797;margin-top:8px;font-variant-numeric:tabular-nums">19 tiles + 10% waste</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:flex-start;margin-top:16px">
+          <i class="ph-duotone ph-info" style="font-size:16px;color:#9B9797;margin-top:1px"></i>
+          <span style="font-size:12.5px;line-height:1.45;color:#BAB6B6">Small areas produce more cut waste — consider +5%.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="dv-opt" id="4e">
+<div class="dv-olabel"><a class="dv-oid" href="#4e">4e</a>3.10 阿拉伯语 RTL — 布局镜像；数字、键位顺序、尺寸表达式与齿轮保持 LTR/不翻转（手机下方附开发注记 + Plex-Arabic 基线核对）</div>
+<div style="display:flex;flex-direction:column;gap:16px">
+<div class="dv-card" style="width:412px">
+<div dir="rtl" style="display:flex;flex-direction:column;font-family:'IBM Plex Sans','IBM Plex Sans Arabic',sans-serif;color:var(--color-text)">
+  <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 18px 0;font-size:13px;font-weight:600;font-variant-numeric:tabular-nums"><span dir="ltr">9:41</span><span style="display:flex;gap:6px;color:var(--color-neutral-700)"><i class="ph-duotone ph-cell-signal-full" style="font-size:14px"></i><i class="ph-duotone ph-wifi-high" style="font-size:14px"></i><i class="ph-duotone ph-battery-high" style="font-size:15px"></i></span></div>
+  <div style="display:flex;align-items:center;gap:2px;padding:10px 18px 6px 8px">
+    <span style="flex:1;font-size:19px;font-weight:600">حاسبة البلاط</span>
+    <span style="display:flex;align-items:center;justify-content:center;width:44px;height:44px;color:var(--color-text)"><i class="ph-duotone ph-clock-counter-clockwise" style="font-size:22px"></i></span>
+    <span style="display:flex;align-items:center;justify-content:center;width:44px;height:44px;color:var(--color-text)"><i class="ph-duotone ph-gear-six" style="font-size:22px"></i></span>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:26px;padding:6px 18px 24px">
+    <div>
+      <div style="font-size:12px;font-weight:600;color:var(--color-neutral-700);margin-bottom:10px">المساحات</div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="display:grid;grid-template-columns:1fr auto 44px;gap:10px;align-items:end">
+          <div style="display:flex;flex-direction:column;gap:5px">
+            <span style="font-size:11px;color:var(--color-neutral-600)">المنطقة 1</span>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div dir="ltr" style="display:flex;align-items:center;width:96px;height:44px;padding:0 11px;background:var(--color-surface);border:1px solid var(--color-divider);border-radius:var(--radius-md);font-size:15px;font-variant-numeric:tabular-nums">3.85 m</div>
+              <span style="color:var(--color-neutral-500);font-size:14px">×</span>
+              <div dir="ltr" style="display:flex;align-items:center;width:96px;height:44px;padding:0 11px;background:var(--color-surface);border:1px solid var(--color-divider);border-radius:var(--radius-md);font-size:15px;font-variant-numeric:tabular-nums">2.95 m</div>
+            </div>
+          </div>
+          <div dir="ltr" style="font-size:15px;font-variant-numeric:tabular-nums;white-space:nowrap;padding-bottom:12px">11.36 m²</div>
+          <span style="display:flex;align-items:center;justify-content:center;width:44px;height:44px;color:var(--color-neutral-500)"><i class="ph-duotone ph-x" style="font-size:15px"></i></span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr auto 44px;gap:10px;align-items:end">
+          <div style="display:flex;flex-direction:column;gap:5px">
+            <span style="display:inline-flex;align-self:flex-start;align-items:center;font-size:10px;font-weight:600;padding:2px 8px;border-radius:var(--radius-sm);background:var(--color-accent-2-100);color:var(--color-accent-2-800)">خصم · بدون تبليط</span>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div dir="ltr" style="display:flex;align-items:center;width:96px;height:44px;padding:0 11px;background:var(--color-surface);border:1px dashed var(--color-accent-2-400);border-radius:var(--radius-md);font-size:15px;font-variant-numeric:tabular-nums">0.76 m</div>
+              <span style="color:var(--color-neutral-500);font-size:14px">×</span>
+              <div dir="ltr" style="display:flex;align-items:center;width:96px;height:44px;padding:0 11px;background:var(--color-surface);border:1px dashed var(--color-accent-2-400);border-radius:var(--radius-md);font-size:15px;font-variant-numeric:tabular-nums">1.52 m</div>
+            </div>
+          </div>
+          <div dir="ltr" style="font-size:15px;font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap;padding-bottom:12px;color:var(--color-accent-2-700)">−1.16 m²</div>
+          <span style="display:flex;align-items:center;justify-content:center;width:44px;height:44px;color:var(--color-neutral-500)"><i class="ph-duotone ph-x" style="font-size:15px"></i></span>
+        </div>
+      </div>
+      <div style="display:flex;gap:22px;margin-top:12px;min-height:44px;align-items:center">
+        <span style="display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:600;color:var(--color-accent-700)"><i class="ph-duotone ph-plus" style="font-size:15px"></i>إضافة منطقة</span>
+        <span style="display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:600;color:var(--color-accent-2-700)"><i class="ph-duotone ph-plus" style="font-size:15px"></i>إضافة خصم</span>
+      </div>
+    </div>
+    <div>
+      <div style="font-size:12px;font-weight:600;color:var(--color-neutral-700);margin-bottom:10px">مقاس البلاط</div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px">
+        <span dir="ltr" style="display:inline-flex;align-items:center;justify-content:center;height:44px;min-width:64px;padding:0 16px;background:var(--color-neutral-100);border:1px solid var(--color-divider);border-radius:var(--radius-md);font-size:15px;font-variant-numeric:tabular-nums">30×30</span>
+        <span dir="ltr" style="display:inline-flex;align-items:center;justify-content:center;height:44px;min-width:64px;padding:0 16px;background:var(--color-accent-700);border:1px solid var(--color-accent-700);border-radius:var(--radius-md);font-size:15px;font-weight:600;color:var(--color-bg);font-variant-numeric:tabular-nums">60×60</span>
+        <span dir="ltr" style="display:inline-flex;align-items:center;justify-content:center;height:44px;min-width:64px;padding:0 16px;background:var(--color-neutral-100);border:1px solid var(--color-divider);border-radius:var(--radius-md);font-size:15px;font-variant-numeric:tabular-nums">60×120</span>
+        <span dir="ltr" style="display:inline-flex;align-items:center;justify-content:center;height:44px;min-width:64px;padding:0 16px;background:var(--color-neutral-100);border:1px solid var(--color-divider);border-radius:var(--radius-md);font-size:15px;font-variant-numeric:tabular-nums">80×80</span>
+        <span style="display:inline-flex;align-items:center;justify-content:center;height:44px;min-width:64px;padding:0 16px;background:transparent;border:1px solid var(--color-accent);border-radius:var(--radius-md);font-size:15px;color:var(--color-accent-700)">مخصص</span>
+      </div>
+      <div style="margin-top:6px;font-size:11px;color:var(--color-neutral-600)">المقاسات بالسنتيمتر</div>
+    </div>
+    <div>
+      <div style="font-size:12px;font-weight:600;color:var(--color-neutral-700);margin-bottom:10px">عرض الفاصل</div>
+      <div style="display:flex;align-items:center;gap:14px">
+        <div dir="ltr" style="display:flex;align-items:center;width:116px;height:44px;padding:0 12px;background:var(--color-surface);border:1px solid var(--color-divider);border-radius:var(--radius-md);font-size:16px;font-variant-numeric:tabular-nums">2 mm</div>
+        <span style="font-size:12px;color:var(--color-neutral-600);max-width:190px;line-height:1.6">الفاصل بين البلاطات — يُحتسب ضمن الكمية.</span>
+      </div>
+    </div>
+    <div>
+      <div style="font-size:12px;font-weight:600;color:var(--color-neutral-700);margin-bottom:10px">نمط التبليط</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 4px 8px;border:1.5px solid var(--color-accent);border-radius:var(--radius-md);background:var(--color-accent-100);color:var(--color-accent-800)">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 3h14v14H3zM10 3v14M3 10h14"></path></svg>
+          <span style="font-size:13px;font-weight:600">مستقيم</span><span dir="ltr" style="font-size:12px;font-variant-numeric:tabular-nums">10%</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 4px 8px;border:1px solid var(--color-divider);border-radius:var(--radius-md);color:var(--color-neutral-800)">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4"><g transform="rotate(45 10 10)"><path d="M4.5 4.5h11v11h-11zM10 4.5v11M4.5 10h11"></path></g></svg>
+          <span style="font-size:13px">قطري</span><span dir="ltr" style="font-size:12px;color:var(--color-neutral-600);font-variant-numeric:tabular-nums">15%</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 4px 8px;border:1px solid var(--color-divider);border-radius:var(--radius-md);color:var(--color-neutral-800)">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><path d="M3 14l5-5 3 3-5 5zM9 8l5-5 3 3-5 5z"></path></svg>
+          <span style="font-size:13px">عظم السمكة</span><span dir="ltr" style="font-size:12px;color:var(--color-neutral-600);font-variant-numeric:tabular-nums">20%</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 4px 8px;border:1px solid var(--color-divider);border-radius:var(--radius-md);color:var(--color-neutral-800)">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 10h14"></path><circle cx="12" cy="10" r="3"></circle></svg>
+          <span style="font-size:13px">مخصص</span><span style="font-size:12px;color:var(--color-neutral-600)">تحديد %</span>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;min-height:48px">
+      <i class="ph-duotone ph-caret-left" style="font-size:16px;color:var(--color-neutral-600)"></i>
+      <span style="font-size:15px;font-weight:600">العلب والتكلفة</span>
+      <span style="flex:1"></span>
+      <span style="font-size:13px;color:var(--color-neutral-600)">اختياري</span>
+    </div>
+    <div>
+      <div style="font-size:12px;font-weight:600;color:var(--color-neutral-700);margin-bottom:10px">النتائج</div>
+      <div style="padding:16px 16px 14px;border-radius:var(--radius-lg);background-color:var(--color-bg);background-image:repeating-linear-gradient(90deg,transparent 0 26px,rgba(32,30,29,0.055) 26px 28px),repeating-linear-gradient(0deg,transparent 0 26px,rgba(32,30,29,0.055) 26px 28px)">
+        <div style="display:flex;justify-content:space-between;align-items:baseline">
+          <span style="font-size:13px;color:var(--color-neutral-700)">المساحة الإجمالية</span>
+          <span dir="ltr" style="font-size:17px;font-weight:600;font-variant-numeric:tabular-nums">12.15 m²</span>
+        </div>
+        <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-top:14px">
+          <div>
+            <div style="font-size:12px;font-weight:600;color:var(--color-neutral-700)">البلاط المطلوب</div>
+            <div dir="ltr" style="font-size:66px;font-weight:600;line-height:0.95;letter-spacing:-0.02em;font-variant-numeric:tabular-nums;margin-top:4px;text-align:right">38</div>
+            <div style="font-size:13px;color:var(--color-neutral-600);margin-top:8px;font-variant-numeric:tabular-nums">34 بلاطة + <span dir="ltr">10%</span> هدر</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:5px;align-items:flex-start">
+            <div style="width:84px;height:84px;border-radius:var(--radius-sm);background-color:var(--color-neutral-300);background-image:repeating-linear-gradient(90deg,transparent 0 26px,var(--color-bg) 26px 28px),repeating-linear-gradient(0deg,transparent 0 26px,var(--color-bg) 26px 28px)"></div>
+            <span style="font-size:10.5px;color:var(--color-neutral-600)">مستقيم · فاصل <span dir="ltr">2 mm</span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div style="height:18px;background:var(--color-bg);background-image:repeating-linear-gradient(90deg,var(--color-neutral-400) 0 1px,transparent 1px 8px),repeating-linear-gradient(90deg,var(--color-neutral-500) 0 1px,transparent 1px 40px);background-repeat:no-repeat;background-size:100% 6px,100% 11px;background-position:top left,top left"></div>
+  <div style="height:60px;background:var(--color-neutral-200);background-image:repeating-linear-gradient(45deg,transparent 0 10px,rgba(32,30,29,0.035) 10px 11px);display:flex;align-items:center;justify-content:center;color:var(--color-neutral-600);font-size:11px">إعلان · شريط إعلاني متكيف · <span dir="ltr">50–70dp</span></div>
+</div>
+</div>
+<div class="dv-card" style="width:412px;padding:16px 18px">
+<div style="font-family:'IBM Plex Sans',sans-serif;color:var(--color-text)">
+  <div style="font-size:12px;letter-spacing:0.08em;text-transform:uppercase;font-weight:600;color:var(--color-neutral-700);margin-bottom:8px">开发注记 — 不镜像</div>
+  <ul style="margin:0 0 14px;padding-left:18px;font-size:12.5px;line-height:1.6;color:var(--color-neutral-800)">
+    <li>数字 + 数字键盘键位顺序（1-2-3 与 LTR 完全一致）</li>
+    <li>尺寸表达式 — 每个数值 span 都带 <span style="font-family:ui-monospace,Menlo,monospace">dir="ltr"</span>（`3.85 m`、`60×120`、`10%`）</li>
+    <li>方向中性图标（齿轮、时钟）；仅折叠 caret 翻转</li>
+    <li>全程西方数字 0-9；东阿拉伯数字 ٠١٢٣ 留待后续设置项</li>
+  </ul>
+  <div style="font-size:12px;letter-spacing:0.08em;text-transform:uppercase;font-weight:600;color:var(--color-neutral-700);margin-bottom:8px">基线核对 — 阿拉伯文 × Plex 数字</div>
+  <div dir="rtl" style="font-size:20px;line-height:1.7;font-family:'IBM Plex Sans','IBM Plex Sans Arabic',sans-serif;font-variant-numeric:tabular-nums;background:linear-gradient(transparent 0 74%,rgba(214,0,108,0.4) 74% 75.5%,transparent 75.5%)">العرض <span dir="ltr">3.85 m</span> · الطول <span dir="ltr">2.95 m</span> · <span dir="ltr">38</span> بلاطة</div>
+  <div style="font-size:10.5px;color:var(--color-neutral-600);margin:2px 0 10px">IBM Plex Sans + IBM Plex Sans Arabic（拉丁优先字体链：数字始终走 Plex 拉丁度量）</div>
+  <div dir="rtl" style="font-size:20px;line-height:1.7;font-family:'Noto Sans','Noto Sans Arabic',sans-serif;font-variant-numeric:tabular-nums;background:linear-gradient(transparent 0 74%,rgba(214,0,108,0.4) 74% 75.5%,transparent 75.5%)">العرض <span dir="ltr">3.85 m</span> · الطول <span dir="ltr">2.95 m</span> · <span dir="ltr">38</span> بلاطة</div>
+  <div style="font-size:10.5px;color:var(--color-neutral-600);margin-top:2px">Noto Sans + Noto Sans Arabic 回退对 — 与品红导线并排比较字形落座。Plex 对在 UI 字号下无可见基线漂移；若某设备 Plex-Arabic 垂直度量异常，只替换阿拉伯字体 — 数字仍走 Plex。</div>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+<p class="dv-next">3.2b / 3.3 / 3.7 / 3.10 已在本轮交付。</p>
+</section>
+<section class="dv-turn" id="t1">
+<div class="dv-thd"><a class="dv-tid" href="#t1">1</a><span class="dv-tname">定风格轮 — 3.1 主计算页 · 3.2 分数键盘 · 3.4 结果卡三态</span></div>
+<div class="dv-opts">
+
+<div class="dv-opt" id="1a">
+<div class="dv-olabel"><a class="dv-oid" href="#1a">1a</a>3.1 主计算页 · 键盘收起 · 完整滚动长度（banner 在 App 内锚定于视口底部）</div>
+<div class="dv-card" style="width:412px">
+<div style="display:flex;flex-direction:column;font-family:'IBM Plex Sans','Noto Sans SC',sans-serif;color:var(--color-text)">
+  <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 18px 0;font-size:13px;font-weight:600;font-variant-numeric:tabular-nums"><span>9:41</span><span style="display:flex;gap:6px;color:var(--color-neutral-700)"><i class="ph-duotone ph-cell-signal-full" style="font-size:14px"></i><i class="ph-duotone ph-wifi-high" style="font-size:14px"></i><i class="ph-duotone ph-battery-high" style="font-size:15px"></i></span></div>
+  <div style="display:flex;align-items:center;gap:2px;padding:10px 8px 6px 18px">
+    <span style="flex:1;font-size:19px;font-weight:600;letter-spacing:-0.01em">Tile Calculator</span>
+    <span style="display:flex;align-items:center;justify-content:center;width:44px;height:44px;color:var(--color-text)"><i class="ph-duotone ph-clock-counter-clockwise" style="font-size:22px"></i></span>
+    <span style="display:flex;align-items:center;justify-content:center;width:44px;height:44px;color:var(--color-text)"><i class="ph-duotone ph-gear-six" style="font-size:22px"></i></span>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:26px;padding:6px 18px 24px">
+    <div>
+      <div style="font-size:12px;letter-spacing:0.08em;text-transform:uppercase;font-weight:600;color:var(--color-neutral-700);margin-bottom:10px">Areas</div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="display:grid;grid-template-columns:1fr auto 44px;gap:10px;align-items:end">
+          <div style="display:flex;flex-direction:column;gap:5px">
+            <span style="font-size:11px;color:var(--color-neutral-600)">Area 1</span>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="display:flex;align-items:center;width:96px;height:44px;padding:0 11px;background:var(--color-surface);border:1px solid var(--color-divider);border-radius:var(--radius-md);font-size:15px;font-variant-numeric:tabular-nums">12′ 6″</div>
+              <span style="color:var(--color-neutral-500);font-size:14px">×</span>
+              <div style="display:flex;align-items:center;width:96px;height:44px;padding:0 11px;background:var(--color-surface);border:1px solid var(--color-divider);border-radius:var(--radius-md);font-size:15px;font-variant-numeric:tabular-nums">9′ 8″</div>
+            </div>
+          </div>
+          <div style="font-size:15px;font-variant-numeric:tabular-nums;white-space:nowrap;padding-bottom:12px">120.83 ft²</div>
+          <span style="display:flex;align-items:center;justify-content:center;width:44px;height:44px;color:var(--color-neutral-500)"><i class="ph-duotone ph-x" style="font-size:15px"></i></span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr auto 44px;gap:10px;align-items:end">
+          <div style="display:flex;flex-direction:column;gap:5px">
+            <span style="font-size:11px;color:var(--color-neutral-600)">Area 2</span>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="display:flex;align-items:center;width:96px;height:44px;padding:0 11px;background:var(--color-surface);border:1px solid var(--color-divider);border-radius:var(--radius-md);font-size:15px;font-variant-numeric:tabular-nums">5′ 3″</div>
+              <span style="color:var(--color-neutral-500);font-size:14px">×</span>
+              <div style="display:flex;align-items:center;width:96px;height:44px;padding:0 11px;background:var(--color-surface);border:1px solid var(--color-divider);border-radius:var(--radius-md);font-size:15px;font-variant-numeric:tabular-nums">4′ 0″</div>
+            </div>
+          </div>
+          <div style="font-size:15px;font-variant-numeric:tabular-nums;white-space:nowrap;padding-bottom:12px">21.00 ft²</div>
+          <span style="display:flex;align-items:center;justify-content:center;width:44px;height:44px;color:var(--color-neutral-500)"><i class="ph-duotone ph-x" style="font-size:15px"></i></span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr auto 44px;gap:10px;align-items:end">
+          <div style="display:flex;flex-direction:column;gap:5px">
+            <span style="display:inline-flex;align-self:flex-start;align-items:center;font-size:10px;letter-spacing:0.08em;text-transform:uppercase;font-weight:600;padding:2px 8px;border-radius:var(--radius-sm);background:var(--color-accent-2-100);color:var(--color-accent-2-800)">Cutout · not tiled</span>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="display:flex;align-items:center;width:96px;height:44px;padding:0 11px;background:var(--color-surface);border:1px dashed var(--color-accent-2-400);border-radius:var(--radius-md);font-size:15px;font-variant-numeric:tabular-nums">2′ 6″</div>
+              <span style="color:var(--color-neutral-500);font-size:14px">×</span>
+              <div style="display:flex;align-items:center;width:96px;height:44px;padding:0 11px;background:var(--color-surface);border:1px dashed var(--color-accent-2-400);border-radius:var(--radius-md);font-size:15px;font-variant-numeric:tabular-nums">5′ 0″</div>
+            </div>
+          </div>
+          <div style="font-size:15px;font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap;padding-bottom:12px;color:var(--color-accent-2-700)">−12.50 ft²</div>
+          <span style="display:flex;align-items:center;justify-content:center;width:44px;height:44px;color:var(--color-neutral-500)"><i class="ph-duotone ph-x" style="font-size:15px"></i></span>
+        </div>
+      </div>
+      <div style="display:flex;gap:22px;margin-top:12px;min-height:44px;align-items:center">
+        <span style="display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:600;color:var(--color-accent-700)"><i class="ph-duotone ph-plus" style="font-size:15px"></i>Add area</span>
+        <span style="display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:600;color:var(--color-accent-2-700)"><i class="ph-duotone ph-plus" style="font-size:15px"></i>Add cutout</span>
+      </div>
+    </div>
+    <div>
+      <div style="font-size:12px;letter-spacing:0.08em;text-transform:uppercase;font-weight:600;color:var(--color-neutral-700);margin-bottom:10px">Tile size</div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px">
+        <span style="display:inline-flex;align-items:center;justify-content:center;height:44px;padding:0 16px;background:var(--color-neutral-100);border:1px solid var(--color-divider);border-radius:var(--radius-md);font-size:15px;font-variant-numeric:tabular-nums">4×4</span>
+        <span style="display:inline-flex;align-items:center;justify-content:center;height:44px;padding:0 16px;background:var(--color-neutral-100);border:1px solid var(--color-divider);border-radius:var(--radius-md);font-size:15px;font-variant-numeric:tabular-nums">6×6</span>
+        <span style="display:inline-flex;align-items:center;justify-content:center;height:44px;padding:0 16px;background:var(--color-accent-700);border:1px solid var(--color-accent-700);border-radius:var(--radius-md);font-size:15px;font-weight:600;color:var(--color-bg);font-variant-numeric:tabular-nums">12×12</span>
+        <span style="display:inline-flex;align-items:center;justify-content:center;height:44px;padding:0 16px;background:var(--color-neutral-100);border:1px solid var(--color-divider);border-radius:var(--radius-md);font-size:15px;font-variant-numeric:tabular-nums">12×24</span>
+        <span style="display:inline-flex;align-items:center;justify-content:center;height:44px;padding:0 16px;background:var(--color-neutral-100);border:1px solid var(--color-divider);border-radius:var(--radius-md);font-size:15px;font-variant-numeric:tabular-nums">18×18</span>
+        <span style="display:inline-flex;align-items:center;justify-content:center;height:44px;padding:0 16px;background:var(--color-neutral-100);border:1px solid var(--color-divider);border-radius:var(--radius-md);font-size:15px;font-variant-numeric:tabular-nums">24×24</span>
+        <span style="display:inline-flex;align-items:center;justify-content:center;height:44px;padding:0 16px;background:var(--color-neutral-100);border:1px solid var(--color-divider);border-radius:var(--radius-md);font-size:15px;font-variant-numeric:tabular-nums">24×48</span>
+        <span style="display:inline-flex;align-items:center;justify-content:center;height:44px;padding:0 16px;background:transparent;border:1px solid var(--color-accent);border-radius:var(--radius-md);font-size:15px;color:var(--color-accent-700)">Custom</span>
+      </div>
+      <div style="margin-top:6px;font-size:11px;color:var(--color-neutral-600)">Sizes in inches</div>
+    </div>
+    <div>
+      <div style="font-size:12px;letter-spacing:0.08em;text-transform:uppercase;font-weight:600;color:var(--color-neutral-700);margin-bottom:10px">Grout gap</div>
+      <div style="display:flex;align-items:center;gap:14px">
+        <div style="display:flex;align-items:center;width:116px;height:44px;padding:0 12px;background:var(--color-surface);border:1px solid var(--color-divider);border-radius:var(--radius-md);font-size:16px;font-variant-numeric:tabular-nums">1/16″</div>
+        <span style="font-size:12px;color:var(--color-neutral-600);max-width:190px;line-height:1.4">Joint width between tiles — counted in the math, not just drawn.</span>
+      </div>
+    </div>
+    <div>
+      <div style="font-size:12px;letter-spacing:0.08em;text-transform:uppercase;font-weight:600;color:var(--color-neutral-700);margin-bottom:10px">Layout pattern</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 4px 8px;border:1.5px solid var(--color-accent);border-radius:var(--radius-md);background:var(--color-accent-100);color:var(--color-accent-800)">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 3h14v14H3zM10 3v14M3 10h14"></path></svg>
+          <span style="font-size:13px;font-weight:600">Straight</span><span style="font-size:12px;font-variant-numeric:tabular-nums">10%</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 4px 8px;border:1px solid var(--color-divider);border-radius:var(--radius-md);color:var(--color-neutral-800)">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4"><g transform="rotate(45 10 10)"><path d="M4.5 4.5h11v11h-11zM10 4.5v11M4.5 10h11"></path></g></svg>
+          <span style="font-size:13px">Diagonal</span><span style="font-size:12px;color:var(--color-neutral-600);font-variant-numeric:tabular-nums">15%</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 4px 8px;border:1px solid var(--color-divider);border-radius:var(--radius-md);color:var(--color-neutral-800)">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><path d="M3 14l5-5 3 3-5 5zM9 8l5-5 3 3-5 5z"></path></svg>
+          <span style="font-size:13px">Herringbone</span><span style="font-size:12px;color:var(--color-neutral-600);font-variant-numeric:tabular-nums">20%</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 4px 8px;border:1px solid var(--color-divider);border-radius:var(--radius-md);color:var(--color-neutral-800)">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 10h14"></path><circle cx="12" cy="10" r="3"></circle></svg>
+          <span style="font-size:13px">Custom</span><span style="font-size:12px;color:var(--color-neutral-600)">Set %</span>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;min-height:48px">
+      <i class="ph-duotone ph-caret-right" style="font-size:16px;color:var(--color-neutral-600)"></i>
+      <span style="font-size:15px;font-weight:600">Boxes &amp; cost</span>
+      <span style="flex:1"></span>
+      <span style="font-size:13px;color:var(--color-neutral-600)">Optional</span>
+    </div>
+    <div>
+      <div style="font-size:12px;letter-spacing:0.08em;text-transform:uppercase;font-weight:600;color:var(--color-neutral-700);margin-bottom:10px">Results</div>
+      <div style="padding:16px 16px 14px;border-radius:var(--radius-lg);background-color:var(--color-bg);background-image:repeating-linear-gradient(90deg,transparent 0 26px,rgba(32,30,29,0.055) 26px 28px),repeating-linear-gradient(0deg,transparent 0 26px,rgba(32,30,29,0.055) 26px 28px)">
+        <div style="display:flex;justify-content:space-between;align-items:baseline">
+          <span style="font-size:13px;color:var(--color-neutral-700)">Total area</span>
+          <span style="font-size:17px;font-weight:600;font-variant-numeric:tabular-nums">129.33 ft²</span>
+        </div>
+        <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-top:14px">
+          <div>
+            <div style="font-size:12px;letter-spacing:0.08em;text-transform:uppercase;font-weight:600;color:var(--color-neutral-700)">Tiles needed</div>
+            <div style="font-size:66px;font-weight:600;line-height:0.95;letter-spacing:-0.02em;font-variant-numeric:tabular-nums;margin-top:4px">141</div>
+            <div style="font-size:13px;color:var(--color-neutral-600);margin-top:8px;font-variant-numeric:tabular-nums">128 tiles + 10% waste</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:5px;align-items:flex-start">
+            <div style="width:84px;height:84px;border-radius:var(--radius-sm);background-color:var(--color-neutral-300);background-image:repeating-linear-gradient(90deg,transparent 0 26px,var(--color-bg) 26px 28px),repeating-linear-gradient(0deg,transparent 0 26px,var(--color-bg) 26px 28px)"></div>
+            <span style="font-size:10.5px;color:var(--color-neutral-600)">Straight · 1/16″ grout</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div style="height:18px;background:var(--color-bg);background-image:repeating-linear-gradient(90deg,var(--color-neutral-400) 0 1px,transparent 1px 8px),repeating-linear-gradient(90deg,var(--color-neutral-500) 0 1px,transparent 1px 40px);background-repeat:no-repeat;background-size:100% 6px,100% 11px;background-position:top left,top left"></div>
+  <div style="height:60px;background:var(--color-neutral-200);background-image:repeating-linear-gradient(45deg,transparent 0 10px,rgba(32,30,29,0.035) 10px 11px);display:flex;align-items:center;justify-content:center;color:var(--color-neutral-600);font-size:11px;letter-spacing:0.08em;text-transform:uppercase">Ad · anchored adaptive banner · 50–70dp</div>
+</div>
+</div>
+</div>
+
+<div class="dv-opt" id="1b">
+<div class="dv-olabel"><a class="dv-oid" href="#1b">1b</a>3.2 英制分数键盘 · 412×915 视口 · 正在编辑 Area 2 长度，inch 段激活，½ 分数键锁定</div>
+<div class="dv-card" style="width:412px">
+<div style="display:flex;flex-direction:column;height:915px;font-family:'IBM Plex Sans','Noto Sans SC',sans-serif;color:var(--color-text)">
+  <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 18px 0;font-size:13px;font-weight:600;font-variant-numeric:tabular-nums"><span>9:41</span><span style="display:flex;gap:6px;color:var(--color-neutral-700)"><i class="ph-duotone ph-cell-signal-full" style="font-size:14px"></i><i class="ph-duotone ph-wifi-high" style="font-size:14px"></i><i class="ph-duotone ph-battery-high" style="font-size:15px"></i></span></div>
+  <div style="display:flex;align-items:center;gap:2px;padding:10px 8px 6px 18px">
+    <span style="flex:1;font-size:19px;font-weight:600;letter-spacing:-0.01em">Tile Calculator</span>
+    <span style="display:flex;align-items:center;justify-content:center;width:44px;height:44px;color:var(--color-text)"><i class="ph-duotone ph-clock-counter-clockwise" style="font-size:22px"></i></span>
+    <span style="display:flex;align-items:center;justify-content:center;width:44px;height:44px;color:var(--color-text)"><i class="ph-duotone ph-gear-six" style="font-size:22px"></i></span>
+  </div>
+  <div style="flex:1;overflow:hidden;padding:6px 18px 0">
+    <div style="font-size:12px;letter-spacing:0.08em;text-transform:uppercase;font-weight:600;color:var(--color-neutral-700);margin-bottom:10px">Areas</div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div style="display:grid;grid-template-columns:1fr auto 44px;gap:10px;align-items:end">
+        <div style="display:flex;flex-direction:column;gap:5px">
+          <span style="font-size:11px;color:var(--color-neutral-600)">Area 1</span>
+          <div style="display:flex;align-items:center;gap:8px">
+            <div style="display:flex;align-items:center;width:96px;height:44px;padding:0 11px;background:var(--color-surface);border:1px solid var(--color-divider);border-radius:var(--radius-md);font-size:15px;font-variant-numeric:tabular-nums">12′ 6″</div>
+            <span style="color:var(--color-neutral-500);font-size:14px">×</span>
+            <div style="display:flex;align-items:center;width:96px;height:44px;padding:0 11px;background:var(--color-surface);border:1px solid var(--color-divider);border-radius:var(--radius-md);font-size:15px;font-variant-numeric:tabular-nums">9′ 8″</div>
+          </div>
+        </div>
+        <div style="font-size:15px;font-variant-numeric:tabular-nums;white-space:nowrap;padding-bottom:12px">120.83 ft²</div>
+        <span style="display:flex;align-items:center;justify-content:center;width:44px;height:44px;color:var(--color-neutral-500)"><i class="ph-duotone ph-x" style="font-size:15px"></i></span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr auto 44px;gap:10px;align-items:end">
+        <div style="display:flex;flex-direction:column;gap:5px">
+          <span style="font-size:11px;font-weight:600;color:var(--color-accent-700)">Area 2 — editing length</span>
+          <div style="display:flex;align-items:center;gap:8px">
+            <div style="display:flex;align-items:center;width:96px;height:44px;padding:0 11px;background:var(--color-surface);border:1px solid var(--color-divider);border-radius:var(--radius-md);font-size:15px;font-variant-numeric:tabular-nums">5′ 3″</div>
+            <span style="color:var(--color-neutral-500);font-size:14px">×</span>
+            <div style="display:flex;align-items:center;width:110px;height:44px;padding:0 11px;background:var(--color-neutral-100);border:1.5px solid var(--color-accent);border-radius:var(--radius-md);font-size:15px;font-variant-numeric:tabular-nums;white-space:nowrap">8′&nbsp;<span style="background:var(--color-accent-100);color:var(--color-accent-800);border-radius:2px;padding:0 3px">4-1/2″</span><span style="display:inline-block;width:2px;height:20px;background:var(--color-accent);margin-left:2px"></span></div>
+          </div>
+        </div>
+        <div style="font-size:15px;color:var(--color-neutral-500);font-variant-numeric:tabular-nums;white-space:nowrap;padding-bottom:12px">44.19 ft²</div>
+        <span style="display:flex;align-items:center;justify-content:center;width:44px;height:44px;color:var(--color-neutral-500)"><i class="ph-duotone ph-x" style="font-size:15px"></i></span>
+      </div>
+    </div>
+    <div style="display:flex;gap:22px;margin-top:12px;min-height:44px;align-items:center">
+      <span style="display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:600;color:var(--color-accent-700)"><i class="ph-duotone ph-plus" style="font-size:15px"></i>Add area</span>
+      <span style="display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:600;color:var(--color-accent-2-700)"><i class="ph-duotone ph-plus" style="font-size:15px"></i>Add cutout</span>
+    </div>
+  </div>
+  <div style="background:var(--color-surface);padding:10px 12px 12px;display:flex;flex-direction:column;gap:8px">
+    <div style="display:flex;align-items:baseline;gap:10px;min-height:26px;padding:0 4px">
+      <span style="font-size:12px;color:var(--color-neutral-600)">Area 2 · Length</span>
+      <span style="margin-left:auto;font-size:18px;font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap">8′ <span style="background:var(--color-accent-100);color:var(--color-accent-800);border-radius:2px;padding:0 4px">4-1/2″</span></span>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+      <span style="display:flex;align-items:center;justify-content:center;height:48px;background:var(--color-neutral-100);border:1px solid var(--color-divider);border-radius:var(--radius-md);font-size:16px;font-variant-numeric:tabular-nums">1/16</span>
+      <span style="display:flex;align-items:center;justify-content:center;height:48px;background:var(--color-neutral-100);border:1px solid var(--color-divider);border-radius:var(--radius-md);font-size:16px;font-variant-numeric:tabular-nums">1/8</span>
+      <span style="display:flex;align-items:center;justify-content:center;height:48px;background:var(--color-neutral-100);border:1px solid var(--color-divider);border-radius:var(--radius-md);font-size:16px;font-variant-numeric:tabular-nums">1/4</span>
+      <span style="display:flex;align-items:center;justify-content:center;height:48px;background:var(--color-accent-700);border:1px solid var(--color-accent-700);border-radius:var(--radius-md);font-size:16px;font-weight:600;color:var(--color-neutral-100);font-variant-numeric:tabular-nums">1/2</span>
+      <span style="display:flex;align-items:center;justify-content:center;height:48px;background:var(--color-neutral-100);border:1px solid var(--color-divider);border-radius:var(--radius-md);font-size:16px;font-variant-numeric:tabular-nums">3/16</span>
+      <span style="display:flex;align-items:center;justify-content:center;height:48px;background:var(--color-neutral-100);border:1px solid var(--color-divider);border-radius:var(--radius-md);font-size:16px;font-variant-numeric:tabular-nums">3/8</span>
+      <span style="display:flex;align-items:center;justify-content:center;height:48px;background:var(--color-neutral-100);border:1px solid var(--color-divider);border-radius:var(--radius-md);font-size:16px;font-variant-numeric:tabular-nums">3/4</span>
+      <span style="display:flex;align-items:center;justify-content:center;height:48px;background:var(--color-neutral-100);border:1px solid var(--color-divider);border-radius:var(--radius-md);font-size:16px;font-variant-numeric:tabular-nums">7/8</span>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:4px">
+      <span style="display:flex;align-items:center;justify-content:center;height:54px;background:var(--color-neutral-100);border:1px solid var(--color-divider);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);font-size:23px;font-weight:600;font-variant-numeric:tabular-nums">7</span>
+      <span style="display:flex;align-items:center;justify-content:center;height:54px;background:var(--color-neutral-100);border:1px solid var(--color-divider);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);font-size:23px;font-weight:600;font-variant-numeric:tabular-nums">8</span>
+      <span style="display:flex;align-items:center;justify-content:center;height:54px;background:var(--color-neutral-100);border:1px solid var(--color-divider);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);font-size:23px;font-weight:600;font-variant-numeric:tabular-nums">9</span>
+      <span style="display:flex;align-items:center;justify-content:center;height:54px;background:transparent;border:1px solid var(--color-divider);border-radius:var(--radius-md);color:var(--color-neutral-800)"><i class="ph-duotone ph-backspace" style="font-size:24px"></i></span>
+      <span style="display:flex;align-items:center;justify-content:center;height:54px;background:var(--color-neutral-100);border:1px solid var(--color-divider);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);font-size:23px;font-weight:600;font-variant-numeric:tabular-nums">4</span>
+      <span style="display:flex;align-items:center;justify-content:center;height:54px;background:var(--color-neutral-100);border:1px solid var(--color-divider);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);font-size:23px;font-weight:600;font-variant-numeric:tabular-nums">5</span>
+      <span style="display:flex;align-items:center;justify-content:center;height:54px;background:var(--color-neutral-100);border:1px solid var(--color-divider);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);font-size:23px;font-weight:600;font-variant-numeric:tabular-nums">6</span>
+      <span style="display:flex;align-items:center;justify-content:center;height:54px;background:transparent;border:1px solid var(--color-divider);border-radius:var(--radius-md);font-size:17px;color:var(--color-neutral-800)">ft</span>
+      <span style="display:flex;align-items:center;justify-content:center;height:54px;background:var(--color-neutral-100);border:1px solid var(--color-divider);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);font-size:23px;font-weight:600;font-variant-numeric:tabular-nums">1</span>
+      <span style="display:flex;align-items:center;justify-content:center;height:54px;background:var(--color-neutral-100);border:1px solid var(--color-divider);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);font-size:23px;font-weight:600;font-variant-numeric:tabular-nums">2</span>
+      <span style="display:flex;align-items:center;justify-content:center;height:54px;background:var(--color-neutral-100);border:1px solid var(--color-divider);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);font-size:23px;font-weight:600;font-variant-numeric:tabular-nums">3</span>
+      <span style="display:flex;align-items:center;justify-content:center;height:54px;background:var(--color-accent-100);border:1.5px solid var(--color-accent);border-radius:var(--radius-md);font-size:17px;font-weight:600;color:var(--color-accent-800)">in</span>
+      <span style="display:flex;align-items:center;justify-content:center;height:54px;background:var(--color-neutral-100);border:1px solid var(--color-divider);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);font-size:23px;font-weight:600;font-variant-numeric:tabular-nums">0</span>
+      <span style="display:flex;align-items:center;justify-content:center;height:54px;background:transparent;border:1px solid var(--color-divider);border-radius:var(--radius-md);font-size:15px;color:var(--color-neutral-800)">Clear</span>
+      <span style="display:flex;align-items:center;justify-content:center;height:54px;background:transparent;border:1px solid var(--color-divider);border-radius:var(--radius-md);font-size:15px;font-weight:600;color:var(--color-neutral-800)">Next</span>
+      <span style="display:flex;align-items:center;justify-content:center;height:54px;background:var(--color-accent-700);border:1px solid var(--color-accent-700);border-radius:var(--radius-md);font-size:16px;font-weight:600;color:var(--color-bg)">Done</span>
+    </div>
+  </div>
+  <div style="height:18px;background:var(--color-bg);background-image:repeating-linear-gradient(90deg,var(--color-neutral-400) 0 1px,transparent 1px 8px),repeating-linear-gradient(90deg,var(--color-neutral-500) 0 1px,transparent 1px 40px);background-repeat:no-repeat;background-size:100% 6px,100% 11px;background-position:top left,top left"></div>
+  <div style="height:60px;background:var(--color-neutral-200);background-image:repeating-linear-gradient(45deg,transparent 0 10px,rgba(32,30,29,0.035) 10px 11px);display:flex;align-items:center;justify-content:center;color:var(--color-neutral-600);font-size:11px;letter-spacing:0.08em;text-transform:uppercase">Ad · anchored adaptive banner · 50–70dp</div>
+</div>
+</div>
+</div>
+
+<div class="dv-opt" id="1c">
+<div class="dv-olabel"><a class="dv-oid" href="#1c">1c</a>3.4 结果卡 — 空 / 完整 / 小面积三态。迷你预览随所选铺法旋转；缝线粗细跟随留缝输入。</div>
+<div style="display:flex;flex-direction:column;gap:16px">
+  <div class="dv-card" style="width:372px;padding:18px">
+    <div style="font-family:'IBM Plex Sans','Noto Sans SC',sans-serif;color:var(--color-text)">
+      <div style="font-size:12px;letter-spacing:0.08em;text-transform:uppercase;font-weight:600;color:var(--color-neutral-700);margin-bottom:10px">Results</div>
+      <div style="min-height:150px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;border-radius:var(--radius-lg);background-image:repeating-linear-gradient(90deg,transparent 0 26px,rgba(32,30,29,0.05) 26px 28px),repeating-linear-gradient(0deg,transparent 0 26px,rgba(32,30,29,0.05) 26px 28px)">
+        <i class="ph-duotone ph-ruler" style="font-size:22px;color:var(--color-neutral-500)"></i>
+        <span style="font-size:14px;color:var(--color-neutral-600)">Enter dimensions to see results</span>
+      </div>
+    </div>
+  </div>
+  <div class="dv-card" style="width:372px;padding:18px">
+    <div style="font-family:'IBM Plex Sans','Noto Sans SC',sans-serif;color:var(--color-text)">
+      <div style="font-size:12px;letter-spacing:0.08em;text-transform:uppercase;font-weight:600;color:var(--color-neutral-700);margin-bottom:10px">Results</div>
+      <div style="padding:14px 14px 12px;border-radius:var(--radius-lg);background-image:repeating-linear-gradient(90deg,transparent 0 26px,rgba(32,30,29,0.05) 26px 28px),repeating-linear-gradient(0deg,transparent 0 26px,rgba(32,30,29,0.05) 26px 28px)">
+        <div style="display:flex;justify-content:space-between;align-items:baseline">
+          <span style="font-size:13px;color:var(--color-neutral-700)">Total area</span>
+          <span style="font-size:17px;font-weight:600;font-variant-numeric:tabular-nums">120.00 ft²</span>
+        </div>
+        <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-top:14px">
+          <div>
+            <div style="font-size:12px;letter-spacing:0.08em;text-transform:uppercase;font-weight:600;color:var(--color-neutral-700)">Tiles needed</div>
+            <div style="font-size:66px;font-weight:600;line-height:0.95;letter-spacing:-0.02em;font-variant-numeric:tabular-nums;margin-top:4px">132</div>
+            <div style="font-size:13px;color:var(--color-neutral-600);margin-top:8px;font-variant-numeric:tabular-nums">120 tiles + 10% waste</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:5px;align-items:flex-start">
+            <div style="width:84px;height:84px;border-radius:var(--radius-sm);background-color:var(--color-neutral-300);background-image:repeating-linear-gradient(90deg,transparent 0 26px,var(--color-bg) 26px 28px),repeating-linear-gradient(0deg,transparent 0 26px,var(--color-bg) 26px 28px)"></div>
+            <span style="font-size:10.5px;color:var(--color-neutral-600)">Straight · 1/16″ grout</span>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;margin-top:18px">
+          <div style="display:flex;justify-content:space-between;align-items:baseline">
+            <span style="font-size:13px;color:var(--color-neutral-700)">Boxes to buy</span>
+            <span style="font-size:17px;font-weight:600;font-variant-numeric:tabular-nums">17</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:baseline">
+            <span style="font-size:13px;color:var(--color-neutral-700)">Estimated cost</span>
+            <span style="font-size:17px;font-weight:600;font-variant-numeric:tabular-nums">$425.00</span>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:8px;font-size:11px;color:var(--color-neutral-500)">Boxes &amp; cost rows disappear entirely when box size / price are unset — no placeholders.</div>
+    </div>
+  </div>
+  <div class="dv-card" style="width:372px;padding:18px">
+    <div style="font-family:'IBM Plex Sans','Noto Sans SC',sans-serif;color:var(--color-text)">
+      <div style="font-size:12px;letter-spacing:0.08em;text-transform:uppercase;font-weight:600;color:var(--color-neutral-700);margin-bottom:10px">Results</div>
+      <div style="padding:14px 14px 12px;border-radius:var(--radius-lg);background-image:repeating-linear-gradient(90deg,transparent 0 26px,rgba(32,30,29,0.05) 26px 28px),repeating-linear-gradient(0deg,transparent 0 26px,rgba(32,30,29,0.05) 26px 28px)">
+        <div style="display:flex;justify-content:space-between;align-items:baseline">
+          <span style="font-size:13px;color:var(--color-neutral-700)">Total area</span>
+          <span style="font-size:17px;font-weight:600;font-variant-numeric:tabular-nums">18.50 ft²</span>
+        </div>
+        <div style="margin-top:14px">
+          <div style="font-size:12px;letter-spacing:0.08em;text-transform:uppercase;font-weight:600;color:var(--color-neutral-700)">Tiles needed</div>
+          <div style="font-size:66px;font-weight:600;line-height:0.95;letter-spacing:-0.02em;font-variant-numeric:tabular-nums;margin-top:4px">21</div>
+          <div style="font-size:13px;color:var(--color-neutral-600);margin-top:8px;font-variant-numeric:tabular-nums">19 tiles + 10% waste</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:flex-start;margin-top:16px">
+          <i class="ph-duotone ph-info" style="font-size:16px;color:var(--color-neutral-600);margin-top:1px"></i>
+          <span style="font-size:12.5px;line-height:1.45;color:var(--color-neutral-700)">Small areas produce more cut waste — consider +5%.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="dv-opt" id="1d">
+<div class="dv-olabel"><a class="dv-oid" href="#1d">1d</a>3.11 简体中文样张 — Noto Sans SC · 公制数据 · 短文案压力测试；数字/单位保持拉丁等宽（Latin 面已定 IBM Plex Sans）</div>
+<div class="dv-card" style="width:412px">
+<div style="display:flex;flex-direction:column;font-family:'IBM Plex Sans','Noto Sans SC',sans-serif;color:var(--color-text)">
+  <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 18px 0;font-size:13px;font-weight:600;font-variant-numeric:tabular-nums"><span>9:41</span><span style="display:flex;gap:6px;color:var(--color-neutral-700)"><i class="ph-duotone ph-cell-signal-full" style="font-size:14px"></i><i class="ph-duotone ph-wifi-high" style="font-size:14px"></i><i class="ph-duotone ph-battery-high" style="font-size:15px"></i></span></div>
+  <div style="display:flex;align-items:center;gap:2px;padding:10px 8px 6px 18px">
+    <span style="flex:1;font-size:19px;font-weight:700">瓷砖计算器</span>
+    <span style="display:flex;align-items:center;justify-content:center;width:44px;height:44px;color:var(--color-text)"><i class="ph-duotone ph-clock-counter-clockwise" style="font-size:22px"></i></span>
+    <span style="display:flex;align-items:center;justify-content:center;width:44px;height:44px;color:var(--color-text)"><i class="ph-duotone ph-gear-six" style="font-size:22px"></i></span>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:26px;padding:6px 18px 24px">
+    <div>
+      <div style="font-size:12px;letter-spacing:0.08em;font-weight:600;color:var(--color-neutral-700);margin-bottom:10px">区域</div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="display:grid;grid-template-columns:1fr auto 44px;gap:10px;align-items:end">
+          <div style="display:flex;flex-direction:column;gap:5px">
+            <span style="font-size:11px;color:var(--color-neutral-600)">区域 1</span>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="display:flex;align-items:center;width:96px;height:44px;padding:0 11px;background:var(--color-surface);border:1px solid var(--color-divider);border-radius:var(--radius-md);font-size:15px;font-variant-numeric:tabular-nums">3.85 m</div>
+              <span style="color:var(--color-neutral-500);font-size:14px">×</span>
+              <div style="display:flex;align-items:center;width:96px;height:44px;padding:0 11px;background:var(--color-surface);border:1px solid var(--color-divider);border-radius:var(--radius-md);font-size:15px;font-variant-numeric:tabular-nums">2.95 m</div>
+            </div>
+          </div>
+          <div style="font-size:15px;font-variant-numeric:tabular-nums;white-space:nowrap;padding-bottom:12px">11.36 m²</div>
+          <span style="display:flex;align-items:center;justify-content:center;width:44px;height:44px;color:var(--color-neutral-500)"><i class="ph-duotone ph-x" style="font-size:15px"></i></span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr auto 44px;gap:10px;align-items:end">
+          <div style="display:flex;flex-direction:column;gap:5px">
+            <span style="font-size:11px;color:var(--color-neutral-600)">区域 2</span>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="display:flex;align-items:center;width:96px;height:44px;padding:0 11px;background:var(--color-surface);border:1px solid var(--color-divider);border-radius:var(--radius-md);font-size:15px;font-variant-numeric:tabular-nums">1.60 m</div>
+              <span style="color:var(--color-neutral-500);font-size:14px">×</span>
+              <div style="display:flex;align-items:center;width:96px;height:44px;padding:0 11px;background:var(--color-surface);border:1px solid var(--color-divider);border-radius:var(--radius-md);font-size:15px;font-variant-numeric:tabular-nums">1.22 m</div>
+            </div>
+          </div>
+          <div style="font-size:15px;font-variant-numeric:tabular-nums;white-space:nowrap;padding-bottom:12px">1.95 m²</div>
+          <span style="display:flex;align-items:center;justify-content:center;width:44px;height:44px;color:var(--color-neutral-500)"><i class="ph-duotone ph-x" style="font-size:15px"></i></span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr auto 44px;gap:10px;align-items:end">
+          <div style="display:flex;flex-direction:column;gap:5px">
+            <span style="display:inline-flex;align-self:flex-start;align-items:center;font-size:10px;letter-spacing:0.08em;font-weight:600;padding:2px 8px;border-radius:var(--radius-sm);background:var(--color-accent-2-100);color:var(--color-accent-2-800)">扣除 · 不铺贴</span>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="display:flex;align-items:center;width:96px;height:44px;padding:0 11px;background:var(--color-surface);border:1px dashed var(--color-accent-2-400);border-radius:var(--radius-md);font-size:15px;font-variant-numeric:tabular-nums">0.76 m</div>
+              <span style="color:var(--color-neutral-500);font-size:14px">×</span>
+              <div style="display:flex;align-items:center;width:96px;height:44px;padding:0 11px;background:var(--color-surface);border:1px dashed var(--color-accent-2-400);border-radius:var(--radius-md);font-size:15px;font-variant-numeric:tabular-nums">1.52 m</div>
+            </div>
+          </div>
+          <div style="font-size:15px;font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap;padding-bottom:12px;color:var(--color-accent-2-700)">−1.16 m²</div>
+          <span style="display:flex;align-items:center;justify-content:center;width:44px;height:44px;color:var(--color-neutral-500)"><i class="ph-duotone ph-x" style="font-size:15px"></i></span>
+        </div>
+      </div>
+      <div style="display:flex;gap:22px;margin-top:12px;min-height:44px;align-items:center">
+        <span style="display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:600;color:var(--color-accent-700)"><i class="ph-duotone ph-plus" style="font-size:15px"></i>新增区域</span>
+        <span style="display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:600;color:var(--color-accent-2-700)"><i class="ph-duotone ph-plus" style="font-size:15px"></i>新增扣除</span>
+      </div>
+    </div>
+    <div>
+      <div style="font-size:12px;letter-spacing:0.08em;font-weight:600;color:var(--color-neutral-700);margin-bottom:10px">瓷砖规格</div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px">
+        <span style="display:inline-flex;align-items:center;justify-content:center;height:44px;min-width:64px;padding:0 16px;background:var(--color-neutral-100);border:1px solid var(--color-divider);border-radius:var(--radius-md);font-size:15px;font-variant-numeric:tabular-nums">30×30</span>
+        <span style="display:inline-flex;align-items:center;justify-content:center;height:44px;min-width:64px;padding:0 16px;background:var(--color-neutral-100);border:1px solid var(--color-divider);border-radius:var(--radius-md);font-size:15px;font-variant-numeric:tabular-nums">30×60</span>
+        <span style="display:inline-flex;align-items:center;justify-content:center;height:44px;min-width:64px;padding:0 16px;background:var(--color-accent-700);border:1px solid var(--color-accent-700);border-radius:var(--radius-md);font-size:15px;font-weight:600;color:var(--color-bg);font-variant-numeric:tabular-nums">60×60</span>
+        <span style="display:inline-flex;align-items:center;justify-content:center;height:44px;min-width:64px;padding:0 16px;background:var(--color-neutral-100);border:1px solid var(--color-divider);border-radius:var(--radius-md);font-size:15px;font-variant-numeric:tabular-nums">60×120</span>
+        <span style="display:inline-flex;align-items:center;justify-content:center;height:44px;min-width:64px;padding:0 16px;background:var(--color-neutral-100);border:1px solid var(--color-divider);border-radius:var(--radius-md);font-size:15px;font-variant-numeric:tabular-nums">80×80</span>
+        <span style="display:inline-flex;align-items:center;justify-content:center;height:44px;min-width:64px;padding:0 16px;background:transparent;border:1px solid var(--color-accent);border-radius:var(--radius-md);font-size:15px;color:var(--color-accent-700)">自定义</span>
+      </div>
+      <div style="margin-top:6px;font-size:11px;color:var(--color-neutral-600)">单位：cm</div>
+    </div>
+    <div>
+      <div style="font-size:12px;letter-spacing:0.08em;font-weight:600;color:var(--color-neutral-700);margin-bottom:10px">留缝宽度</div>
+      <div style="display:flex;align-items:center;gap:14px">
+        <div style="display:flex;align-items:center;width:116px;height:44px;padding:0 12px;background:var(--color-surface);border:1px solid var(--color-divider);border-radius:var(--radius-md);font-size:16px;font-variant-numeric:tabular-nums">2 mm</div>
+        <span style="font-size:12px;color:var(--color-neutral-600);max-width:190px;line-height:1.5">瓷砖之间的缝隙——计入用量计算，不只是示意。</span>
+      </div>
+    </div>
+    <div>
+      <div style="font-size:12px;letter-spacing:0.08em;font-weight:600;color:var(--color-neutral-700);margin-bottom:10px">铺贴方式</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 4px 8px;border:1.5px solid var(--color-accent);border-radius:var(--radius-md);background:var(--color-accent-100);color:var(--color-accent-800)">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 3h14v14H3zM10 3v14M3 10h14"></path></svg>
+          <span style="font-size:13px;font-weight:600">直铺</span><span style="font-size:12px;font-variant-numeric:tabular-nums">10%</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 4px 8px;border:1px solid var(--color-divider);border-radius:var(--radius-md);color:var(--color-neutral-800)">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4"><g transform="rotate(45 10 10)"><path d="M4.5 4.5h11v11h-11zM10 4.5v11M4.5 10h11"></path></g></svg>
+          <span style="font-size:13px">斜铺</span><span style="font-size:12px;color:var(--color-neutral-600);font-variant-numeric:tabular-nums">15%</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 4px 8px;border:1px solid var(--color-divider);border-radius:var(--radius-md);color:var(--color-neutral-800)">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><path d="M3 14l5-5 3 3-5 5zM9 8l5-5 3 3-5 5z"></path></svg>
+          <span style="font-size:13px">人字铺</span><span style="font-size:12px;color:var(--color-neutral-600);font-variant-numeric:tabular-nums">20%</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 4px 8px;border:1px solid var(--color-divider);border-radius:var(--radius-md);color:var(--color-neutral-800)">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 10h14"></path><circle cx="12" cy="10" r="3"></circle></svg>
+          <span style="font-size:13px">自定义</span><span style="font-size:12px;color:var(--color-neutral-600)">设置 %</span>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;min-height:48px">
+      <i class="ph-duotone ph-caret-right" style="font-size:16px;color:var(--color-neutral-600)"></i>
+      <span style="font-size:15px;font-weight:600">箱数与价格</span>
+      <span style="flex:1"></span>
+      <span style="font-size:13px;color:var(--color-neutral-600)">可选</span>
+    </div>
+    <div>
+      <div style="font-size:12px;letter-spacing:0.08em;font-weight:600;color:var(--color-neutral-700);margin-bottom:10px">计算结果</div>
+      <div style="padding:16px 16px 14px;border-radius:var(--radius-lg);background-color:var(--color-bg);background-image:repeating-linear-gradient(90deg,transparent 0 26px,rgba(32,30,29,0.055) 26px 28px),repeating-linear-gradient(0deg,transparent 0 26px,rgba(32,30,29,0.055) 26px 28px)">
+        <div style="display:flex;justify-content:space-between;align-items:baseline">
+          <span style="font-size:13px;color:var(--color-neutral-700)">总面积</span>
+          <span style="font-size:17px;font-weight:600;font-variant-numeric:tabular-nums">12.15 m²</span>
+        </div>
+        <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-top:14px">
+          <div>
+            <div style="font-size:12px;letter-spacing:0.08em;font-weight:600;color:var(--color-neutral-700)">所需瓷砖</div>
+            <div style="font-size:66px;font-weight:600;line-height:0.95;letter-spacing:-0.02em;font-variant-numeric:tabular-nums;margin-top:4px">38</div>
+            <div style="font-size:13px;color:var(--color-neutral-600);margin-top:8px;font-variant-numeric:tabular-nums">34 片 + 10% 损耗</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:5px;align-items:flex-start">
+            <div style="width:84px;height:84px;border-radius:var(--radius-sm);background-color:var(--color-neutral-300);background-image:repeating-linear-gradient(90deg,transparent 0 26px,var(--color-bg) 26px 28px),repeating-linear-gradient(0deg,transparent 0 26px,var(--color-bg) 26px 28px)"></div>
+            <span style="font-size:10.5px;color:var(--color-neutral-600)">直铺 · 留缝 2 mm</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div style="height:18px;background:var(--color-bg);background-image:repeating-linear-gradient(90deg,var(--color-neutral-400) 0 1px,transparent 1px 8px),repeating-linear-gradient(90deg,var(--color-neutral-500) 0 1px,transparent 1px 40px);background-repeat:no-repeat;background-size:100% 6px,100% 11px;background-position:top left,top left"></div>
+  <div style="height:60px;background:var(--color-neutral-200);background-image:repeating-linear-gradient(45deg,transparent 0 10px,rgba(32,30,29,0.035) 10px 11px);display:flex;align-items:center;justify-content:center;color:var(--color-neutral-600);font-size:11px;letter-spacing:0.08em">广告 · 锚定自适应横幅 · 50–70dp</div>
+</div>
+</div>
+</div>
+
+</div>
+<p class="dv-next">可尝试："定下此风格并做 3.2b + 3.3 + 深色" · "在 <a class="dv-oid" href="#1c">1c</a> 上强化缝隙网格签名" · "在 <a class="dv-oid" href="#1b">1b</a> 上试更深更重的键盘"</p>
+</section>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {}
+</script>
+</body>
+</html>
