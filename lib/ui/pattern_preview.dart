@@ -36,10 +36,11 @@ class PatternPreview extends StatelessWidget {
           groutMm: grout.mm,
           pattern: pattern,
           // 砖面用品牌青 primaryContainer（2026-08-06 拍板：视觉增强
-          // 只用现有青色系、不引入新色），缝色为托盘表面色，明暗主题
-          // 由 scheme 自动适配。
+          // 只用现有青色系、不引入新色）；缝色按 spec §2.3「缝=描边色」
+          // 用 outline（surfaceContainerLow 与 primaryContainer 亮度比
+          // 仅 1.01:1，两色几乎不可辨），明暗主题由 scheme 自动适配。
           tileColor: scheme.primaryContainer,
-          groutColor: scheme.surfaceContainerLow,
+          groutColor: scheme.outline,
         ),
       ),
     );
@@ -74,6 +75,9 @@ class PatternPreviewPainter extends CustomPainter {
       tileHmm: tileHmm,
       groutMm: groutMm,
       pattern: pattern,
+      // 保底可见缝：真实比例下窄缝在预览画布上可能亚像素，1px 是
+      // 肉眼可辨的下限（groutMm=0 时不生效，见 layoutTiles 注释）。
+      minGroutPx: 1.0,
     );
     final paint = Paint()..color = tileColor;
     for (final poly in polys) {

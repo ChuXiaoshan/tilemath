@@ -97,10 +97,17 @@ class ResultCard extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             // 主数字：一臂距离可读，数字恒 LTR
-                            Text(
-                              '${r.tilesNeeded}',
-                              textDirection: TextDirection.ltr,
-                              style: text.displayLarge,
+                            // FittedBox 防裁切：窄双栏（如 iPad 分屏）或大字号下，
+                            // Expanded 分到的宽度可能小于数字实际宽度，等宽数字
+                            // 整体缩小而不是被静默裁切。
+                            FittedBox(
+                              fit: BoxFit.scaleDown,
+                              alignment: AlignmentDirectional.centerStart,
+                              child: Text(
+                                '${r.tilesNeeded}',
+                                textDirection: TextDirection.ltr,
+                                style: text.displayLarge,
+                              ),
                             ),
                             Text(
                               l10n.tilesNeededLabel(r.tilesNeeded),
@@ -124,35 +131,45 @@ class ResultCard extends StatelessWidget {
                         padding: const EdgeInsets.only(
                           left: AppDimens.space8,
                         ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            PatternPreview(
-                              tileWidth: tileWidth!,
-                              tileHeight: tileHeight!,
-                              grout: grout!,
-                              pattern: pattern!,
-                              size: previewSize,
-                            ),
-                            const SizedBox(height: AppDimens.space4),
-                            Text(
-                              l10n.previewCaption(
-                                _patternName(l10n, pattern!),
-                                formatLength(
-                                  grout!,
-                                  unitSystem,
-                                  MetricUnit.mm,
-                                  locale,
+                        // 预览列宽度封顶 = previewSize：caption 固有宽度可达
+                        // ~150dp（长铺法名 + 缝宽文案），无界宽度下会把左侧
+                        // 大数字 Expanded 挤到裁切；SizedBox 让列宽恒等于
+                        // 预览图边长，caption 换行而不是撑宽。
+                        child: SizedBox(
+                          width: previewSize,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              PatternPreview(
+                                tileWidth: tileWidth!,
+                                tileHeight: tileHeight!,
+                                grout: grout!,
+                                pattern: pattern!,
+                                size: previewSize,
+                              ),
+                              const SizedBox(height: AppDimens.space4),
+                              Text(
+                                l10n.previewCaption(
+                                  _patternName(l10n, pattern!),
+                                  formatLength(
+                                    grout!,
+                                    unitSystem,
+                                    MetricUnit.mm,
+                                    locale,
+                                  ),
+                                ),
+                                // caption 含尺寸表达式（如 "2 mm"），数字/尺寸
+                                // 恒 LTR（同 Auto chip e41cd6a 的同款处理）。
+                                textDirection: TextDirection.ltr,
+                                softWrap: true,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: text.bodySmall!.copyWith(
+                                  color: scheme.onSurfaceVariant,
                                 ),
                               ),
-                              // caption 含尺寸表达式（如 "2 mm"），数字/尺寸
-                              // 恒 LTR（同 Auto chip e41cd6a 的同款处理）。
-                              textDirection: TextDirection.ltr,
-                              style: text.bodySmall!.copyWith(
-                                color: scheme.onSurfaceVariant,
-                              ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                   ],

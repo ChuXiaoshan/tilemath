@@ -21,27 +21,38 @@ List<TilePoly> layoutTiles({
   required double groutMm,
   required LayoutPattern pattern,
   double targetAcross = 5,
+  // 缝隙视觉下限（px）：真实比例下窄缝（如 1/16″）在小画布上是亚像素，
+  // 预览需要保底可见缝才能辨认铺法。仅在 groutMm > 0 时生效——
+  // 无缝铺法（groutMm = 0）保持真无缝语义，不强加视觉缝。默认 0 不
+  // 改变既有行为（调用方不传即保持原样）。
+  double minGroutPx = 0,
 }) {
   if (width <= 0 || height <= 0 || tileWmm <= 0 || tileHmm <= 0) {
     return const [];
   }
   final pitchWmm = tileWmm + groutMm;
   final scale = width / (targetAcross * pitchWmm);
+  // 节距（砖+缝）由 scale 决定，必须保持不变；保底缝只改变节距内
+  // 砖/缝的分配比例——缝变大 delta 少，砖面同量收窄，节距恒定。
+  final rawGroutPx = groutMm * scale;
+  final groutPx = groutMm > 0 ? math.max(rawGroutPx, minGroutPx) : 0.0;
+  final delta = groutPx - rawGroutPx;
   switch (pattern) {
     case LayoutPattern.straight:
     case LayoutPattern.custom:
-      return _grid(width, height, tileWmm * scale, tileHmm * scale,
-          groutMm * scale, angle: 0, brickOffset: false);
+      return _grid(width, height, tileWmm * scale - delta,
+          tileHmm * scale - delta, groutPx, angle: 0, brickOffset: false);
     case LayoutPattern.diagonal:
-      return _grid(width, height, tileWmm * scale, tileHmm * scale,
-          groutMm * scale, angle: math.pi / 4, brickOffset: false);
+      return _grid(width, height, tileWmm * scale - delta,
+          tileHmm * scale - delta, groutPx,
+          angle: math.pi / 4, brickOffset: false);
     case LayoutPattern.herringbone:
       // 2:1 砖：长边 = 2×短边（正方砖）或实际长短边（矩形砖）
       final shortPx = math.min(tileWmm, tileHmm) * scale;
       final longPx = tileWmm == tileHmm
           ? shortPx * 2
           : math.max(tileWmm, tileHmm) * scale;
-      return _grid(width, height, longPx, shortPx, groutMm * scale,
+      return _grid(width, height, longPx - delta, shortPx - delta, groutPx,
           angle: -math.pi / 4, brickOffset: true);
   }
 }

@@ -43,6 +43,15 @@ class MaterialsSection extends StatelessWidget {
       tilePadding: EdgeInsets.zero,
       shape: const Border(),
       childrenPadding: const EdgeInsets.only(bottom: AppDimens.space8),
+      onExpansionChanged: (open) {
+        // 收起时若正在编辑本区块字段：提交并收键盘——与箱规区系统键盘
+        // 随子树移除自动收起的行为对齐，避免键盘残留盲敲改值。
+        final kind = calc.editing?.kind;
+        if (!open &&
+            (kind == FieldKind.tileThickness || kind == FieldKind.jointDepth)) {
+          calc.commitAndClose();
+        }
+      },
       children: [
         Row(
           children: [

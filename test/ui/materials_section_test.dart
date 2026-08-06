@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tilemath/domain/materials_calculation.dart';
+import 'package:tilemath/ui/keyboard/tile_keyboard.dart';
 import 'test_harness.dart';
 
 void main() {
@@ -50,5 +51,32 @@ void main() {
     await tester.tap(find.byKey(const ValueKey('trowel-chip-auto')));
     await tester.pump();
     expect(calc.trowel, isNull);
+  });
+
+  testWidgets('展开态编辑砖厚后收起 Materials：提交并清编辑态，键盘随之消失', (tester) async {
+    final calc = await pumpHome(tester);
+    await tester.ensureVisible(find.byKey(const ValueKey('materials-header')));
+    await tester.pump();
+    await tester.tap(find.byKey(const ValueKey('materials-header')));
+    await tester.pumpAndSettle();
+
+    // 点砖厚字段开始编辑，此时自定义键盘应出现。
+    await tester.ensureVisible(find.byKey(const ValueKey('field-tileThickness--1')));
+    await tester.pump();
+    await tester.tap(find.byKey(const ValueKey('field-tileThickness--1')));
+    await tester.pump();
+    expect(calc.editing, isNotNull);
+    expect(find.byType(TileKeyboard), findsOneWidget);
+
+    // 收起 Materials：应等价于系统键盘随子树移除——提交并清编辑态。
+    // 展开态下 'materials-header' 匹配的是整个 ExpansionTile（含子项），
+    // tap() 取其包围盒中心会落在展开的子内容区而非头部行；改用头部行内
+    // 恒可见的 'materials-summary' 作为点击目标，确保命中折叠触发区。
+    await tester.ensureVisible(find.byKey(const ValueKey('materials-summary')));
+    await tester.pump();
+    await tester.tap(find.byKey(const ValueKey('materials-summary')));
+    await tester.pumpAndSettle();
+    expect(calc.editing, isNull);
+    expect(find.byType(TileKeyboard), findsNothing);
   });
 }

@@ -79,6 +79,58 @@ void main() {
     expect((p[1].$2 - p[0].$2).abs(), greaterThan(1e-3));
   });
 
+  test('minGroutPx 保底可见缝：真实比例窄缝在小画布上放大到可见', () {
+    // 12"×12" 砖（约 306.4mm）、1/16" 缝（约 1.6mm），84dp 预览画布，
+    // 不加 minGroutPx 时缝宽在 84px 画布上是亚像素、几乎不可辨。
+    final polys = layoutTiles(
+      width: 84,
+      height: 84,
+      tileWmm: 306.4,
+      tileHmm: 306.4,
+      groutMm: 1.6,
+      pattern: LayoutPattern.straight,
+      targetAcross: 5,
+      minGroutPx: 1.0,
+    );
+    expect(polys.length, 25);
+    // 相邻两片砖（同一行）之间的可见缝隙 = 右邻砖左边 x - 本砖右边 x。
+    final first = polys[0].points; // 第一行第一列
+    final second = polys[1].points; // 第一行第二列
+    final gap = second[0].$1 - first[1].$1;
+    // 浮点误差容忍：语义是「≥1.0px」，允许亚 ns 级舍入噪声。
+    expect(gap, greaterThanOrEqualTo(1.0 - 1e-6));
+  });
+
+  test('minGroutPx 不改变节距：砖面收窄的量正好等于缝隙放大的量', () {
+    final withoutMin = layoutTiles(
+      width: 84, height: 84, tileWmm: 306.4, tileHmm: 306.4,
+      groutMm: 1.6, pattern: LayoutPattern.straight, targetAcross: 5,
+    );
+    final withMin = layoutTiles(
+      width: 84, height: 84, tileWmm: 306.4, tileHmm: 306.4,
+      groutMm: 1.6, pattern: LayoutPattern.straight, targetAcross: 5,
+      minGroutPx: 1.0,
+    );
+    // 节距（相邻两砖同一顶点间距）不受 minGroutPx 影响
+    final pitchWithout = withoutMin[1].points[0].$1 - withoutMin[0].points[0].$1;
+    final pitchWith = withMin[1].points[0].$1 - withMin[0].points[0].$1;
+    expect(pitchWith, closeTo(pitchWithout, 1e-6));
+  });
+
+  test('groutMm 为 0 时 minGroutPx 不生效，砖面仍满节距（无缝=真无缝）', () {
+    final polys = layoutTiles(
+      width: 100, height: 100, tileWmm: 20, tileHmm: 20,
+      groutMm: 0, pattern: LayoutPattern.straight, targetAcross: 5,
+      minGroutPx: 5.0,
+    );
+    final first = polys.first.points;
+    // 无缝：砖面边长仍是整节距 20px，未被 minGroutPx 压缩
+    expect((first[1].$1 - first[0].$1).abs(), closeTo(20, 1e-6));
+    // 相邻两砖之间没有缝隙
+    final second = polys[1].points;
+    expect(second[0].$1 - first[1].$1, closeTo(0, 1e-6));
+  });
+
   test('custom 按 straight 绘制；非法入参返回空', () {
     final custom = layoutTiles(
       width: 100, height: 100, tileWmm: 20, tileHmm: 20,

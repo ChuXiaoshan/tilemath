@@ -66,6 +66,52 @@ void main() {
     expect(find.byKey(const ValueKey('materials-disclaimer')), findsOneWidget);
   });
 
+  testWidgets('窄双栏(246dp)+120预览+herringbone：大数字防裁切，预览列不挤压', (tester) async {
+    // 模拟 iPad 分屏窄双栏场景：卡片宽度收窄到 246dp，herringbone 的
+    // 铺法名较长，caption 若不封顶列宽会把大数字挤裁切/溢出。
+    await tester.pumpWidget(MaterialApp(
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      home: Scaffold(
+        body: SingleChildScrollView(
+          child: SizedBox(
+            width: 246,
+            child: ResultCard(
+              result: result,
+              materials: materials,
+              tileWidth: Length.ofInches(12),
+              tileHeight: Length.ofInches(12),
+              grout: Length.imperial(sixteenths: 1),
+              pattern: LayoutPattern.herringbone,
+              unitSystem: UnitSystem.imperial,
+              currencySymbol: r'$',
+              wastePct: 10,
+              previewSize: 120,
+            ),
+          ),
+        ),
+      ),
+    ));
+    await tester.pumpAndSettle();
+
+    // 无溢出异常：修复前预览列无界宽度会把 Row 挤出可用宽度。
+    expect(tester.takeException(), isNull);
+
+    // 预览列宽度封顶：无论 caption 多长，预览图恒为 120×120（不被撑宽）。
+    final preview = find.byType(PatternPreview);
+    expect(tester.getSize(preview), const Size(120, 120));
+
+    // 大数字防裁切：FittedBox 缩小后仍落在其容器可用宽度内（量尺寸）。
+    final fittedBox = find.byType(FittedBox);
+    expect(fittedBox, findsOneWidget);
+    final numberContainer = find
+        .ancestor(of: fittedBox, matching: find.byType(Container))
+        .first;
+    final containerSize = tester.getSize(numberContainer);
+    final fittedBoxSize = tester.getSize(fittedBox);
+    expect(fittedBoxSize.width, lessThanOrEqualTo(containerSize.width));
+  });
+
   testWidgets('materials 为 null 时材料行与免责整体隐藏', (tester) async {
     await tester.pumpWidget(host(ResultCard(
       result: result,
