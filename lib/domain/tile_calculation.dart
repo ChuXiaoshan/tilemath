@@ -80,7 +80,7 @@ class TileCalcResult {
 }
 
 /// 带浮点护栏的向上取整：120.000000000001 不得进位成 121。
-int _ceilGuarded(double value) => (value - 1e-9).ceil();
+int ceilGuarded(double value) => (value - 1e-9).ceil();
 
 TileCalcResult calculateTiles(TileCalcInput input) {
   if (input.tileWidth.mm <= 0 || input.tileHeight.mm <= 0) {
@@ -115,10 +115,10 @@ TileCalcResult calculateTiles(TileCalcInput input) {
       (input.tileHeight.mm + input.grout.mm) /
       1e6;
 
-  final baseTiles = netSqM <= 0 ? 0 : _ceilGuarded(netSqM / pitchAreaSqM);
-  final tilesNeeded = _ceilGuarded(baseTiles * (1 + input.wasteRate));
+  final baseTiles = netSqM <= 0 ? 0 : ceilGuarded(netSqM / pitchAreaSqM);
+  final tilesNeeded = ceilGuarded(baseTiles * (1 + input.wasteRate));
   final boxes =
-      tilesPerBox == null ? null : _ceilGuarded(tilesNeeded / tilesPerBox);
+      tilesPerBox == null ? null : ceilGuarded(tilesNeeded / tilesPerBox);
   final cost =
       (boxes != null && pricePerBox != null) ? boxes * pricePerBox : null;
 

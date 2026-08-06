@@ -3,7 +3,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:tilemath/domain/tile_calculation.dart';
 import 'package:tilemath/history/history_controller.dart';
 import 'package:tilemath/main.dart';
 import 'package:tilemath/ui/keyboard/tile_keyboard.dart';
@@ -91,7 +90,7 @@ void main() {
     expect(historyController.entries.single.tilesNeeded, 131);
   });
 
-  testWidgets('铺法分段控件：选中人字铺不换行不跳高（用户实测缺陷回归）', (tester) async {
+  testWidgets('铺法图案卡：选中人字铺不换行不跳高（用户实测缺陷回归）', (tester) async {
     // 窄机身（320dp）+ 中文长文案是最苛刻组合之一
     tester.view.physicalSize = const Size(320, 900);
     tester.view.devicePixelRatio = 1.0;
@@ -102,14 +101,15 @@ void main() {
     await tester.pumpWidget(TileMathApp(prefs: prefs));
     await tester.pump();
 
-    final segmented = find.byType(SegmentedButton<LayoutPattern>);
-    final heightBefore = tester.getRect(segmented).height;
+    final herringboneCard =
+        find.byKey(const ValueKey('pattern-card-herringbone'));
+    final heightBefore = tester.getRect(herringboneCard).height;
 
-    await tester.tap(find.text('Herringbone'));
+    await tester.tap(herringboneCard);
     await tester.pump();
 
     // 高度恒定 = 无换行无跳动（若溢出测试框架会直接抛异常失败）
-    expect(tester.getRect(segmented).height, heightBefore);
+    expect(tester.getRect(herringboneCard).height, heightBefore);
     expect(find.text('20%'), findsOneWidget);
   });
 
@@ -271,5 +271,42 @@ void main() {
     );
     // 版本号来自包信息而非硬编码，改 pubspec 版本不会再失配
     expect(find.text('1.0.0'), findsOneWidget);
+  });
+
+  testWidgets('分享入口仅在结果非空时出现', (tester) async {
+    tester.view.physicalSize = const Size(420, 900);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
+
+    SharedPreferences.setMockInitialValues({});
+    final prefs = await SharedPreferences.getInstance();
+    await tester.pumpWidget(TileMathApp(prefs: prefs));
+    await tester.pump();
+
+    // 空表单：无结果，分享按钮不渲染
+    expect(find.byKey(const ValueKey('share-result')), findsNothing);
+
+    // 复用冒烟测试同款输入闭环：12×12 预设 + 12′×10′ 区域 → 出结果
+    await tester.tap(find.text('12×12'));
+    await tester.pump();
+
+    await tester.tap(find.byKey(const ValueKey('field-areaLength-0')));
+    await tester.pump();
+    await tester.tap(find.text('1'));
+    await tester.tap(find.text('2'));
+    await tester.tap(find.text('ft'));
+    await tester.pump();
+
+    await tester.tap(find.text('Next'));
+    await tester.pump();
+    await tester.tap(find.text('1'));
+    await tester.tap(find.text('0'));
+    await tester.tap(find.text('ft'));
+    await tester.pump();
+    await tester.tap(find.text('Done'));
+    await tester.pump();
+
+    // 有结果：分享按钮出现
+    expect(find.byKey(const ValueKey('share-result')), findsOneWidget);
   });
 }

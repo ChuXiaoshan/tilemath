@@ -129,10 +129,13 @@ class TileKeyboard extends StatelessWidget {
       Localizations.localeOf(context).toString(),
     );
     // 单位键按字段自适应（brief §3.2b 两键布局不变）：
-    // 缝宽字段惯用 mm，两键给 cm/mm；其余字段维持 m/cm。
-    final isGrout = controller.editing?.kind == FieldKind.grout;
-    final upperUnit = isGrout ? MetricUnit.cm : MetricUnit.m;
-    final lowerUnit = isGrout ? MetricUnit.mm : MetricUnit.cm;
+    // 缝宽/厚度/缝深惯用 mm，两键给 cm/mm；其余维持 m/cm。
+    final kind = controller.editing?.kind;
+    final smallField = kind == FieldKind.grout ||
+        kind == FieldKind.tileThickness ||
+        kind == FieldKind.jointDepth;
+    final upperUnit = smallField ? MetricUnit.cm : MetricUnit.m;
+    final lowerUnit = smallField ? MetricUnit.mm : MetricUnit.cm;
 
     return Column(
       mainAxisSize: MainAxisSize.min,

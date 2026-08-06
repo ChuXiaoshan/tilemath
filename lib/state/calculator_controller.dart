@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 import '../domain/length.dart';
+import '../domain/materials_calculation.dart';
 import '../domain/tile_calculation.dart';
 import '../history/history_entry.dart';
 import '../keyboard/imperial_editor.dart';
@@ -8,7 +9,15 @@ import '../keyboard/metric_editor.dart';
 import 'settings_controller.dart';
 
 /// 可编辑字段的种类。
-enum FieldKind { areaLength, areaWidth, tileWidth, tileHeight, grout }
+enum FieldKind {
+  areaLength,
+  areaWidth,
+  tileWidth,
+  tileHeight,
+  grout,
+  tileThickness,
+  jointDepth,
+}
 
 /// 字段标识：种类 + 所属区域行（非区域字段 row = -1）。
 @immutable
@@ -55,6 +64,16 @@ class CalculatorController extends ChangeNotifier {
   late Length grout;
   bool _groutTouched = false;
 
+  /// 瓷砖厚度（材料估算用），默认英制 5/16″ / 公制 8mm，同 grout 的默认策略。
+  late Length tileThickness;
+  bool _thicknessTouched = false;
+
+  /// 缝深：null = 跟随砖厚（spec §2.1）。
+  Length? jointDepth;
+
+  /// 镘刀：null = Auto 按砖尺寸推荐。
+  Trowel? trowel;
+
   LayoutPattern pattern = LayoutPattern.straight;
 
   /// Custom 滑块值（百分比 0–30），仅 pattern == custom 时生效。
@@ -70,6 +89,7 @@ class CalculatorController extends ChangeNotifier {
 
   CalculatorController(this._unitSystem) {
     grout = _defaultGrout(_unitSystem);
+    tileThickness = _defaultThickness(_unitSystem);
   }
 
   UnitSystem get unitSystem => _unitSystem;
@@ -80,13 +100,20 @@ class CalculatorController extends ChangeNotifier {
           ? Length.imperial(sixteenths: 1)
           : Length.ofMm(2);
 
-  /// 单位制切换：已录入的 Length 值保留（mm 基准），未动过的缝宽换成新默认。
+  /// 默认瓷砖厚度：英制 5/16″，公制 8mm。
+  static Length _defaultThickness(UnitSystem system) =>
+      system == UnitSystem.imperial
+          ? Length.imperial(sixteenths: 5)
+          : Length.ofMm(8);
+
+  /// 单位制切换：已录入的 Length 值保留（mm 基准），未动过的缝宽/厚度换成新默认。
   /// 正在编辑的值先提交，不丢输入。
   set unitSystem(UnitSystem system) {
     if (system == _unitSystem) return;
     _commit();
     _unitSystem = system;
     if (!_groutTouched) grout = _defaultGrout(system);
+    if (!_thicknessTouched) tileThickness = _defaultThickness(system);
     _stopEditing();
     notifyListeners();
   }
@@ -117,6 +144,32 @@ class CalculatorController extends ChangeNotifier {
       tilesPerBox: tilesPerBox,
       pricePerBox: pricePerBox,
     ));
+  }
+
+  /// 材料估算派生结果；无有效结果或净面积为 0 时为 null（材料行整体隐藏）。
+  /// 与 [result] 同契约：build 期读取永不抛错。
+  MaterialsResult? get materialsResult {
+    final r = result;
+    final tw = tileWidth;
+    final th = tileHeight;
+    if (r == null || tw == null || th == null || r.netAreaSqM <= 0) {
+      return null;
+    }
+    return calculateMaterials(MaterialsInput(
+      tileWidth: tw,
+      tileHeight: th,
+      grout: grout,
+      tileThickness: tileThickness,
+      jointDepth: jointDepth,
+      trowel: trowel,
+      netAreaSqM: r.netAreaSqM,
+      wasteRate: wasteRate,
+    ));
+  }
+
+  void setTrowel(Trowel? t) {
+    trowel = t;
+    notifyListeners();
   }
 
   // ---- 区域行 ----
@@ -195,6 +248,9 @@ class CalculatorController extends ChangeNotifier {
       tileWidthMm: tileWidth!.mm,
       tileHeightMm: tileHeight!.mm,
       groutMm: grout.mm,
+      tileThicknessMm: tileThickness.mm,
+      jointDepthMm: jointDepth?.mm,
+      trowelName: trowel?.name,
       patternName: pattern.name,
       customWastePct: customWastePct,
       tilesPerBox: tilesPerBox,
@@ -221,12 +277,28 @@ class CalculatorController extends ChangeNotifier {
     tileHeight = Length.ofMm(entry.tileHeightMm);
     grout = Length.ofMm(entry.groutMm);
     _groutTouched = true;
+    // 损坏数据护栏：厚度 ≤0 会让 materialsResult 计算除以 0 / 负数，
+    // 击穿"build 期读取永不抛错"契约——回退当前单位制默认厚度而非硬赋值。
+    if (entry.tileThicknessMm > 0) {
+      tileThickness = Length.ofMm(entry.tileThicknessMm);
+      _thicknessTouched = true;
+    } else {
+      tileThickness = _defaultThickness(_unitSystem);
+      _thicknessTouched = false;
+    }
+    jointDepth =
+        entry.jointDepthMm == null ? null : Length.ofMm(entry.jointDepthMm!);
+    trowel = Trowel.values
+        .where((t) => t.name == entry.trowelName)
+        .firstOrNull; // 未知名回退 Auto（null）
     // 未知 pattern 名（老版本读新数据）回退 straight
     pattern = LayoutPattern.values
         .where((p) => p.name == entry.patternName)
         .firstOrNull ??
         LayoutPattern.straight;
-    customWastePct = entry.customWastePct;
+    // 损坏数据护栏：clamp 到与 setCustomWaste 一致的合法区间，避免越界值
+    // 通过 wasteRate 传导进 result/materialsResult 的计算断言。
+    customWastePct = entry.customWastePct.clamp(0, 30);
     tilesPerBox = entry.tilesPerBox;
     pricePerBox = entry.pricePerBox;
     _stopEditing();
@@ -260,6 +332,7 @@ class CalculatorController extends ChangeNotifier {
         FieldKind.areaLength || FieldKind.areaWidth => MetricUnit.m,
         FieldKind.tileWidth || FieldKind.tileHeight => MetricUnit.cm,
         FieldKind.grout => MetricUnit.mm,
+        FieldKind.tileThickness || FieldKind.jointDepth => MetricUnit.mm,
       };
 
   void _stopEditing() {
@@ -293,6 +366,10 @@ class CalculatorController extends ChangeNotifier {
           tileHeight = null;
         case FieldKind.grout:
           break; // 非空字段，无空态
+        case FieldKind.tileThickness:
+          break; // 非空字段（有默认值），不参与清空
+        case FieldKind.jointDepth:
+          jointDepth = null; // 清空 = 回到跟随砖厚
       }
       return;
     }
@@ -309,6 +386,13 @@ class CalculatorController extends ChangeNotifier {
       case FieldKind.grout:
         grout = value;
         _groutTouched = true;
+      case FieldKind.tileThickness:
+        if (value.mm > 0) {
+          tileThickness = value;
+          _thicknessTouched = true;
+        }
+      case FieldKind.jointDepth:
+        jointDepth = value;
     }
   }
 
@@ -347,6 +431,10 @@ class CalculatorController extends ChangeNotifier {
       case FieldKind.tileHeight:
         return const FieldId(FieldKind.grout);
       case FieldKind.grout:
+        return null;
+      case FieldKind.tileThickness:
+        return const FieldId(FieldKind.jointDepth);
+      case FieldKind.jointDepth:
         return null;
     }
   }

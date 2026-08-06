@@ -275,4 +275,67 @@ class AppLocalizationsAr extends AppLocalizations {
   String wasteShort(int pct) {
     return 'هدر $pct%';
   }
+
+  @override
+  String get sectionMaterials => 'مواد التركيب';
+
+  @override
+  String get materialsDefaults => 'قيم افتراضية مطبّقة';
+
+  @override
+  String get tileThickness => 'سماكة البلاطة';
+
+  @override
+  String get jointDepth => 'عمق الفاصل';
+
+  @override
+  String get jointDepthFollows => '= السماكة';
+
+  @override
+  String get trowelLabel => 'المالج';
+
+  @override
+  String get trowelAuto => 'تلقائي';
+
+  @override
+  String get trowelAutoCaption => 'يُختار حجم السن تلقائيًا حسب مقاس البلاطة.';
+
+  @override
+  String get groutNeeded => 'الروبة';
+
+  @override
+  String get thinsetNeeded => 'اللاصق';
+
+  @override
+  String thinsetBagsLine(int bags, String spec) {
+    String _temp0 = intl.Intl.pluralLogic(
+      bags,
+      locale: localeName,
+      other: '≈ $bags كيس · $spec',
+      many: '≈ $bags كيسًا · $spec',
+      few: '≈ $bags أكياس · $spec',
+      two: '≈ كيسان · $spec',
+      one: '≈ كيس واحد · $spec',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get materialsDisclaimer =>
+      'الكميات تقديرية — اتبع جدول التغطية الخاص بمنتجك.';
+
+  @override
+  String get shareResult => 'مشاركة';
+
+  @override
+  String get shareFailed => 'تعذّرت المشاركة. حاول مرة أخرى.';
+
+  @override
+  String get shareCardFooter =>
+      'TileMath — حاسبة بلاط بلوحة مفاتيح كسور البوصة';
+
+  @override
+  String previewCaption(String pattern, String grout) {
+    return '$pattern · فاصل $grout';
+  }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart' show RenderAbstractViewport;
 import 'package:flutter/services.dart' show HapticFeedback;
+// intl 的 TextDirection 与 material 的同名类型冲突（bidi 用途不同），只取 DateFormat。
+import 'package:intl/intl.dart' show DateFormat;
 import 'package:provider/provider.dart';
 
 import '../domain/length.dart';
@@ -8,14 +9,18 @@ import '../domain/tile_calculation.dart';
 import '../history/history_controller.dart';
 import '../keyboard/metric_editor.dart';
 import '../l10n/app_localizations.dart';
+import '../share/share_card_renderer.dart';
+import '../share/share_service.dart';
 import '../state/calculator_controller.dart';
 import '../state/settings_controller.dart';
 import '../theme/app_dimens.dart';
 import 'format.dart';
 import 'history_page.dart';
 import 'keyboard/tile_keyboard.dart';
+import 'materials_section.dart';
 import 'result_card.dart';
 import 'settings_page.dart';
+import 'value_field.dart';
 
 /// 主计算页（brief §3.1/3.3）：≥600dp 双栏（输入左 / 结果右）。
 class HomePage extends StatefulWidget {
@@ -129,7 +134,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           final twoPane =
               constraints.maxWidth >= 600 && constraints.maxHeight >= 600;
           final form = _InputForm(calc: calc);
-          final results = _ResultsSection(calc: calc, settings: settings);
+          final results =
+              _ResultsSection(calc: calc, settings: settings, twoPane: twoPane);
           if (!twoPane) {
             return Column(
               children: [
@@ -238,6 +244,8 @@ class _InputForm extends StatelessWidget {
         _PatternSelector(calc: calc),
         const SizedBox(height: AppDimens.space24),
         _BoxesAndCost(calc: calc),
+        const SizedBox(height: AppDimens.space24),
+        MaterialsSection(calc: calc),
       ],
     );
   }
@@ -247,23 +255,116 @@ class _ResultsSection extends StatelessWidget {
   final CalculatorController calc;
   final SettingsController settings;
 
-  const _ResultsSection({required this.calc, required this.settings});
+  /// 双栏布局：预览放大到 120dp（单栏 84dp）。
+  final bool twoPane;
+
+  const _ResultsSection({
+    required this.calc,
+    required this.settings,
+    this.twoPane = false,
+  });
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final r = calc.result;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _Kicker(l10n.sectionResults),
+        Row(
+          children: [
+            Expanded(child: _Kicker(l10n.sectionResults)),
+            if (r != null)
+              // Builder 拿分享按钮自身的 BuildContext：iPad popover 锚点
+              // 要按钮的渲染矩形，不能用外层（如 Scaffold）的 context。
+              Builder(
+                builder: (iconContext) => IconButton(
+                  key: const ValueKey('share-result'),
+                  icon: const Icon(Icons.ios_share, size: 22),
+                  tooltip: l10n.shareResult,
+                  onPressed: () => _share(iconContext),
+                ),
+              ),
+          ],
+        ),
         ResultCard(
           result: calc.result,
+          materials: calc.materialsResult,
+          tileWidth: calc.tileWidth,
+          tileHeight: calc.tileHeight,
+          grout: calc.grout,
+          pattern: calc.pattern,
+          previewSize: twoPane ? 120 : 84,
           unitSystem: calc.unitSystem,
           currencySymbol: settings.currencySymbol,
           wastePct: (calc.wasteRate * 100).round(),
         ),
       ],
     );
+  }
+
+  /// 渲染分享卡 → 系统分享面板；失败兜 SnackBar（brief §11）。
+  /// [context] 必须是分享按钮自身的 BuildContext（来自外层 Builder）——
+  /// iPad popover 锚点要按钮的渲染矩形，不是随便哪层祖先的位置。
+  Future<void> _share(BuildContext context) async {
+    final l10n = AppLocalizations.of(context);
+    final locale = Localizations.localeOf(context).toString();
+    final r = calc.result;
+    final m = calc.materialsResult;
+    final tw = calc.tileWidth;
+    final th = calc.tileHeight;
+    if (r == null || tw == null || th == null) return;
+
+    final imperial = calc.unitSystem == UnitSystem.imperial;
+    String patternName() => switch (calc.pattern) {
+          LayoutPattern.straight => l10n.patternStraight,
+          LayoutPattern.diagonal => l10n.patternDiagonal,
+          LayoutPattern.herringbone => l10n.patternHerringbone,
+          LayoutPattern.custom => l10n.patternCustom,
+        };
+    final data = ShareCardData(
+      appName: 'TileMath',
+      date: DateFormat.yMMMd(locale.startsWith('ar') ? 'en_US' : locale)
+          .format(DateTime.now()),
+      tilesLabel: l10n.tilesNeededLabel(r.tilesNeeded).toUpperCase(),
+      tilesValue: '${r.tilesNeeded}',
+      wasteLine: l10n.wasteLine(r.baseTiles, (calc.wasteRate * 100).round()),
+      rows: [
+        (l10n.totalArea, formatArea(r.netAreaSqM, calc.unitSystem, locale)),
+        if (r.boxes != null) (l10n.boxesToBuy, '${r.boxes}'),
+        if (r.cost != null)
+          (l10n.estimatedCost,
+              formatCost(r.cost!, settings.currencySymbol, locale)),
+        if (m != null)
+          (l10n.groutNeeded,
+              formatGroutAmount(m.groutKg, calc.unitSystem, locale)),
+        if (m != null)
+          (l10n.thinsetNeeded,
+              l10n.thinsetBagsLine(
+                  imperial ? m.thinsetBags50Lb : m.thinsetBags20Kg,
+                  imperial ? '50 lb' : '20 kg')),
+      ],
+      specLine:
+          '${formatLength(tw, calc.unitSystem, MetricUnit.cm, locale)} × '
+          '${formatLength(th, calc.unitSystem, MetricUnit.cm, locale)} · '
+          '${l10n.previewCaption(patternName(), formatLength(calc.grout, calc.unitSystem, MetricUnit.mm, locale))}',
+      footer: l10n.shareCardFooter,
+      tileWmm: tw.mm,
+      tileHmm: th.mm,
+      groutMm: calc.grout.mm,
+      pattern: calc.pattern,
+    );
+    try {
+      // iPad/Mac 分享面板走 popover，必须给 sharePositionOrigin 锚点矩形，
+      // 否则 share_plus 12 的 iOS 实现直接返回 FlutterError（不弹面板）。
+      final box = context.findRenderObject() as RenderBox;
+      final origin = box.localToGlobal(Offset.zero) & box.size;
+      await shareResultCard(data, sharePositionOrigin: origin);
+    } catch (_) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(l10n.shareFailed)));
+    }
   }
 }
 
@@ -289,7 +390,7 @@ class _AreaRow extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Expanded(
-            child: _ValueField(
+            child: ValueField(
               calc: calc,
               id: FieldId(FieldKind.areaLength, row),
               label: data.isCutout
@@ -302,7 +403,7 @@ class _AreaRow extends StatelessWidget {
           ),
           const SizedBox(width: AppDimens.space8),
           Expanded(
-            child: _ValueField(
+            child: ValueField(
               calc: calc,
               id: FieldId(FieldKind.areaWidth, row),
               label: l10n.width,
@@ -336,161 +437,6 @@ class _AreaRow extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-/// 可点值字段：编辑态显示编辑器实时文本 + secondary 描边。
-/// 激活（点击 / Next 推进 / addRow 自动聚焦）后 post-frame 自动滚入视口，
-/// 保证不被展开的键盘遮挡（brief §3.2 硬性要求）。
-class _ValueField extends StatefulWidget {
-  final CalculatorController calc;
-  final FieldId id;
-  final String label;
-  final Length? value;
-  final MetricUnit metricUnit;
-  final bool accent;
-
-  const _ValueField({
-    required this.calc,
-    required this.id,
-    required this.label,
-    required this.value,
-    required this.metricUnit,
-    this.accent = false,
-  });
-
-  @override
-  State<_ValueField> createState() => _ValueFieldState();
-}
-
-class _ValueFieldState extends State<_ValueField> {
-  bool _wasActive = false;
-
-  /// 非激活 → 激活的瞬间，帧后把字段滚进视口（此时键盘已参与布局）。
-  void _revealIfActivated(bool active) {
-    if (active && !_wasActive) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) _reveal();
-      });
-    }
-    _wasActive = active;
-  }
-
-  /// 仅在字段确实越出视口时滚动，上下各留 12dp 余量（8–16dp 区间内）。
-  void _reveal() {
-    final scrollable = Scrollable.maybeOf(context);
-    final object = context.findRenderObject();
-    if (scrollable == null || object == null || !object.attached) return;
-    final viewport = RenderAbstractViewport.maybeOf(object);
-    if (viewport == null) return;
-
-    const margin = AppDimens.space12;
-    final position = scrollable.position;
-    final topOffset = viewport.getOffsetToReveal(object, 0).offset - margin;
-    final bottomOffset = viewport.getOffsetToReveal(object, 1).offset + margin;
-    var target = position.pixels;
-    if (target > topOffset) {
-      target = topOffset; // 字段顶部越出视口上沿
-    } else if (target < bottomOffset) {
-      target = bottomOffset; // 字段底部被键盘/视口下沿遮挡
-    }
-    target = target
-        .clamp(position.minScrollExtent, position.maxScrollExtent)
-        .toDouble();
-    if ((target - position.pixels).abs() < 0.5) return;
-    position.animateTo(
-      target,
-      duration: const Duration(milliseconds: 180),
-      curve: Curves.easeOutCubic,
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final calc = widget.calc;
-    final scheme = Theme.of(context).colorScheme;
-    final text = Theme.of(context).textTheme;
-    final locale = Localizations.localeOf(context).toString();
-    final active = calc.editing == widget.id;
-    _revealIfActivated(active);
-
-    final String display;
-    if (active) {
-      display =
-          calc.imperialEditor?.displayText ??
-          (calc.metricEditor == null
-              ? ''
-              : calc.metricEditor!.isEmpty
-              ? ''
-              : '${calc.metricEditor!.text} ${calc.metricEditor!.unit.name}');
-    } else if (widget.value != null) {
-      display = formatLength(
-        widget.value!,
-        calc.unitSystem,
-        widget.metricUnit,
-        locale,
-      );
-    } else {
-      display = '';
-    }
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          widget.label,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          style: text.labelSmall!.copyWith(color: scheme.onSurfaceVariant),
-        ),
-        const SizedBox(height: 4),
-        InkWell(
-          key: ValueKey('field-${widget.id.kind.name}-${widget.id.row}'),
-          onTap: () {
-            // 先收起系统 IME，避免系统键盘与自定义键盘同屏堆叠
-            FocusManager.instance.primaryFocus?.unfocus();
-            calc.startEditing(widget.id);
-          },
-          borderRadius: BorderRadius.circular(AppDimens.radius2),
-          child: Container(
-            constraints: const BoxConstraints(
-              minHeight: AppDimens.minTouchTarget,
-            ),
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppDimens.space12,
-              vertical: AppDimens.space8,
-            ),
-            decoration: BoxDecoration(
-              color: scheme.surfaceContainerLow,
-              borderRadius: BorderRadius.circular(AppDimens.radius2),
-              border: Border.all(
-                color: active
-                    ? scheme.secondary
-                    : widget.accent
-                    ? scheme.tertiary
-                    : scheme.outline,
-                width: active ? 1.5 : 1,
-              ),
-            ),
-            alignment: AlignmentDirectional.centerStart,
-            // 降级只缩不换行：12′ 11-7/8″ 的固有宽度约 181dp，而字段可用宽
-            // 只有 95–123dp，不加约束会折成 2–3 行、字段高度随输入跳动。
-            // 与 _PatternSelector 同一策略。
-            child: FittedBox(
-              fit: BoxFit.scaleDown,
-              alignment: AlignmentDirectional.centerStart,
-              child: Text(
-                display,
-                textDirection: TextDirection.ltr, // 尺寸表达式恒 LTR
-                maxLines: 1,
-                softWrap: false,
-                style: text.bodyLarge,
-              ),
-            ),
-          ),
-        ),
-      ],
     );
   }
 }
@@ -551,7 +497,7 @@ class _TileSectionState extends State<_TileSection> {
     // Custom 选中 = 显式点选 / 手动编辑过 / 当前值不匹配任何预设（含未录入）
     final customSelected = _customChosen || !presets.any(matches);
 
-    final groutField = _ValueField(
+    final groutField = ValueField(
       calc: calc,
       id: const FieldId(FieldKind.grout),
       label: l10n.groutWidth,
@@ -596,7 +542,7 @@ class _TileSectionState extends State<_TileSection> {
           children: [
             if (customSelected) ...[
               Expanded(
-                child: _ValueField(
+                child: ValueField(
                   calc: calc,
                   id: const FieldId(FieldKind.tileWidth),
                   label: l10n.tileWidth,
@@ -606,7 +552,7 @@ class _TileSectionState extends State<_TileSection> {
               ),
               const SizedBox(width: AppDimens.space12),
               Expanded(
-                child: _ValueField(
+                child: ValueField(
                   calc: calc,
                   id: const FieldId(FieldKind.tileHeight),
                   label: l10n.tileHeight,
@@ -655,51 +601,31 @@ class _PatternSelector extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // 撑满整行：紧约束下段宽均分。降级规则（brief §2 v2.1）：长文案
-        // 缩小字号而非换行——名称行定高 + FittedBox，四段高度恒定不跳动。
-        // showSelectedIcon 关闭：选中 ✓ 图标会挤压最长文案（人字铺/Herringbone）
-        // 触发换行，选中态由填色表达。
-        SizedBox(
-          width: double.infinity,
-          child: SegmentedButton<LayoutPattern>(
-            showSelectedIcon: false,
-            style: const ButtonStyle(
-              padding: WidgetStatePropertyAll(
-                EdgeInsets.symmetric(
-                  horizontal: AppDimens.space4,
-                  vertical: AppDimens.space8,
-                ),
-              ),
-            ),
-            segments: [
-              for (final p in LayoutPattern.values)
-                ButtonSegment(
-                  value: p,
-                  label: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      SizedBox(
-                        height: 20,
-                        child: FittedBox(
-                          fit: BoxFit.scaleDown,
-                          child: Text(nameOf(p), maxLines: 1, softWrap: false),
-                        ),
-                      ),
-                      Text(
-                        '${pctOf(p)}%',
-                        textDirection: TextDirection.ltr,
-                        style: text.labelSmall!.copyWith(
-                          color: scheme.onSurfaceVariant,
-                        ),
-                      ),
-                    ],
+        // 四张等宽图案卡（设计稿 10a/1a）：LayoutBuilder 按可用宽度均分四列。
+        // 降级规则（brief §2 v2.1）：长文案缩小字号而非换行——名称行定高 +
+        // FittedBox，卡片 minHeight 72，四卡恒等高不跳动。
+        LayoutBuilder(builder: (context, constraints) {
+          final cardW =
+              (constraints.maxWidth - 3 * AppDimens.space8) / 4;
+          return Row(
+            children: [
+              for (final p in LayoutPattern.values) ...[
+                if (p != LayoutPattern.values.first)
+                  const SizedBox(width: AppDimens.space8),
+                SizedBox(
+                  width: cardW,
+                  child: _PatternCard(
+                    pattern: p,
+                    name: nameOf(p),
+                    pct: pctOf(p),
+                    selected: calc.pattern == p,
+                    onTap: () => calc.setPattern(p),
                   ),
                 ),
+              ],
             ],
-            selected: {calc.pattern},
-            onSelectionChanged: (s) => calc.setPattern(s.first),
-          ),
-        ),
+          );
+        }),
         const SizedBox(height: AppDimens.space8),
         Text(
           '${l10n.wastePercent} ${(calc.wasteRate * 100).round()}%',
@@ -726,6 +652,143 @@ class _PatternSelector extends StatelessWidget {
       ],
     );
   }
+}
+
+/// 铺法图案卡（设计稿 10a/1a）：缩略图 + 名称 + 损耗%，选中态 secondary
+/// 描边 + primaryContainer 底。名称行 FittedBox 缩字不换行，四卡恒等高。
+class _PatternCard extends StatelessWidget {
+  final LayoutPattern pattern;
+  final String name;
+  final int pct;
+  final bool selected;
+  final VoidCallback onTap;
+
+  const _PatternCard({
+    required this.pattern,
+    required this.name,
+    required this.pct,
+    required this.selected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final text = Theme.of(context).textTheme;
+    final fg = selected ? scheme.onPrimaryContainer : scheme.onSurface;
+    return Material(
+      color: selected ? scheme.primaryContainer : scheme.surfaceContainerLow,
+      borderRadius: BorderRadius.circular(AppDimens.radius2),
+      child: InkWell(
+        key: ValueKey('pattern-card-${pattern.name}'),
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(AppDimens.radius2),
+        child: Container(
+          constraints: const BoxConstraints(minHeight: 72),
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppDimens.space4,
+            vertical: AppDimens.space8,
+          ),
+          // 描边放 foregroundDecoration 而非 decoration：Container 会把
+          // decoration 的 border.dimensions 自动并入内边距，选中态 1.5dp
+          // 与未选中 1dp 的宽度差会让四卡布局高度错开 1dp（四卡等高断言会炸）。
+          // foregroundDecoration 只做叠加描边，不参与内边距计算。
+          foregroundDecoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(AppDimens.radius2),
+            border: Border.all(
+              color: selected ? scheme.secondary : scheme.outline,
+              width: selected ? 1.5 : 1,
+            ),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              CustomPaint(
+                size: const Size.square(20),
+                painter: _PatternGlyphPainter(pattern: pattern, color: fg),
+              ),
+              const SizedBox(height: AppDimens.space4),
+              SizedBox(
+                height: 18,
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    name,
+                    maxLines: 1,
+                    softWrap: false,
+                    style: text.labelLarge!.copyWith(color: fg),
+                  ),
+                ),
+              ),
+              Text(
+                '$pct%',
+                textDirection: TextDirection.ltr,
+                style: text.labelSmall!.copyWith(
+                  color: selected
+                      ? scheme.onPrimaryContainer
+                      : scheme.onSurfaceVariant,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// 20dp 铺法缩略图（线稿，与设计稿 1a 图形一致）。
+class _PatternGlyphPainter extends CustomPainter {
+  final LayoutPattern pattern;
+  final Color color;
+
+  const _PatternGlyphPainter({required this.pattern, required this.color});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.4
+      ..strokeJoin = StrokeJoin.round;
+    final s = size.width;
+    switch (pattern) {
+      case LayoutPattern.straight:
+        canvas.drawRect(Rect.fromLTWH(s * .15, s * .15, s * .7, s * .7), paint);
+        canvas.drawLine(Offset(s * .5, s * .15), Offset(s * .5, s * .85), paint);
+        canvas.drawLine(Offset(s * .15, s * .5), Offset(s * .85, s * .5), paint);
+      case LayoutPattern.diagonal:
+        canvas.save();
+        canvas.translate(s / 2, s / 2);
+        canvas.rotate(0.785398); // 45°
+        canvas.translate(-s / 2, -s / 2);
+        canvas.drawRect(
+            Rect.fromLTWH(s * .225, s * .225, s * .55, s * .55), paint);
+        canvas.drawLine(Offset(s * .5, s * .225), Offset(s * .5, s * .775), paint);
+        canvas.drawLine(Offset(s * .225, s * .5), Offset(s * .775, s * .5), paint);
+        canvas.restore();
+      case LayoutPattern.herringbone:
+        final path = Path()
+          ..moveTo(s * .15, s * .70)
+          ..lineTo(s * .40, s * .45)
+          ..lineTo(s * .55, s * .60)
+          ..lineTo(s * .30, s * .85)
+          ..close()
+          ..moveTo(s * .45, s * .40)
+          ..lineTo(s * .70, s * .15)
+          ..lineTo(s * .85, s * .30)
+          ..lineTo(s * .60, s * .55)
+          ..close();
+        canvas.drawPath(path, paint);
+      case LayoutPattern.custom:
+        canvas.drawLine(Offset(s * .15, s * .5), Offset(s * .85, s * .5), paint);
+        canvas.drawCircle(Offset(s * .6, s * .5), s * .15, paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(_PatternGlyphPainter oldDelegate) =>
+      pattern != oldDelegate.pattern || color != oldDelegate.color;
 }
 
 /// 箱规与成本（可折叠，默认收起；数字输入走系统键盘）。

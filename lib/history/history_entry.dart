@@ -11,6 +11,13 @@ class HistoryEntry {
   final double tileHeightMm;
   final double groutMm;
 
+  /// 材料参数（v1.1 追加；老记录缺省见 fromJson）。
+  final double tileThicknessMm;
+  final double? jointDepthMm;
+
+  /// Trowel.name 序列化形态，向前兼容未知值；null = Auto。
+  final String? trowelName;
+
   /// LayoutPattern.name 序列化形态，向前兼容未知值。
   final String patternName;
   final int customWastePct;
@@ -30,6 +37,9 @@ class HistoryEntry {
     required this.tileWidthMm,
     required this.tileHeightMm,
     required this.groutMm,
+    required this.tileThicknessMm,
+    required this.jointDepthMm,
+    required this.trowelName,
     required this.patternName,
     required this.customWastePct,
     required this.tilesPerBox,
@@ -46,6 +56,9 @@ class HistoryEntry {
         tileWidthMm != other.tileWidthMm ||
         tileHeightMm != other.tileHeightMm ||
         groutMm != other.groutMm ||
+        tileThicknessMm != other.tileThicknessMm ||
+        jointDepthMm != other.jointDepthMm ||
+        trowelName != other.trowelName ||
         patternName != other.patternName ||
         customWastePct != other.customWastePct ||
         tilesPerBox != other.tilesPerBox ||
@@ -73,6 +86,9 @@ class HistoryEntry {
         'tileW': tileWidthMm,
         'tileH': tileHeightMm,
         'grout': groutMm,
+        'thick': tileThicknessMm,
+        'jointDepth': jointDepthMm,
+        'trowel': trowelName,
         'pattern': patternName,
         'customWaste': customWastePct,
         'tilesPerBox': tilesPerBox,
@@ -96,6 +112,9 @@ class HistoryEntry {
         tileWidthMm: (json['tileW'] as num).toDouble(),
         tileHeightMm: (json['tileH'] as num).toDouble(),
         groutMm: (json['grout'] as num).toDouble(),
+        tileThicknessMm: (json['thick'] as num?)?.toDouble() ?? 7.9375,
+        jointDepthMm: (json['jointDepth'] as num?)?.toDouble(),
+        trowelName: json['trowel'] as String?,
         patternName: json['pattern'] as String,
         customWastePct: json['customWaste'] as int,
         tilesPerBox: json['tilesPerBox'] as int?,

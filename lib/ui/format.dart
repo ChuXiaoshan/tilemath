@@ -58,6 +58,18 @@ String formatCost(double cost, String symbol, String locale) {
   return '$symbol${f.format(cost)}';
 }
 
+/// 材料重量行：主单位随单位制，副单位括号随行（数字恒 LTR）。
+String formatGroutAmount(double kg, UnitSystem system, String locale) {
+  final f = NumberFormat.decimalPatternDigits(
+    locale: _latinDigitsLocale(locale),
+    decimalDigits: 1,
+  );
+  final lb = kg * 2.20462;
+  return system == UnitSystem.imperial
+      ? '≈ ${f.format(lb)} lb (${f.format(kg)} kg)'
+      : '≈ ${f.format(kg)} kg (${f.format(lb)} lb)';
+}
+
 /// 当前 locale 的小数分隔符（公制键盘键帽用）。
 String decimalSeparatorOf(String locale) =>
     NumberFormat.decimalPattern(_latinDigitsLocale(locale)).symbols.DECIMAL_SEP;
