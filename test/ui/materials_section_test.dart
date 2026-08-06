@@ -24,6 +24,16 @@ void main() {
     for (final t in Trowel.values) {
       expect(find.byKey(ValueKey('trowel-chip-${t.name}')), findsOneWidget);
     }
+
+    // 量尺寸：Auto + 4 档共 5 个 chip，触摸高度 ≥44
+    final chipFinders = [
+      find.byKey(const ValueKey('trowel-chip-auto')),
+      for (final t in Trowel.values) find.byKey(ValueKey('trowel-chip-${t.name}')),
+    ];
+    expect(chipFinders, hasLength(5));
+    for (final f in chipFinders) {
+      expect(tester.getSize(f).height, greaterThanOrEqualTo(44));
+    }
   });
 
   testWidgets('点档位 chip 改 controller；再点 Auto 回推荐', (tester) async {

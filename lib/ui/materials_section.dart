@@ -93,7 +93,8 @@ class MaterialsSection extends StatelessWidget {
                 key: const ValueKey('trowel-chip-auto'),
                 label: Text(calc.trowel == null && calc.tileWidth != null
                     ? '${l10n.trowelAuto} · ${recommendTrowel(calc.tileWidth!, calc.tileHeight ?? calc.tileWidth!).label}'
-                    : l10n.trowelAuto),
+                    : l10n.trowelAuto,
+                    textDirection: TextDirection.ltr),
                 selected: calc.trowel == null,
                 onSelected: (_) => calc.setTrowel(null),
               ),
