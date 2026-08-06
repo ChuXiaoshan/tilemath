@@ -1152,7 +1152,7 @@ git commit -m "refactor: ValueField 抽为独立文件供辅料区块复用"
 
 **Interfaces:**
 - Consumes: Task 2 `layoutTiles` / `TilePoly`
-- Produces: `class PatternPreview extends StatelessWidget`，构造参数 `{required Length tileWidth, required Length tileHeight, required Length grout, required LayoutPattern pattern, required double size}`——正方形 `size×size`。砖面用**陶土暖色**（2026-08-06 视觉增强拍板：浅色 `#C98B6F` / 深色 `#9C6B51`，缝色浅 `#EAE9E9` / 深 `#2D2B2B`），预览是页面唯一材质焦点，不用灰阶
+- Produces: `class PatternPreview extends StatelessWidget`，构造参数 `{required Length tileWidth, required Length tileHeight, required Length grout, required LayoutPattern pattern, required double size}`——正方形 `size×size`。砖面用**品牌青 `primaryContainer`**（2026-08-06 拍板：视觉增强只用现有青色系、不引入新色；浅 #CBEEFF / 深 #004961 由主题自动给出），缝色 `surfaceContainerLow`，预览不用灰阶
 
 - [ ] **Step 1: 写失败测试**
 
@@ -1235,7 +1235,7 @@ class PatternPreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final dark = Theme.of(context).brightness == Brightness.dark;
+    final scheme = Theme.of(context).colorScheme;
     return ClipRRect(
       borderRadius: BorderRadius.circular(AppDimens.radius1),
       child: CustomPaint(
@@ -1245,12 +1245,11 @@ class PatternPreview extends StatelessWidget {
           tileHmm: tileHeight.mm,
           groutMm: grout.mm,
           pattern: pattern,
-          // 陶土砖面（2026-08-06 拍板）：瓷砖语义自带的暖色，预览是
-          // 页面唯一材质焦点，不用灰阶；深色模式配对降明度。
-          tileColor:
-              dark ? const Color(0xFF9C6B51) : const Color(0xFFC98B6F),
-          groutColor:
-              dark ? const Color(0xFF2D2B2B) : const Color(0xFFEAE9E9),
+          // 砖面用品牌青 primaryContainer（2026-08-06 拍板：视觉增强
+          // 只用现有青色系、不引入新色），缝色为托盘表面色，明暗主题
+          // 由 scheme 自动适配。
+          tileColor: scheme.primaryContainer,
+          groutColor: scheme.surfaceContainerLow,
         ),
       ),
     );
@@ -2269,11 +2268,12 @@ class ShareCardData {
 }
 
 // 浅色主题固定（token 表 Light）：分享出去的卡不跟随深色模式。
-// 砖面陶土色 + 顶部品牌青条（2026-08-06 视觉增强拍板）。
+// 砖面用品牌青 primaryContainer(Light)，顶部品牌青条（2026-08-06 拍板：
+// 视觉增强只用现有青色系）。
 const _bg = Color(0xFFF3F2F2);
 const _ink = Color(0xFF201E1D);
 const _sub = Color(0xFF605D5D);
-const _tile = Color(0xFFC98B6F);
+const _tile = Color(0xFFCBEEFF);
 const _grout = Color(0xFFEAE9E9);
 const _brand = Color(0xFF0088B0);
 

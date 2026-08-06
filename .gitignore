@@ -69,3 +69,4 @@ app.*.map.json
 
 # fvm
 .fvm/
+.superpowers/
