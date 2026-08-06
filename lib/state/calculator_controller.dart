@@ -248,6 +248,9 @@ class CalculatorController extends ChangeNotifier {
       tileWidthMm: tileWidth!.mm,
       tileHeightMm: tileHeight!.mm,
       groutMm: grout.mm,
+      tileThicknessMm: tileThickness.mm,
+      jointDepthMm: jointDepth?.mm,
+      trowelName: trowel?.name,
       patternName: pattern.name,
       customWastePct: customWastePct,
       tilesPerBox: tilesPerBox,
@@ -274,6 +277,13 @@ class CalculatorController extends ChangeNotifier {
     tileHeight = Length.ofMm(entry.tileHeightMm);
     grout = Length.ofMm(entry.groutMm);
     _groutTouched = true;
+    tileThickness = Length.ofMm(entry.tileThicknessMm);
+    _thicknessTouched = true;
+    jointDepth =
+        entry.jointDepthMm == null ? null : Length.ofMm(entry.jointDepthMm!);
+    trowel = Trowel.values
+        .where((t) => t.name == entry.trowelName)
+        .firstOrNull; // 未知名回退 Auto（null）
     // 未知 pattern 名（老版本读新数据）回退 straight
     pattern = LayoutPattern.values
         .where((p) => p.name == entry.patternName)
