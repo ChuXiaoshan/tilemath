@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show HapticFeedback;
+// intl 的 TextDirection 与 material 的同名类型冲突（bidi 用途不同），只取 DateFormat。
+import 'package:intl/intl.dart' show DateFormat;
 import 'package:provider/provider.dart';
 
 import '../domain/length.dart';
@@ -7,6 +9,8 @@ import '../domain/tile_calculation.dart';
 import '../history/history_controller.dart';
 import '../keyboard/metric_editor.dart';
 import '../l10n/app_localizations.dart';
+import '../share/share_card_renderer.dart';
+import '../share/share_service.dart';
 import '../state/calculator_controller.dart';
 import '../state/settings_controller.dart';
 import '../theme/app_dimens.dart';
@@ -263,10 +267,22 @@ class _ResultsSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final r = calc.result;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _Kicker(l10n.sectionResults),
+        Row(
+          children: [
+            Expanded(child: _Kicker(l10n.sectionResults)),
+            if (r != null)
+              IconButton(
+                key: const ValueKey('share-result'),
+                icon: const Icon(Icons.ios_share, size: 22),
+                tooltip: l10n.shareResult,
+                onPressed: () => _share(context),
+              ),
+          ],
+        ),
         ResultCard(
           result: calc.result,
           materials: calc.materialsResult,
@@ -281,6 +297,64 @@ class _ResultsSection extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  /// 渲染分享卡 → 系统分享面板；失败兜 SnackBar（brief §11）。
+  Future<void> _share(BuildContext context) async {
+    final l10n = AppLocalizations.of(context);
+    final locale = Localizations.localeOf(context).toString();
+    final r = calc.result;
+    final m = calc.materialsResult;
+    final tw = calc.tileWidth;
+    final th = calc.tileHeight;
+    if (r == null || tw == null || th == null) return;
+
+    final imperial = calc.unitSystem == UnitSystem.imperial;
+    String patternName() => switch (calc.pattern) {
+          LayoutPattern.straight => l10n.patternStraight,
+          LayoutPattern.diagonal => l10n.patternDiagonal,
+          LayoutPattern.herringbone => l10n.patternHerringbone,
+          LayoutPattern.custom => l10n.patternCustom,
+        };
+    final data = ShareCardData(
+      appName: 'TileMath',
+      date: DateFormat.yMMMd(locale.startsWith('ar') ? 'en_US' : locale)
+          .format(DateTime.now()),
+      tilesLabel: l10n.tilesNeededLabel(r.tilesNeeded).toUpperCase(),
+      tilesValue: '${r.tilesNeeded}',
+      wasteLine: l10n.wasteLine(r.baseTiles, (calc.wasteRate * 100).round()),
+      rows: [
+        (l10n.totalArea, formatArea(r.netAreaSqM, calc.unitSystem, locale)),
+        if (r.boxes != null) (l10n.boxesToBuy, '${r.boxes}'),
+        if (r.cost != null)
+          (l10n.estimatedCost,
+              formatCost(r.cost!, settings.currencySymbol, locale)),
+        if (m != null)
+          (l10n.groutNeeded,
+              formatGroutAmount(m.groutKg, calc.unitSystem, locale)),
+        if (m != null)
+          (l10n.thinsetNeeded,
+              l10n.thinsetBagsLine(
+                  imperial ? m.thinsetBags50Lb : m.thinsetBags20Kg,
+                  imperial ? '50 lb' : '20 kg')),
+      ],
+      specLine:
+          '${formatLength(tw, calc.unitSystem, MetricUnit.cm, locale)} × '
+          '${formatLength(th, calc.unitSystem, MetricUnit.cm, locale)} · '
+          '${l10n.previewCaption(patternName(), formatLength(calc.grout, calc.unitSystem, MetricUnit.mm, locale))}',
+      footer: l10n.shareCardFooter,
+      tileWmm: tw.mm,
+      tileHmm: th.mm,
+      groutMm: calc.grout.mm,
+      pattern: calc.pattern,
+    );
+    try {
+      await shareResultCard(data);
+    } catch (_) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(l10n.shareFailed)));
+    }
   }
 }
 

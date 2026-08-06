@@ -272,4 +272,41 @@ void main() {
     // 版本号来自包信息而非硬编码，改 pubspec 版本不会再失配
     expect(find.text('1.0.0'), findsOneWidget);
   });
+
+  testWidgets('分享入口仅在结果非空时出现', (tester) async {
+    tester.view.physicalSize = const Size(420, 900);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
+
+    SharedPreferences.setMockInitialValues({});
+    final prefs = await SharedPreferences.getInstance();
+    await tester.pumpWidget(TileMathApp(prefs: prefs));
+    await tester.pump();
+
+    // 空表单：无结果，分享按钮不渲染
+    expect(find.byKey(const ValueKey('share-result')), findsNothing);
+
+    // 复用冒烟测试同款输入闭环：12×12 预设 + 12′×10′ 区域 → 出结果
+    await tester.tap(find.text('12×12'));
+    await tester.pump();
+
+    await tester.tap(find.byKey(const ValueKey('field-areaLength-0')));
+    await tester.pump();
+    await tester.tap(find.text('1'));
+    await tester.tap(find.text('2'));
+    await tester.tap(find.text('ft'));
+    await tester.pump();
+
+    await tester.tap(find.text('Next'));
+    await tester.pump();
+    await tester.tap(find.text('1'));
+    await tester.tap(find.text('0'));
+    await tester.tap(find.text('ft'));
+    await tester.pump();
+    await tester.tap(find.text('Done'));
+    await tester.pump();
+
+    // 有结果：分享按钮出现
+    expect(find.byKey(const ValueKey('share-result')), findsOneWidget);
+  });
 }
