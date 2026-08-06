@@ -471,6 +471,102 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{pct}% waste'**
   String wasteShort(int pct);
+
+  /// No description provided for @sectionMaterials.
+  ///
+  /// In en, this message translates to:
+  /// **'Materials'**
+  String get sectionMaterials;
+
+  /// No description provided for @materialsDefaults.
+  ///
+  /// In en, this message translates to:
+  /// **'Defaults applied'**
+  String get materialsDefaults;
+
+  /// No description provided for @tileThickness.
+  ///
+  /// In en, this message translates to:
+  /// **'Tile thickness'**
+  String get tileThickness;
+
+  /// No description provided for @jointDepth.
+  ///
+  /// In en, this message translates to:
+  /// **'Joint depth'**
+  String get jointDepth;
+
+  /// No description provided for @jointDepthFollows.
+  ///
+  /// In en, this message translates to:
+  /// **'= thickness'**
+  String get jointDepthFollows;
+
+  /// No description provided for @trowelLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Trowel'**
+  String get trowelLabel;
+
+  /// No description provided for @trowelAuto.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto'**
+  String get trowelAuto;
+
+  /// No description provided for @trowelAutoCaption.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto picks a notch by tile size.'**
+  String get trowelAutoCaption;
+
+  /// No description provided for @groutNeeded.
+  ///
+  /// In en, this message translates to:
+  /// **'Grout'**
+  String get groutNeeded;
+
+  /// No description provided for @thinsetNeeded.
+  ///
+  /// In en, this message translates to:
+  /// **'Thinset'**
+  String get thinsetNeeded;
+
+  /// No description provided for @thinsetBagsLine.
+  ///
+  /// In en, this message translates to:
+  /// **'{bags, plural, one{≈ {bags} bag · {spec}} other{≈ {bags} bags · {spec}}}'**
+  String thinsetBagsLine(int bags, String spec);
+
+  /// No description provided for @materialsDisclaimer.
+  ///
+  /// In en, this message translates to:
+  /// **'Material amounts are estimates — follow your product\'s coverage chart.'**
+  String get materialsDisclaimer;
+
+  /// No description provided for @shareResult.
+  ///
+  /// In en, this message translates to:
+  /// **'Share'**
+  String get shareResult;
+
+  /// No description provided for @shareFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t share. Please try again.'**
+  String get shareFailed;
+
+  /// No description provided for @shareCardFooter.
+  ///
+  /// In en, this message translates to:
+  /// **'TileMath — tile calculator with a fraction-inch keyboard'**
+  String get shareCardFooter;
+
+  /// No description provided for @previewCaption.
+  ///
+  /// In en, this message translates to:
+  /// **'{pattern} · {grout} grout'**
+  String previewCaption(String pattern, String grout);
 }
 
 class _AppLocalizationsDelegate

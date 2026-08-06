@@ -61,5 +61,21 @@
   "historyFooterNote": "يُحفظ كل حساب — مجانًا وبلا حدود.",
   "languagePageNote": "يغيّر لغة هذا التطبيق فقط — للأجهزة القديمة التي لا تدعم لغة لكل تطبيق.",
   "linkOpenFailed": "تعذّر فتح الرابط",
-  "wasteShort": "هدر {pct}%"
+  "wasteShort": "هدر {pct}%",
+  "sectionMaterials": "مواد التركيب",
+  "materialsDefaults": "قيم افتراضية مطبّقة",
+  "tileThickness": "سماكة البلاطة",
+  "jointDepth": "عمق الفاصل",
+  "jointDepthFollows": "= السماكة",
+  "trowelLabel": "المالج",
+  "trowelAuto": "تلقائي",
+  "trowelAutoCaption": "يُختار حجم السن تلقائيًا حسب مقاس البلاطة.",
+  "groutNeeded": "الروبة",
+  "thinsetNeeded": "اللاصق",
+  "thinsetBagsLine": "{bags, plural, one{≈ كيس واحد · {spec}} two{≈ كيسان · {spec}} few{≈ {bags} أكياس · {spec}} many{≈ {bags} كيسًا · {spec}} other{≈ {bags} كيس · {spec}}}",
+  "materialsDisclaimer": "الكميات تقديرية — اتبع جدول التغطية الخاص بمنتجك.",
+  "shareResult": "مشاركة",
+  "shareFailed": "تعذّرت المشاركة. حاول مرة أخرى.",
+  "shareCardFooter": "TileMath — حاسبة بلاط بلوحة مفاتيح كسور البوصة",
+  "previewCaption": "{pattern} · فاصل {grout}"
 }

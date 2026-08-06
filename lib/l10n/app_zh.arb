@@ -61,5 +61,21 @@
   "historyFooterNote": "每次计算都会保存——免费，无上限。",
   "languagePageNote": "仅覆盖本应用的语言——为没有分应用语言设置的旧设备提供。",
   "linkOpenFailed": "无法打开链接",
-  "wasteShort": "{pct}% 损耗"
+  "wasteShort": "{pct}% 损耗",
+  "sectionMaterials": "辅料",
+  "materialsDefaults": "已按默认值计算",
+  "tileThickness": "瓷砖厚度",
+  "jointDepth": "缝深",
+  "jointDepthFollows": "= 砖厚",
+  "trowelLabel": "镘刀",
+  "trowelAuto": "自动",
+  "trowelAutoCaption": "自动按砖尺寸选齿号。",
+  "groutNeeded": "填缝剂",
+  "thinsetNeeded": "胶粘剂",
+  "thinsetBagsLine": "{bags, plural, other{≈ {bags} 袋 · {spec}}}",
+  "materialsDisclaimer": "用量为估算，请以所购产品的覆盖率表为准。",
+  "shareResult": "分享",
+  "shareFailed": "分享失败，请重试。",
+  "shareCardFooter": "TileMath — 带分数英寸键盘的瓷砖计算器",
+  "previewCaption": "{pattern} · 缝 {grout}"
 }

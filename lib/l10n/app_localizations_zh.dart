@@ -246,4 +246,61 @@ class AppLocalizationsZh extends AppLocalizations {
   String wasteShort(int pct) {
     return '$pct% 损耗';
   }
+
+  @override
+  String get sectionMaterials => '辅料';
+
+  @override
+  String get materialsDefaults => '已按默认值计算';
+
+  @override
+  String get tileThickness => '瓷砖厚度';
+
+  @override
+  String get jointDepth => '缝深';
+
+  @override
+  String get jointDepthFollows => '= 砖厚';
+
+  @override
+  String get trowelLabel => '镘刀';
+
+  @override
+  String get trowelAuto => '自动';
+
+  @override
+  String get trowelAutoCaption => '自动按砖尺寸选齿号。';
+
+  @override
+  String get groutNeeded => '填缝剂';
+
+  @override
+  String get thinsetNeeded => '胶粘剂';
+
+  @override
+  String thinsetBagsLine(int bags, String spec) {
+    String _temp0 = intl.Intl.pluralLogic(
+      bags,
+      locale: localeName,
+      other: '≈ $bags 袋 · $spec',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get materialsDisclaimer => '用量为估算，请以所购产品的覆盖率表为准。';
+
+  @override
+  String get shareResult => '分享';
+
+  @override
+  String get shareFailed => '分享失败，请重试。';
+
+  @override
+  String get shareCardFooter => 'TileMath — 带分数英寸键盘的瓷砖计算器';
+
+  @override
+  String previewCaption(String pattern, String grout) {
+    return '$pattern · 缝 $grout';
+  }
 }

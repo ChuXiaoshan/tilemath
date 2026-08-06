@@ -256,4 +256,64 @@ class AppLocalizationsEn extends AppLocalizations {
   String wasteShort(int pct) {
     return '$pct% waste';
   }
+
+  @override
+  String get sectionMaterials => 'Materials';
+
+  @override
+  String get materialsDefaults => 'Defaults applied';
+
+  @override
+  String get tileThickness => 'Tile thickness';
+
+  @override
+  String get jointDepth => 'Joint depth';
+
+  @override
+  String get jointDepthFollows => '= thickness';
+
+  @override
+  String get trowelLabel => 'Trowel';
+
+  @override
+  String get trowelAuto => 'Auto';
+
+  @override
+  String get trowelAutoCaption => 'Auto picks a notch by tile size.';
+
+  @override
+  String get groutNeeded => 'Grout';
+
+  @override
+  String get thinsetNeeded => 'Thinset';
+
+  @override
+  String thinsetBagsLine(int bags, String spec) {
+    String _temp0 = intl.Intl.pluralLogic(
+      bags,
+      locale: localeName,
+      other: '≈ $bags bags · $spec',
+      one: '≈ $bags bag · $spec',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get materialsDisclaimer =>
+      'Material amounts are estimates — follow your product\'s coverage chart.';
+
+  @override
+  String get shareResult => 'Share';
+
+  @override
+  String get shareFailed => 'Couldn\'t share. Please try again.';
+
+  @override
+  String get shareCardFooter =>
+      'TileMath — tile calculator with a fraction-inch keyboard';
+
+  @override
+  String previewCaption(String pattern, String grout) {
+    return '$pattern · $grout grout';
+  }
 }

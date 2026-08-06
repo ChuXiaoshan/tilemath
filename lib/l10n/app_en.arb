@@ -153,5 +153,33 @@
         "type": "int"
       }
     }
+  },
+  "sectionMaterials": "Materials",
+  "materialsDefaults": "Defaults applied",
+  "tileThickness": "Tile thickness",
+  "jointDepth": "Joint depth",
+  "jointDepthFollows": "= thickness",
+  "trowelLabel": "Trowel",
+  "trowelAuto": "Auto",
+  "trowelAutoCaption": "Auto picks a notch by tile size.",
+  "groutNeeded": "Grout",
+  "thinsetNeeded": "Thinset",
+  "thinsetBagsLine": "{bags, plural, one{≈ {bags} bag · {spec}} other{≈ {bags} bags · {spec}}}",
+  "@thinsetBagsLine": {
+    "placeholders": {
+      "bags": {"type": "int"},
+      "spec": {"type": "String"}
+    }
+  },
+  "materialsDisclaimer": "Material amounts are estimates — follow your product's coverage chart.",
+  "shareResult": "Share",
+  "shareFailed": "Couldn't share. Please try again.",
+  "shareCardFooter": "TileMath — tile calculator with a fraction-inch keyboard",
+  "previewCaption": "{pattern} · {grout} grout",
+  "@previewCaption": {
+    "placeholders": {
+      "pattern": {"type": "String"},
+      "grout": {"type": "String"}
+    }
   }
 }
