@@ -46,7 +46,8 @@ const _bg = Color(0xFFF3F2F2);
 const _ink = Color(0xFF201E1D);
 const _sub = Color(0xFF605D5D);
 const _tile = Color(0xFFCBEEFF);
-const _grout = Color(0xFFEAE9E9);
+// 缝色与 app 内预览缝色对齐（AppColors.light.outline，见 pattern_preview.dart）。
+const _grout = Color(0xFF949191);
 const _brand = Color(0xFF0088B0);
 
 const _w = 1080.0;
@@ -63,12 +64,16 @@ Future<Uint8List> renderShareCardPng(ShareCardData data) async {
 
   double y = _pad;
 
-  // 品牌头：名称左、日期右
-  _text(canvas, data.appName, const Offset(_pad, 0),
-      size: 45, weight: FontWeight.w700, baselineY: y + 45);
+  // 品牌头：app 图标 + 名称左、日期右
+  const brandIconSize = 56.0;
+  _drawBrandIcon(canvas, Offset(_pad, y), brandIconSize);
+  final nameLeft = _pad + brandIconSize + 24;
+  // 与图标垂直居中（居中近似，非像素级，±10px 内浮动不改变观感）。
+  _text(canvas, data.appName, Offset(nameLeft, 0),
+      size: 45, weight: FontWeight.w700, baselineY: y + brandIconSize - 6);
   _text(canvas, data.date, Offset(_w - _pad, 0),
       size: 33, color: _sub, alignRight: true, baselineY: y + 45);
-  y += 45 + 54;
+  y += brandIconSize + 43;
 
   // 大数字块
   _text(canvas, data.tilesLabel, Offset(_pad, 0),
@@ -106,6 +111,9 @@ Future<Uint8List> renderShareCardPng(ShareCardData data) async {
     groutMm: data.groutMm,
     pattern: data.pattern,
     targetAcross: 10,
+    // 保底可见缝：1080px 宽卡上真实比例的窄缝（如 1/16″）依然是亚像素，
+    // 与 app 内预览（pattern_preview.dart）同一策略。
+    minGroutPx: 2.0,
   );
   final tilePaint = Paint()..color = _tile;
   for (final poly in polys) {
@@ -133,6 +141,44 @@ Future<Uint8List> renderShareCardPng(ShareCardData data) async {
   return bytes!.buffer.asUint8List();
 }
 
+/// 品牌图标（设计稿 8a/10c cut-tile）：纸面 + 青色切下料三角 + 勾缝网格
+/// + 斜切锯缝，120 viewBox 等比缩放，squircle 由圆角矩形近似。
+void _drawBrandIcon(Canvas canvas, Offset at, double size) {
+  final s = size / 120.0;
+  canvas.save();
+  canvas.translate(at.dx, at.dy);
+  canvas.clipRRect(RRect.fromRectAndRadius(
+      Rect.fromLTWH(0, 0, size, size), Radius.circular(size * 0.224)));
+  canvas.drawRect(Rect.fromLTWH(0, 0, size, size),
+      Paint()..color = const Color(0xFFF4F3F2));
+  final cut = Path()
+    ..moveTo(120 * s, 68 * s)
+    ..lineTo(120 * s, 120 * s)
+    ..lineTo(68 * s, 120 * s)
+    ..close();
+  canvas.drawPath(cut, Paint()..color = _brand);
+  final grid = Paint()
+    ..color = _ink
+    ..strokeWidth = 4 * s
+    ..style = PaintingStyle.stroke;
+  // 网格线裁在切角外轮廓内（近似：先画满幅网格，再画斜切线覆盖）
+  canvas.save();
+  canvas.clipPath(Path()
+    ..moveTo(0, 0)
+    ..lineTo(120 * s, 0)
+    ..lineTo(120 * s, 64 * s)
+    ..lineTo(64 * s, 120 * s)
+    ..lineTo(0, 120 * s)
+    ..close());
+  canvas.drawLine(Offset(16 * s, -4 * s), Offset(16 * s, 124 * s), grid);
+  canvas.drawLine(Offset(68 * s, -4 * s), Offset(68 * s, 124 * s), grid);
+  canvas.drawLine(Offset(-4 * s, 28 * s), Offset(124 * s, 28 * s), grid);
+  canvas.drawLine(Offset(-4 * s, 80 * s), Offset(124 * s, 80 * s), grid);
+  canvas.restore();
+  canvas.drawLine(Offset(126 * s, 62 * s), Offset(62 * s, 126 * s), grid);
+  canvas.restore();
+}
+
 /// 文本绘制：value/尺寸表达式恒 LTR；alignRight 以 x 为右缘。
 void _text(
   Canvas canvas,
@@ -154,6 +200,9 @@ void _text(
         fontWeight: weight,
         letterSpacing: letterSpacing,
         fontFeatures: const [ui.FontFeature.tabularFigures()],
+        // 品牌字族：zh 文案落到 arb 子集覆盖的 Noto Sans SC，阿语回退族备用。
+        fontFamily: 'IBM Plex Sans',
+        fontFamilyFallback: const ['Noto Sans SC', 'IBM Plex Sans Arabic'],
       ),
     ),
     textDirection: TextDirection.ltr,

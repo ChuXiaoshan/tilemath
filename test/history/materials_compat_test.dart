@@ -104,4 +104,74 @@ void main() {
     expect(fresh.result, isNotNull);
     expect(fresh.materialsResult, isNotNull);
   });
+
+  group('restoreFrom 损坏数据护栏补全（A3）：JSON 合法但数值非法不得半途抛错', () {
+    // 以合法 snapshot 的 toJson 为底，每个用例只篡改一个字段，
+    // 验证该字段按语义回退，其余字段正常回填，且 restoreFrom/result/
+    // materialsResult 全程不抛错。
+
+    test('tilesPerBox: 0 → 视为未填（null），与 setBoxInfo 同一归一策略', () {
+      final c = filledController();
+      final baseEntry = c.snapshot()!;
+      final corrupted =
+          HistoryEntry.fromJson(baseEntry.toJson()..['tilesPerBox'] = 0);
+
+      expect(() => c.restoreFrom(corrupted), returnsNormally);
+      expect(c.tilesPerBox, isNull);
+      expect(() => c.result, returnsNormally);
+      expect(() => c.materialsResult, returnsNormally);
+    });
+
+    test('pricePerBox: -3 → 视为未填（null）', () {
+      final c = filledController();
+      final baseEntry = c.snapshot()!;
+      final corrupted =
+          HistoryEntry.fromJson(baseEntry.toJson()..['pricePerBox'] = -3.0);
+
+      expect(() => c.restoreFrom(corrupted), returnsNormally);
+      expect(c.pricePerBox, isNull);
+      expect(() => c.result, returnsNormally);
+      expect(() => c.materialsResult, returnsNormally);
+    });
+
+    test('tileW: -100 → 非法砖宽不赋值，保留 controller 现值', () {
+      final c = filledController(); // 已通过 setTilePreset 设为 12in×12in
+      final priorWidth = c.tileWidth;
+      final baseEntry = c.snapshot()!;
+      final corrupted =
+          HistoryEntry.fromJson(baseEntry.toJson()..['tileW'] = -100.0);
+
+      expect(() => c.restoreFrom(corrupted), returnsNormally);
+      expect(c.tileWidth, priorWidth); // 保留现值，未被非法值覆盖
+      expect(() => c.result, returnsNormally);
+      expect(() => c.materialsResult, returnsNormally);
+    });
+
+    test('grout: -1 → 回退当前单位制默认缝宽（英制 1/16″），不置 touched', () {
+      final c = filledController();
+      final baseEntry = c.snapshot()!;
+      final corrupted =
+          HistoryEntry.fromJson(baseEntry.toJson()..['grout'] = -1.0);
+
+      expect(() => c.restoreFrom(corrupted), returnsNormally);
+      expect(c.grout.mm, closeTo(1.5875, 1e-9)); // 1/16″ = 1.5875mm
+      expect(() => c.result, returnsNormally);
+      expect(() => c.materialsResult, returnsNormally);
+    });
+
+    test('行内 l: -5 → 该行 length 置空（未完成行），width 不受影响', () {
+      final c = filledController();
+      final baseEntry = c.snapshot()!;
+      final json = baseEntry.toJson();
+      final rowsJson = (json['rows'] as List).cast<Map<String, dynamic>>();
+      rowsJson[0] = {...rowsJson[0], 'l': -5.0};
+      final corrupted = HistoryEntry.fromJson(json);
+
+      expect(() => c.restoreFrom(corrupted), returnsNormally);
+      expect(c.rows[0].length, isNull);
+      expect(c.rows[0].width, isNotNull);
+      expect(() => c.result, returnsNormally);
+      expect(() => c.materialsResult, returnsNormally);
+    });
+  });
 }

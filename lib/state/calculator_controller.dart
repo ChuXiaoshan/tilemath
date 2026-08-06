@@ -264,30 +264,67 @@ class CalculatorController extends ChangeNotifier {
   /// 从历史条目回填表单。只回填数值（mm 基准跨单位制通用），
   /// 不切换当前单位制——英制记录在公制模式下显示换算值。
   void restoreFrom(HistoryEntry entry) {
+    // 损坏数据护栏：JSON 合法但数值非法（负数等）不得让恢复半途抛错或
+    // 让 build 期读取抛错——非法值按字段语义回退（行值置空/砖寸保留现值/
+    // 缝宽回默认），与厚度、损耗率的既有护栏同一策略。
+    double? safeMm(double? mm) => (mm != null && mm.isFinite && mm >= 0) ? mm : null;
+
+    // ---- 预验 + 净化：全部通过后再改状态，避免"半途抛错但状态已改一半"----
+    final safeRows = [
+      for (final r in entry.rows) (safeMm(r.lengthMm), safeMm(r.widthMm), r.isCutout),
+    ];
+    // 砖寸非法或 ≤0：净化值为 null，下面保留 controller 现值不赋。
+    final safeTileWidthMm =
+        entry.tileWidthMm.isFinite && entry.tileWidthMm > 0
+            ? entry.tileWidthMm
+            : null;
+    final safeTileHeightMm =
+        entry.tileHeightMm.isFinite && entry.tileHeightMm > 0
+            ? entry.tileHeightMm
+            : null;
+    final safeGroutMm = safeMm(entry.groutMm); // 0 合法（无缝铺法），仅拒负/非有限
+    final safeJointDepthMm = safeMm(entry.jointDepthMm);
+    // 箱规/单价：与 setBoxInfo 同一归一策略，非法值按"未填"处理。
+    final safeTilesPerBox =
+        entry.tilesPerBox != null && entry.tilesPerBox! > 0
+            ? entry.tilesPerBox
+            : null;
+    final safePricePerBox =
+        entry.pricePerBox != null &&
+                entry.pricePerBox!.isFinite &&
+                entry.pricePerBox! >= 0
+            ? entry.pricePerBox
+            : null;
+
+    // ---- 赋值：全部基于已净化的值，不会再抛错 ----
     rows
       ..clear()
       ..addAll([
-        for (final r in entry.rows)
-          AreaRowData(isCutout: r.isCutout)
-            ..length = r.lengthMm == null ? null : Length.ofMm(r.lengthMm!)
-            ..width = r.widthMm == null ? null : Length.ofMm(r.widthMm!),
+        for (final (l, w, isCutout) in safeRows)
+          AreaRowData(isCutout: isCutout)
+            ..length = l == null ? null : Length.ofMm(l)
+            ..width = w == null ? null : Length.ofMm(w),
       ]);
     if (rows.isEmpty) rows.add(AreaRowData());
-    tileWidth = Length.ofMm(entry.tileWidthMm);
-    tileHeight = Length.ofMm(entry.tileHeightMm);
-    grout = Length.ofMm(entry.groutMm);
-    _groutTouched = true;
+    if (safeTileWidthMm != null) tileWidth = Length.ofMm(safeTileWidthMm);
+    if (safeTileHeightMm != null) tileHeight = Length.ofMm(safeTileHeightMm);
+    if (safeGroutMm != null) {
+      grout = Length.ofMm(safeGroutMm);
+      _groutTouched = true;
+    } else {
+      grout = _defaultGrout(_unitSystem);
+      _groutTouched = false;
+    }
     // 损坏数据护栏：厚度 ≤0 会让 materialsResult 计算除以 0 / 负数，
     // 击穿"build 期读取永不抛错"契约——回退当前单位制默认厚度而非硬赋值。
-    if (entry.tileThicknessMm > 0) {
+    if (entry.tileThicknessMm.isFinite && entry.tileThicknessMm > 0) {
       tileThickness = Length.ofMm(entry.tileThicknessMm);
       _thicknessTouched = true;
     } else {
       tileThickness = _defaultThickness(_unitSystem);
       _thicknessTouched = false;
     }
-    jointDepth =
-        entry.jointDepthMm == null ? null : Length.ofMm(entry.jointDepthMm!);
+    jointDepth = safeJointDepthMm == null ? null : Length.ofMm(safeJointDepthMm);
     trowel = Trowel.values
         .where((t) => t.name == entry.trowelName)
         .firstOrNull; // 未知名回退 Auto（null）
@@ -299,8 +336,8 @@ class CalculatorController extends ChangeNotifier {
     // 损坏数据护栏：clamp 到与 setCustomWaste 一致的合法区间，避免越界值
     // 通过 wasteRate 传导进 result/materialsResult 的计算断言。
     customWastePct = entry.customWastePct.clamp(0, 30);
-    tilesPerBox = entry.tilesPerBox;
-    pricePerBox = entry.pricePerBox;
+    tilesPerBox = safeTilesPerBox;
+    pricePerBox = safePricePerBox;
     _stopEditing();
     notifyListeners();
   }
