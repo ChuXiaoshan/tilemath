@@ -277,8 +277,15 @@ class CalculatorController extends ChangeNotifier {
     tileHeight = Length.ofMm(entry.tileHeightMm);
     grout = Length.ofMm(entry.groutMm);
     _groutTouched = true;
-    tileThickness = Length.ofMm(entry.tileThicknessMm);
-    _thicknessTouched = true;
+    // 损坏数据护栏：厚度 ≤0 会让 materialsResult 计算除以 0 / 负数，
+    // 击穿"build 期读取永不抛错"契约——回退当前单位制默认厚度而非硬赋值。
+    if (entry.tileThicknessMm > 0) {
+      tileThickness = Length.ofMm(entry.tileThicknessMm);
+      _thicknessTouched = true;
+    } else {
+      tileThickness = _defaultThickness(_unitSystem);
+      _thicknessTouched = false;
+    }
     jointDepth =
         entry.jointDepthMm == null ? null : Length.ofMm(entry.jointDepthMm!);
     trowel = Trowel.values
@@ -289,7 +296,9 @@ class CalculatorController extends ChangeNotifier {
         .where((p) => p.name == entry.patternName)
         .firstOrNull ??
         LayoutPattern.straight;
-    customWastePct = entry.customWastePct;
+    // 损坏数据护栏：clamp 到与 setCustomWaste 一致的合法区间，避免越界值
+    // 通过 wasteRate 传导进 result/materialsResult 的计算断言。
+    customWastePct = entry.customWastePct.clamp(0, 30);
     tilesPerBox = entry.tilesPerBox;
     pricePerBox = entry.pricePerBox;
     _stopEditing();

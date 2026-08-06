@@ -76,4 +76,32 @@ void main() {
     fresh.restoreFrom(unknown);
     expect(fresh.trowel, isNull); // 回退 Auto
   });
+
+  test('restoreFrom 遇损坏数据（厚度 0 / 越界 waste）回退默认且 result 可安全读取', () {
+    final c = filledController();
+    final entry = c.snapshot()!;
+
+    // pattern 强制 custom：customWastePct 只在 custom 铺法下才会经 wasteRate
+    // 传导进 domain 层（其它铺法用固定 wasteRate），不这样设护栏就测不出来。
+    final corrupted = HistoryEntry.fromJson(
+      entry.toJson()
+        ..['thick'] = 0
+        ..['customWaste'] = 99
+        ..['pattern'] = 'custom',
+    );
+
+    final fresh = CalculatorController(UnitSystem.imperial);
+    fresh.restoreFrom(corrupted);
+
+    // 厚度 ≤0 回退当前单位制默认值（英制 5/16"），不接受损坏数据
+    expect(fresh.tileThickness.mm, closeTo(7.9375, 1e-9));
+    // customWastePct 越界回退 clamp(0, 30) 上限
+    expect(fresh.customWastePct, 30);
+
+    // 契约核心：materialsResult/result 在 build 期读取不得抛错
+    expect(() => fresh.result, returnsNormally);
+    expect(() => fresh.materialsResult, returnsNormally);
+    expect(fresh.result, isNotNull);
+    expect(fresh.materialsResult, isNotNull);
+  });
 }

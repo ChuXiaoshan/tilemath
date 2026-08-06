@@ -275,11 +275,15 @@ class _ResultsSection extends StatelessWidget {
           children: [
             Expanded(child: _Kicker(l10n.sectionResults)),
             if (r != null)
-              IconButton(
-                key: const ValueKey('share-result'),
-                icon: const Icon(Icons.ios_share, size: 22),
-                tooltip: l10n.shareResult,
-                onPressed: () => _share(context),
+              // Builder 拿分享按钮自身的 BuildContext：iPad popover 锚点
+              // 要按钮的渲染矩形，不能用外层（如 Scaffold）的 context。
+              Builder(
+                builder: (iconContext) => IconButton(
+                  key: const ValueKey('share-result'),
+                  icon: const Icon(Icons.ios_share, size: 22),
+                  tooltip: l10n.shareResult,
+                  onPressed: () => _share(iconContext),
+                ),
               ),
           ],
         ),
@@ -300,6 +304,8 @@ class _ResultsSection extends StatelessWidget {
   }
 
   /// 渲染分享卡 → 系统分享面板；失败兜 SnackBar（brief §11）。
+  /// [context] 必须是分享按钮自身的 BuildContext（来自外层 Builder）——
+  /// iPad popover 锚点要按钮的渲染矩形，不是随便哪层祖先的位置。
   Future<void> _share(BuildContext context) async {
     final l10n = AppLocalizations.of(context);
     final locale = Localizations.localeOf(context).toString();
@@ -349,7 +355,11 @@ class _ResultsSection extends StatelessWidget {
       pattern: calc.pattern,
     );
     try {
-      await shareResultCard(data);
+      // iPad/Mac 分享面板走 popover，必须给 sharePositionOrigin 锚点矩形，
+      // 否则 share_plus 12 的 iOS 实现直接返回 FlutterError（不弹面板）。
+      final box = context.findRenderObject() as RenderBox;
+      final origin = box.localToGlobal(Offset.zero) & box.size;
+      await shareResultCard(data, sharePositionOrigin: origin);
     } catch (_) {
       if (!context.mounted) return;
       ScaffoldMessenger.of(context)

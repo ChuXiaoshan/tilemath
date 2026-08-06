@@ -145,6 +145,9 @@ class ResultCard extends StatelessWidget {
                                   locale,
                                 ),
                               ),
+                              // caption 含尺寸表达式（如 "2 mm"），数字/尺寸
+                              // 恒 LTR（同 Auto chip e41cd6a 的同款处理）。
+                              textDirection: TextDirection.ltr,
                               style: text.bodySmall!.copyWith(
                                 color: scheme.onSurfaceVariant,
                               ),
