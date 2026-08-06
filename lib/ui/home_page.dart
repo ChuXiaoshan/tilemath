@@ -130,7 +130,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           final twoPane =
               constraints.maxWidth >= 600 && constraints.maxHeight >= 600;
           final form = _InputForm(calc: calc);
-          final results = _ResultsSection(calc: calc, settings: settings);
+          final results =
+              _ResultsSection(calc: calc, settings: settings, twoPane: twoPane);
           if (!twoPane) {
             return Column(
               children: [
@@ -250,7 +251,14 @@ class _ResultsSection extends StatelessWidget {
   final CalculatorController calc;
   final SettingsController settings;
 
-  const _ResultsSection({required this.calc, required this.settings});
+  /// 双栏布局：预览放大到 120dp（单栏 84dp）。
+  final bool twoPane;
+
+  const _ResultsSection({
+    required this.calc,
+    required this.settings,
+    this.twoPane = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -261,6 +269,12 @@ class _ResultsSection extends StatelessWidget {
         _Kicker(l10n.sectionResults),
         ResultCard(
           result: calc.result,
+          materials: calc.materialsResult,
+          tileWidth: calc.tileWidth,
+          tileHeight: calc.tileHeight,
+          grout: calc.grout,
+          pattern: calc.pattern,
+          previewSize: twoPane ? 120 : 84,
           unitSystem: calc.unitSystem,
           currencySymbol: settings.currencySymbol,
           wastePct: (calc.wasteRate * 100).round(),
