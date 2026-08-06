@@ -43,8 +43,7 @@ void main() {
     await tester.pump();
 
     // 滑块只在 Custom 铺法下出现
-    // 分段控件内的名称 Text 外面套了 FittedBox，会命中两个同名 Text
-    await tester.tap(find.text('Custom').last);
+    await tester.tap(find.byKey(const ValueKey('pattern-card-custom')));
     await tester.pumpAndSettle();
     expect(find.byType(Slider), findsOneWidget);
 

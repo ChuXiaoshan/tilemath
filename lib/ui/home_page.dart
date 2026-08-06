@@ -500,51 +500,31 @@ class _PatternSelector extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // 撑满整行：紧约束下段宽均分。降级规则（brief §2 v2.1）：长文案
-        // 缩小字号而非换行——名称行定高 + FittedBox，四段高度恒定不跳动。
-        // showSelectedIcon 关闭：选中 ✓ 图标会挤压最长文案（人字铺/Herringbone）
-        // 触发换行，选中态由填色表达。
-        SizedBox(
-          width: double.infinity,
-          child: SegmentedButton<LayoutPattern>(
-            showSelectedIcon: false,
-            style: const ButtonStyle(
-              padding: WidgetStatePropertyAll(
-                EdgeInsets.symmetric(
-                  horizontal: AppDimens.space4,
-                  vertical: AppDimens.space8,
-                ),
-              ),
-            ),
-            segments: [
-              for (final p in LayoutPattern.values)
-                ButtonSegment(
-                  value: p,
-                  label: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      SizedBox(
-                        height: 20,
-                        child: FittedBox(
-                          fit: BoxFit.scaleDown,
-                          child: Text(nameOf(p), maxLines: 1, softWrap: false),
-                        ),
-                      ),
-                      Text(
-                        '${pctOf(p)}%',
-                        textDirection: TextDirection.ltr,
-                        style: text.labelSmall!.copyWith(
-                          color: scheme.onSurfaceVariant,
-                        ),
-                      ),
-                    ],
+        // 四张等宽图案卡（设计稿 10a/1a）：LayoutBuilder 按可用宽度均分四列。
+        // 降级规则（brief §2 v2.1）：长文案缩小字号而非换行——名称行定高 +
+        // FittedBox，卡片 minHeight 72，四卡恒等高不跳动。
+        LayoutBuilder(builder: (context, constraints) {
+          final cardW =
+              (constraints.maxWidth - 3 * AppDimens.space8) / 4;
+          return Row(
+            children: [
+              for (final p in LayoutPattern.values) ...[
+                if (p != LayoutPattern.values.first)
+                  const SizedBox(width: AppDimens.space8),
+                SizedBox(
+                  width: cardW,
+                  child: _PatternCard(
+                    pattern: p,
+                    name: nameOf(p),
+                    pct: pctOf(p),
+                    selected: calc.pattern == p,
+                    onTap: () => calc.setPattern(p),
                   ),
                 ),
+              ],
             ],
-            selected: {calc.pattern},
-            onSelectionChanged: (s) => calc.setPattern(s.first),
-          ),
-        ),
+          );
+        }),
         const SizedBox(height: AppDimens.space8),
         Text(
           '${l10n.wastePercent} ${(calc.wasteRate * 100).round()}%',
@@ -571,6 +551,143 @@ class _PatternSelector extends StatelessWidget {
       ],
     );
   }
+}
+
+/// 铺法图案卡（设计稿 10a/1a）：缩略图 + 名称 + 损耗%，选中态 secondary
+/// 描边 + primaryContainer 底。名称行 FittedBox 缩字不换行，四卡恒等高。
+class _PatternCard extends StatelessWidget {
+  final LayoutPattern pattern;
+  final String name;
+  final int pct;
+  final bool selected;
+  final VoidCallback onTap;
+
+  const _PatternCard({
+    required this.pattern,
+    required this.name,
+    required this.pct,
+    required this.selected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final text = Theme.of(context).textTheme;
+    final fg = selected ? scheme.onPrimaryContainer : scheme.onSurface;
+    return Material(
+      color: selected ? scheme.primaryContainer : scheme.surfaceContainerLow,
+      borderRadius: BorderRadius.circular(AppDimens.radius2),
+      child: InkWell(
+        key: ValueKey('pattern-card-${pattern.name}'),
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(AppDimens.radius2),
+        child: Container(
+          constraints: const BoxConstraints(minHeight: 72),
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppDimens.space4,
+            vertical: AppDimens.space8,
+          ),
+          // 描边放 foregroundDecoration 而非 decoration：Container 会把
+          // decoration 的 border.dimensions 自动并入内边距，选中态 1.5dp
+          // 与未选中 1dp 的宽度差会让四卡布局高度错开 1dp（四卡等高断言会炸）。
+          // foregroundDecoration 只做叠加描边，不参与内边距计算。
+          foregroundDecoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(AppDimens.radius2),
+            border: Border.all(
+              color: selected ? scheme.secondary : scheme.outline,
+              width: selected ? 1.5 : 1,
+            ),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              CustomPaint(
+                size: const Size.square(20),
+                painter: _PatternGlyphPainter(pattern: pattern, color: fg),
+              ),
+              const SizedBox(height: AppDimens.space4),
+              SizedBox(
+                height: 18,
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    name,
+                    maxLines: 1,
+                    softWrap: false,
+                    style: text.labelLarge!.copyWith(color: fg),
+                  ),
+                ),
+              ),
+              Text(
+                '$pct%',
+                textDirection: TextDirection.ltr,
+                style: text.labelSmall!.copyWith(
+                  color: selected
+                      ? scheme.onPrimaryContainer
+                      : scheme.onSurfaceVariant,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// 20dp 铺法缩略图（线稿，与设计稿 1a 图形一致）。
+class _PatternGlyphPainter extends CustomPainter {
+  final LayoutPattern pattern;
+  final Color color;
+
+  const _PatternGlyphPainter({required this.pattern, required this.color});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.4
+      ..strokeJoin = StrokeJoin.round;
+    final s = size.width;
+    switch (pattern) {
+      case LayoutPattern.straight:
+        canvas.drawRect(Rect.fromLTWH(s * .15, s * .15, s * .7, s * .7), paint);
+        canvas.drawLine(Offset(s * .5, s * .15), Offset(s * .5, s * .85), paint);
+        canvas.drawLine(Offset(s * .15, s * .5), Offset(s * .85, s * .5), paint);
+      case LayoutPattern.diagonal:
+        canvas.save();
+        canvas.translate(s / 2, s / 2);
+        canvas.rotate(0.785398); // 45°
+        canvas.translate(-s / 2, -s / 2);
+        canvas.drawRect(
+            Rect.fromLTWH(s * .225, s * .225, s * .55, s * .55), paint);
+        canvas.drawLine(Offset(s * .5, s * .225), Offset(s * .5, s * .775), paint);
+        canvas.drawLine(Offset(s * .225, s * .5), Offset(s * .775, s * .5), paint);
+        canvas.restore();
+      case LayoutPattern.herringbone:
+        final path = Path()
+          ..moveTo(s * .15, s * .70)
+          ..lineTo(s * .40, s * .45)
+          ..lineTo(s * .55, s * .60)
+          ..lineTo(s * .30, s * .85)
+          ..close()
+          ..moveTo(s * .45, s * .40)
+          ..lineTo(s * .70, s * .15)
+          ..lineTo(s * .85, s * .30)
+          ..lineTo(s * .60, s * .55)
+          ..close();
+        canvas.drawPath(path, paint);
+      case LayoutPattern.custom:
+        canvas.drawLine(Offset(s * .15, s * .5), Offset(s * .85, s * .5), paint);
+        canvas.drawCircle(Offset(s * .6, s * .5), s * .15, paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(_PatternGlyphPainter oldDelegate) =>
+      pattern != oldDelegate.pattern || color != oldDelegate.color;
 }
 
 /// 箱规与成本（可折叠，默认收起；数字输入走系统键盘）。

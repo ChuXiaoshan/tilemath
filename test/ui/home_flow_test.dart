@@ -3,7 +3,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:tilemath/domain/tile_calculation.dart';
 import 'package:tilemath/history/history_controller.dart';
 import 'package:tilemath/main.dart';
 import 'package:tilemath/ui/keyboard/tile_keyboard.dart';
@@ -91,7 +90,7 @@ void main() {
     expect(historyController.entries.single.tilesNeeded, 131);
   });
 
-  testWidgets('铺法分段控件：选中人字铺不换行不跳高（用户实测缺陷回归）', (tester) async {
+  testWidgets('铺法图案卡：选中人字铺不换行不跳高（用户实测缺陷回归）', (tester) async {
     // 窄机身（320dp）+ 中文长文案是最苛刻组合之一
     tester.view.physicalSize = const Size(320, 900);
     tester.view.devicePixelRatio = 1.0;
@@ -102,14 +101,15 @@ void main() {
     await tester.pumpWidget(TileMathApp(prefs: prefs));
     await tester.pump();
 
-    final segmented = find.byType(SegmentedButton<LayoutPattern>);
-    final heightBefore = tester.getRect(segmented).height;
+    final herringboneCard =
+        find.byKey(const ValueKey('pattern-card-herringbone'));
+    final heightBefore = tester.getRect(herringboneCard).height;
 
-    await tester.tap(find.text('Herringbone'));
+    await tester.tap(herringboneCard);
     await tester.pump();
 
     // 高度恒定 = 无换行无跳动（若溢出测试框架会直接抛异常失败）
-    expect(tester.getRect(segmented).height, heightBefore);
+    expect(tester.getRect(herringboneCard).height, heightBefore);
     expect(find.text('20%'), findsOneWidget);
   });
 
