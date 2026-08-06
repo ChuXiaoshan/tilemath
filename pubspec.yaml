@@ -1,7 +1,7 @@
 name: tilemath
 description: "Tile calculator with fraction-inch keyboard. Fully offline."
 publish_to: 'none'
-version: 1.0.0+6
+version: 1.1.0+7
 
 environment:
   sdk: ^3.12.2
