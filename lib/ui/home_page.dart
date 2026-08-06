@@ -13,6 +13,7 @@ import '../theme/app_dimens.dart';
 import 'format.dart';
 import 'history_page.dart';
 import 'keyboard/tile_keyboard.dart';
+import 'materials_section.dart';
 import 'result_card.dart';
 import 'settings_page.dart';
 import 'value_field.dart';
@@ -238,6 +239,8 @@ class _InputForm extends StatelessWidget {
         _PatternSelector(calc: calc),
         const SizedBox(height: AppDimens.space24),
         _BoxesAndCost(calc: calc),
+        const SizedBox(height: AppDimens.space24),
+        MaterialsSection(calc: calc),
       ],
     );
   }
