@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -34,6 +35,17 @@ void main() {
   });
 
   testWidgets('生成商店截图', (tester) async {
+    // 横版产出（iPad 双栏主打形态，设计稿 4b）：
+    //   fvm flutter drive ... --dart-define=SHOT_ORIENTATION=landscape
+    // 注意：iPad 上 app 不锁全屏时系统拒绝程序转向（UISceneErrorDomain 101），
+    // 跑横版前需临时给 Info.plist 加 UIRequiresFullScreen=true，跑完还原；
+    // 还原用 git checkout（PlistBuddy 重写会丢 XML 注释）。
+    const orientation = String.fromEnvironment('SHOT_ORIENTATION');
+    if (orientation == 'landscape') {
+      await SystemChrome.setPreferredOrientations([
+        DeviceOrientation.landscapeLeft,
+      ]);
+    }
     SharedPreferences.setMockInitialValues({});
     final prefs = await SharedPreferences.getInstance();
     await tester.pumpWidget(TileMathApp(prefs: prefs));
