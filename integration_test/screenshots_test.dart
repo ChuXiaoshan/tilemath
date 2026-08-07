@@ -9,7 +9,11 @@ import 'package:tilemath/main.dart';
 /// 每到一处就通过 takeScreenshot 通知宿主机用 simctl 抓图（见
 /// test_driver/integration_test.dart）。
 ///
-/// 跑法（模拟器需已启动并设为目标语言/地区）：
+/// 跑法（模拟器需已启动并设为目标语言/地区。注意 AppleLanguages 必须带
+/// 地区码：`defaults write "Apple Global Domain" AppleLanguages -array "en-US"`
+/// ——写成纯 "en" 会让 platformDispatcher.locale 丢 countryCode，单位制
+/// 判定落到公制，'ft' 键不存在，本测试第一步就会失败；写完需重启模拟器，
+/// 且 simctl spawn 只在设备开机时生效）：
 ///   fvm flutter drive \
 ///     --driver=test_driver/integration_test.dart \
 ///     --target=integration_test/screenshots_test.dart \
@@ -80,8 +84,13 @@ void main() {
     await tapText('6');
     await tapText('ft');
     await tapText('Done');
-    // 两个区域把内容撑长了，不滚动的话结果卡会被屏幕下沿切断
-    await tester.drag(find.byType(ListView), const Offset(0, -180));
+    // 单栏：两个区域把内容撑长了，不滚动的话结果卡会被屏幕下沿切断。
+    // 双栏（iPad）有左右两个 ListView 且结果恒在右栏可见，无需滚动——
+    // 用 ListView 数量区分形态。
+    final listViews = find.byType(ListView);
+    if (listViews.evaluate().length == 1) {
+      await tester.drag(listViews, const Offset(0, -180));
+    }
     await shot('04-multiple-areas');
 
     // ---- 05 历史记录 ----
